@@ -1,4 +1,4 @@
-# 화록 Anroid README
+# 화록 Android README
 
 
 ## 라이브러리 및 기술 스택
