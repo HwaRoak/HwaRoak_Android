@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.HwaRoak" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+
+    <!--bottom Navigation transparent 뒤에 동그라미를 없앤다-->
+    <style name="BottomNav_NoIndicator" parent="">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.HwaRoak" parent="Base.Theme.HwaRoak" />
+</resources>

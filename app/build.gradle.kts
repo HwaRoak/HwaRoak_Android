@@ -1,0 +1,67 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+}
+
+android {
+    namespace = "com.example.hwaroak"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "com.example.hwaroak"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        // ViewBinding 활성화
+        viewBinding = true
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
+dependencies {
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+
+    // 1) HTTP 클라이언트 & JSON 파싱
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+
+
+    // 3) Material Components (DatePicker 포함)
+    implementation("com.google.android.material:material:1.9.0")
+
+    // 4) bottomnavigation
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.3")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.3")
+
+    implementation("com.google.android.material:material:1.11.0")
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- ① Shadow 레이어: 위쪽으로 5dp 떨어뜨림 -->
+    <item android:top="5dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#E1511D"/>
+            <corners android:radius="20dp"/>
+        </shape>
+    </item>
+
+    <!-- ② 본체 레이어 -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#F87D65"/>
+            <corners android:radius="20dp"/>
+        </shape>
+    </item>
+</layer-list>
