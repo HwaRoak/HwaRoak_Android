@@ -2,4 +2,26 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00ff0000</color>
+
+    <!--매인 색상-->
+    <!--강조 아이콘 버튼(메인 버튼) / 배경 / 회색 아이콘 / 폰트 / 텍스트 배경-->
+    <color name="colorPrimary">#F87D65</color>
+    <color name="colorBackground">#FBFBFB</color>
+    <color name="colorGrayIcon">#D1D1D1</color>
+    <color name="colorFont">#4C4C4C</color>
+    <color name="colorTextBackground">#F9F9F9</color>
+
+    <!--상단 바 색상-->
+    <!--회색 선 / 보관함 아이콘 / 벨 아이콘-->
+    <color name="colorGrayLine">#F5F5F5</color>
+    <color name="colorStoreBoxIcon">#E4E4E4</color>
+    <color name="colorBellIcon">#FFD88A</color>
+
+    <!--기타 색상-->
+    <!--말풍선 / 친구 추가 아이콘 / 보상완료 및 아이템 아이콘-->
+    <color name="colorSpeechBubble">#FDFDFD</color>
+    <color name="colorFriendAdd">#FFF5F2</color>
+    <color name="colorItemIcon">#F2F2F2</color>
+
 </resources>
