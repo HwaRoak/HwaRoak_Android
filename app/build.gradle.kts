@@ -62,6 +62,7 @@ dependencies {
     // 4) bottomnavigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.3")
-
     implementation("com.google.android.material:material:1.11.0")
+
+    //5 ) 기타 기능 및 위젯들 implement
 }

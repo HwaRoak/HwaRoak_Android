@@ -7,6 +7,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.ActivityMainBinding
+import com.example.hwaroak.ui.calendar.CalendarFragment
+import com.example.hwaroak.ui.diary.DiaryFragment
+import com.example.hwaroak.ui.friend.FriendFragment
+import com.example.hwaroak.ui.mypage.MypageFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +22,60 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+        //맨 처음 화면을 보여줄 때, HomeFragment Default
+        if(savedInstanceState == null){
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragmentContainer, HomeFragment())
+                .commit()
+        }
+
+        //BottomNavigationView 연결
+        binding.mainBnv.setOnItemSelectedListener { item ->
+            when (item.itemId){
+
+                //매인 화면
+                R.id.homeFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_fragmentContainer, HomeFragment())
+                        .commit()
+                    true
+                }
+
+                //일기 작성 화면
+                R.id.diaryFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_fragmentContainer, DiaryFragment())
+                        .commit()
+                    true
+                }
+
+                //일기 히스토리 화면
+                R.id.calendarFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_fragmentContainer, CalendarFragment())
+                        .commit()
+                    true
+                }
+
+                //친구 화면
+                R.id.friendFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_fragmentContainer, FriendFragment())
+                        .commit()
+                    true
+                }
+
+                //마이페이지 화면
+                R.id.mypageFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_fragmentContainer, MypageFragment())
+                        .commit()
+                    true
+                }
+                else -> false
+            }
+        }
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

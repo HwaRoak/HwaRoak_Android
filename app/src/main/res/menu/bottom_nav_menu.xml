@@ -5,7 +5,7 @@
         android:icon="@drawable/ic_menu_home"
         android:title="홈" />
     <item
-        android:id="@+id/writeFragment"
+        android:id="@+id/diaryFragment"
         android:icon="@drawable/ic_menu_diary"
         android:title="일기쓰기" />
     <item
@@ -13,11 +13,11 @@
         android:icon="@drawable/ic_menu_schedule"
         android:title="달력" />
     <item
-        android:id="@+id/profileFragment"
+        android:id="@+id/friendFragment"
         android:icon="@drawable/ic_menu_mypage"
         android:title="친구" />
     <item
-        android:id="@+id/settingsFragment"
+        android:id="@+id/mypageFragment"
         android:icon="@drawable/ic_menu_setting"
         android:title="마이페이지" />
 </menu>

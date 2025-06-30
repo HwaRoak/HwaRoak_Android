@@ -50,10 +50,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="OO이의 화록"
-        android:textColor="@color/colorFont"
-        android:fontFamily="@font/freesentation_6semibold"
-        android:textSize="20sp"
         android:layout_marginStart="10dp"
+        style="@style/freesentation6_20sp_title"
         app:layout_constraintStart_toEndOf="@id/main_back_btn"
         app:layout_constraintTop_toTopOf="@id/main_back_btn"
         app:layout_constraintBottom_toBottomOf="@id/main_back_btn"/>
@@ -65,61 +63,12 @@
         android:id="@+id/main_fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@id/main_back_btn"
         app:layout_constraintBottom_toTopOf="@id/main_bnv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/main_tmp_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.3"
-        />
-
-    <TextView
-        android:id="@+id/main_ex1_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="제목 텍스트 예시입니다."
-        android:textColor="@color/black"
-        android:fontFamily="@font/freesentation_6semibold"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_tmp_guideline"/>
-
-    <TextView
-        android:id="@+id/main_ex2_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="제목 텍스트 예시2 입니다."
-        android:textColor="@color/black"
-        android:fontFamily="@font/freesentation_6semibold"
-        android:textSize="18sp"
-        android:layout_marginTop="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_ex1_tv"/>
-
-    <TextView
-        android:id="@+id/main_ex3_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="본문 텍스트 예시입니다."
-        android:textColor="@color/black"
-        android:fontFamily="@font/freesentation_4regular"
-        android:textSize="18sp"
-        android:layout_marginTop="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_ex2_tv"/>
-
 
 
     <!--bottom navigation-->

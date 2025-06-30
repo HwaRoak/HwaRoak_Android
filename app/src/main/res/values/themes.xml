@@ -11,5 +11,85 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+
+    <!--글꼴 style 정의-->
+    <!-- 일반 글씨 -->
+    <style name="freesentation4_16sp">
+        <item name="android:fontFamily">@font/freesentation_4regular</item>
+        <item name="android:textColor">@color/colorFont</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="freesentation5_16sp">
+        <item name="android:fontFamily">@font/freesentation_5medium</item>
+        <item name="android:textColor">@color/colorFont</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="freesentation5_20sp">
+        <item name="android:fontFamily">@font/freesentation_5medium</item>
+        <item name="android:textColor">@color/colorFont</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <!--제목 글씨-->
+    <style name="freesentation5_24sp_title">
+        <item name="android:fontFamily">@font/freesentation_5medium</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation6_16sp_title">
+        <item name="android:fontFamily">@font/freesentation_6semibold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation6_20sp_title">
+        <item name="android:fontFamily">@font/freesentation_6semibold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation6_24sp_title">
+        <item name="android:fontFamily">@font/freesentation_6semibold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation7_22sp_title">
+        <item name="android:fontFamily">@font/freesentation_7bold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <!--아이콘 글씨-->
+    <style name="freesentation4_16sp_icon">
+        <item name="android:fontFamily">@font/freesentation_4regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation5_11sp_icon">
+        <item name="android:fontFamily">@font/freesentation_5medium</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation5_16sp_icon">
+        <item name="android:fontFamily">@font/freesentation_5medium</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+
+    <style name="freesentation5_24sp_icon">
+        <item name="android:fontFamily">@font/freesentation_5medium</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/colorFont</item>
+    </style>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
     <style name="Theme.HwaRoak" parent="Base.Theme.HwaRoak" />
 </resources>
