@@ -1,6 +1,7 @@
 package com.example.hwaroak.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -11,6 +12,7 @@ import com.example.hwaroak.ui.calendar.CalendarFragment
 import com.example.hwaroak.ui.diary.DiaryFragment
 import com.example.hwaroak.ui.friend.FriendFragment
 import com.example.hwaroak.ui.mypage.MypageFragment
+import com.kakao.sdk.common.util.Utility
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,6 +24,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+        //키해시값 추출(자유롭게 삭제가능)
+        val keyHash = Utility.getKeyHash(this)
+        Log.d("Hash", keyHash)//해시값: qEz+AlHISa6EGnodqhzTq6Me1hU=
 
         //맨 처음 화면을 보여줄 때, HomeFragment Default
         if(savedInstanceState == null){
