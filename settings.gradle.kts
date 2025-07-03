@@ -20,6 +20,10 @@ dependencyResolutionManagement {
         mavenCentral()
         //Material CalenderView를 위한 import
         maven { url = uri("https://jitpack.io") }
+
+        //카카오 소셜 로그인
+        maven("https://devrepo.kakao.com/nexus/content/groups/public/")
+
     }
 }
 

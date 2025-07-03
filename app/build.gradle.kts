@@ -68,4 +68,6 @@ dependencies {
 
     //달력
     implementation("com.github.prolificinteractive:material-calendarview:2.0.1")
+    //카카오 로그인
+    implementation("com.kakao.sdk:v2-user:2.0.1")
 }
