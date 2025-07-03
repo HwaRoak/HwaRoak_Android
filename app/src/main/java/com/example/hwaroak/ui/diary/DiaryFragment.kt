@@ -3,13 +3,19 @@ package com.example.hwaroak.ui.diary
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.example.hwaroak.R
+import com.example.hwaroak.adaptor.DiaryEmotionAdaptor
+import com.example.hwaroak.data.DiaryEmotion
 import com.example.hwaroak.databinding.FragmentDiaryBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -31,6 +37,8 @@ class DiaryFragment : Fragment() {
 
     private lateinit var binding: FragmentDiaryBinding
 
+    //선택된 item view들의 집합
+    private val selectedEmotions = mutableSetOf<DiaryEmotion>()
 
     //달력 개체
     private val calendar = Calendar.getInstance()
@@ -57,8 +65,8 @@ class DiaryFragment : Fragment() {
 
         // 맨 처음 날짜 표시
         updateDateText()
-
-
+        //recyclerviwe 연결
+        setRecyclerview()
 
         // 이전 날짜 버튼 클릭 리스너 설정
         binding.diaryDateprevBtn.setOnClickListener {
@@ -107,6 +115,11 @@ class DiaryFragment : Fragment() {
 
         //작성 버튼 클릭 리스너 설정
         binding.diaryFinishBtn.setOnClickListener {
+
+            Log.d("log_diary", calendar.time.toString())
+            Log.d("log_diary", selectedEmotions.toString())
+            Log.d("log_diary", binding.diaryDiarycontentEdt.text.toString())
+
             val intent = Intent(requireContext(), DiaryFinishActivity::class.java)
             startActivity(intent)
         }
@@ -135,6 +148,51 @@ class DiaryFragment : Fragment() {
             calendar.set(Calendar.DAY_OF_MONTH, d)
             updateDateText()
         }, year, month, day).show()
+    }
+
+    //감정 recyclerview 연결
+    private fun setRecyclerview(){
+
+        //일단 임시 dataset
+        val tmpemotions = listOf(
+            DiaryEmotion( "차분한1", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한2", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한3", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한4", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한5", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한6", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한7", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한8", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한9", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한10", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한11", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한12", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한13", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한14", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한15", R.drawable.ic_emotion1),
+            )
+
+        val adaptor = DiaryEmotionAdaptor(tmpemotions, selectedEmotions)
+        binding.diaryEmotionRecyclerRcv.apply {
+            layoutManager = GridLayoutManager(requireContext(),
+                5, RecyclerView.VERTICAL, false)
+            this.adapter = adaptor
+
+            //부모 view와 겹쳐서 터치가 씹히는 문제 해결
+            isNestedScrollingEnabled = true
+
+            //recyclerview 터치 시 부모가 이벤트를 가로채지 못하게 요청
+            setOnTouchListener { _, event ->
+                // 터치가 시작될 때만
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    binding.diaryScrollview.requestDisallowInterceptTouchEvent(true)
+                }
+                // false 를 리턴해, 기존 onClickListener도 OK
+                false
+            }
+
+        }
+
     }
 
     companion object {

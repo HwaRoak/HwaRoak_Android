@@ -9,6 +9,8 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        //Material CalenderView를 위한 import
+        maven { url = uri("https://jitpack.io") }
     }
 }
 dependencyResolutionManagement {
@@ -16,6 +18,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        //Material CalenderView를 위한 import
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
