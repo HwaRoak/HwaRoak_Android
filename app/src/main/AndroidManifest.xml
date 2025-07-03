@@ -16,8 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HwaRoak"
         tools:targetApi="31">
+
+        <!--앱 시작점 변경 mainactivity->카카오로그인액티비티로-->
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".ui.login.LoginKakaoActivity"
             android:exported="true"
             android:theme="@style/HwaRoakSplashTheme">
             <intent-filter>
@@ -26,6 +28,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="true" />
+
         <!--소셜로그인 관련 activity-->
         <activity
             android:exported="true"
