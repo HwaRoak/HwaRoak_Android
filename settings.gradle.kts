@@ -16,6 +16,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        //소셜로그인을 위한 카카오 SDK 설정
+        maven("https://devrepo.kakao.com/nexus/content/groups/public/")
     }
 }
 
