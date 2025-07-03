@@ -11,6 +11,13 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <!--Splash Screen 테마-->
+    <style name="HwaRoakSplashTheme" parent="Theme.SplashScreen">
+        <item name="android:windowSplashScreenBackground" tools:targetApi="s">@color/colorPrimary</item>
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/ic_splash_logo</item>
+        <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="s">1000</item>
+    </style>
+
 
     <!--글꼴 style 정의-->
     <!-- 일반 글씨 -->
