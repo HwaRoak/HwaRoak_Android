@@ -64,8 +64,11 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.3")
     implementation("com.google.android.material:material:1.11.0")
 
-    // 5) login
-    implementation("com.kakao.sdk:v2-user:2.0.1")
+    // 5) kakao login
+    implementation("com.kakao.sdk:v2-user:2.10.0")
+
+    //6) splash screen
+    implementation("androidx.core:core-splashscreen:1.0.0")
 
     //5 ) 기타 기능 및 위젯들 implement
 }
