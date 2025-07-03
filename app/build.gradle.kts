@@ -66,9 +66,13 @@ dependencies {
     
     // 5) 기타 기능 및 위젯들 implement
 
+    // 5) kakao login
+    implementation("com.kakao.sdk:v2-user:2.10.0")
+
+    //6) splash screen
+    implementation("androidx.core:core-splashscreen:1.0.0")
+
     //달력
     implementation("com.github.prolificinteractive:material-calendarview:2.0.1")
-    //카카오 로그인
-    implementation("com.kakao.sdk:v2-user:2.0.1")
 
 }
