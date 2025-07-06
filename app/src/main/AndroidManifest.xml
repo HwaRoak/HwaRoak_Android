@@ -32,8 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
 
             </intent-filter>
-
-            -->
+-->
 
         </activity>
 
@@ -41,11 +40,17 @@
             android:name=".ui.login.LoginKakaoActivity"
             android:exported="true"
             android:theme="@style/HwaRoakSplashTheme">
+
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
+
         </activity>
 
 

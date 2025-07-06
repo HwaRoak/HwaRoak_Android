@@ -67,6 +67,9 @@ class DiaryFragment : Fragment() {
         updateDateText()
         //recyclerviwe 연결
         setRecyclerview()
+        //일단은 일기 작성 못해
+        binding.diaryFinishBtn.setEnabled(false)
+
 
         // 이전 날짜 버튼 클릭 리스너 설정
         binding.diaryDateprevBtn.setOnClickListener {
