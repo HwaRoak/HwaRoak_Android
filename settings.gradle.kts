@@ -9,6 +9,8 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        //Material CalenderView를 위한 import
+        maven { url = uri("https://jitpack.io") }
     }
 }
 dependencyResolutionManagement {
@@ -16,8 +18,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        //소셜로그인을 위한 카카오 SDK 설정
+        //Material CalenderView를 위한 import
+        maven { url = uri("https://jitpack.io") }
+
+        //카카오 소셜 로그인
         maven("https://devrepo.kakao.com/nexus/content/groups/public/")
+
     }
 }
 
