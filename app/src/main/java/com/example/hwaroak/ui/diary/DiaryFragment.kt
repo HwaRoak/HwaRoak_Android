@@ -59,7 +59,7 @@ class DiaryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.diaryViewpager.adapter = DiaryViewPagerAdaptor(this)
-
+        binding.diaryViewpager.isUserInputEnabled = false
 
     }
 

@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.OvershootInterpolator
+import android.widget.TextView
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.FragmentDiaryFinishBinding
+import com.example.hwaroak.ui.main.MainActivity
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,7 +48,28 @@ class DiaryFinishFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //애니메이션 
+        binding.diaryFinishResultImv.visibility = TextView.INVISIBLE
         setImageAnimate()
+
+
+        //일기 다시 작성하기 버튼 누를 시 이동
+        binding.diaryFinishModifyDiaryTv.setOnClickListener {
+            //일단 안보이게 하기
+            binding.diaryFinishResultImv.visibility = TextView.INVISIBLE
+
+            (parentFragment as DiaryFragment)
+                .binding
+                .diaryViewpager
+                .currentItem = 0
+        }
+
+        //확인 버튼 시 이동
+        binding.diaryFinishFinishBtn.setOnClickListener {
+            //메인 액티비티 함수 부르기
+            (activity as MainActivity).selectTab(R.id.calendarFragment)
+        }
+
     }
 
 
@@ -54,6 +77,7 @@ class DiaryFinishFragment : Fragment() {
     //중간 이미지에 애니메이션 + 팝 애니메이션
     private fun setImageAnimate() {
 
+        binding.diaryFinishResultImv.visibility = TextView.VISIBLE
         binding.diaryFinishResultImv.scaleX = 0f;
         binding.diaryFinishResultImv.scaleY = 0f;
 
@@ -68,6 +92,12 @@ class DiaryFinishFragment : Fragment() {
                 .start()
         }
 
+    }
+
+    //일기 다시 쓰고 돌아와도 고
+    override fun onResume() {
+        super.onResume()
+        setImageAnimate()
     }
 
     companion object {

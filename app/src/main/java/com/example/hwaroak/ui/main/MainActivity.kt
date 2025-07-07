@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
@@ -108,6 +109,13 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    //bottomNavView에서 item ID 입력 시 해당 id에 해당하는 fragment로 이동
+    fun selectTab(@IdRes menuItemId: Int) {
+        binding.mainBnv.selectedItemId = menuItemId
+    }
+
+
+    //뒤로 가기 제어
     private fun handleBack(){
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
