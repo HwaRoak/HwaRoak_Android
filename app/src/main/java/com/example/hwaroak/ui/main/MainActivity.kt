@@ -2,10 +2,13 @@ package com.example.hwaroak.ui.main
 
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isGone
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.ActivityMainBinding
 import com.example.hwaroak.ui.calendar.CalendarFragment
@@ -48,6 +51,7 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_fragmentContainer, HomeFragment())
                         .commit()
+                    binding.mainBnv.visibility = ConstraintLayout.VISIBLE
                     true
                 }
 
@@ -56,6 +60,7 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_fragmentContainer, DiaryFragment())
                         .commit()
+                    binding.mainBnv.visibility = ConstraintLayout.GONE
                     true
                 }
 
@@ -64,6 +69,7 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_fragmentContainer, CalendarFragment())
                         .commit()
+                    binding.mainBnv.visibility = ConstraintLayout.VISIBLE
                     true
                 }
 
@@ -72,6 +78,7 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_fragmentContainer, FriendFragment())
                         .commit()
+                    binding.mainBnv.visibility = ConstraintLayout.VISIBLE
                     true
                 }
 
@@ -80,11 +87,17 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_fragmentContainer, MypageFragment())
                         .commit()
+                    binding.mainBnv.visibility = ConstraintLayout.VISIBLE
                     true
                 }
                 else -> false
             }
         }
+
+
+        //뒤로 가기 시 일단 HomeFragment 이동 후 종료
+        handleBack()
+
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -93,4 +106,29 @@ class MainActivity : AppCompatActivity() {
             insets
         }
     }
+
+
+    private fun handleBack(){
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 현재 화면 확인
+                val current = supportFragmentManager
+                    .findFragmentById(R.id.main_fragmentContainer)
+                if (current !is HomeFragment) {
+                    // 홈으로 돌아가기
+                    binding.mainBnv.selectedItemId = R.id.homeFragment
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_fragmentContainer, HomeFragment())
+                        .commit()
+                } else {
+                    // 홈 화면일 땐 기본 뒤로가기 동작(앱 종료)
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
+
+    }
+
 }

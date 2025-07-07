@@ -75,11 +75,11 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/main_bnv"
-        android:background="@color/white"
+        android:background="@color/colorFrameBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconSize="24dp"
         app:itemIconTint="@color/color_bottom_navigation"

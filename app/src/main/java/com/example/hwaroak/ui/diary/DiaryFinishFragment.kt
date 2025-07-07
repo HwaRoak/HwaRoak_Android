@@ -1,26 +1,13 @@
 package com.example.hwaroak.ui.diary
 
-import android.app.DatePickerDialog
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.TransitionManager
+import android.view.animation.OvershootInterpolator
 import com.example.hwaroak.R
-import com.example.hwaroak.adaptor.DiaryEmotionAdaptor
-import com.example.hwaroak.adaptor.DiaryViewPagerAdaptor
-import com.example.hwaroak.data.DiaryEmotion
-import com.example.hwaroak.databinding.FragmentDiaryBinding
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import com.example.hwaroak.databinding.FragmentDiaryFinishBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,14 +16,15 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [DiaryFragment.newInstance] factory method to
+ * Use the [DiaryFinishFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class DiaryFragment : Fragment() {
+class DiaryFinishFragment : Fragment() {
+    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
-    lateinit var binding: FragmentDiaryBinding
+    private lateinit var binding: FragmentDiaryFinishBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,15 +39,34 @@ class DiaryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentDiaryBinding.inflate(inflater, container, false)
+        binding = FragmentDiaryFinishBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.diaryViewpager.adapter = DiaryViewPagerAdaptor(this)
+        setImageAnimate()
+    }
 
+
+
+    //중간 이미지에 애니메이션 + 팝 애니메이션
+    private fun setImageAnimate() {
+
+        binding.diaryFinishResultImv.scaleX = 0f;
+        binding.diaryFinishResultImv.scaleY = 0f;
+
+        //setInterpolator로 애니메이션 진행 속도 조절 + OvershootInterpolator로 튕기는 듯한 (뿅)
+        binding.diaryFinishResultImv.post {
+            binding.diaryFinishResultImv.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .setInterpolator(OvershootInterpolator(2f))
+                .setDuration(500)
+                .withEndAction {  }
+                .start()
+        }
 
     }
 
@@ -70,12 +77,12 @@ class DiaryFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment DiaryFragment.
+         * @return A new instance of fragment DiaryFinishFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            DiaryFragment().apply {
+            DiaryFinishFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
