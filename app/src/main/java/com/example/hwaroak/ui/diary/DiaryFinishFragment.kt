@@ -48,7 +48,7 @@ class DiaryFinishFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //애니메이션 
+        //애니메이션
         binding.diaryFinishResultImv.visibility = TextView.INVISIBLE
         setImageAnimate()
 

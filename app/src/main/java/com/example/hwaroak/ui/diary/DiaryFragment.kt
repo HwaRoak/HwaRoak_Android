@@ -52,6 +52,9 @@ class DiaryFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentDiaryBinding.inflate(inflater, container, false)
+
+
+
         return binding.root
     }
 
