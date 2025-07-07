@@ -13,8 +13,7 @@ import com.example.hwaroak.data.DiaryEmotion
 
 class DiaryEmotionAdaptor(
     private val items: List<DiaryEmotion>,
-    private val selecteditems: MutableSet<DiaryEmotion>,
-    private val onSelectionChanged: (selectedCount: Int) -> Unit
+    private val selecteditems: MutableSet<DiaryEmotion>
 ) : RecyclerView.Adapter<DiaryEmotionAdaptor.ViewHolder>(){
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -53,8 +52,6 @@ class DiaryEmotionAdaptor(
             }
             notifyItemChanged(position)
 
-            //콜백 함수
-            onSelectionChanged(selecteditems.size)
         }
 
     }
