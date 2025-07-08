@@ -175,11 +175,7 @@ class DiaryFragment : Fragment() {
             DiaryEmotion( "차분한15", R.drawable.ic_emotion1),
             )
 
-        val adaptor = DiaryEmotionAdaptor(tmpemotions, selectedEmotions){
-            // 이 블록은 감정 선택이 변경될 때마다 호출됩니다.
-            // 선택된 감정이 하나라도 있으면 버튼을 활성화하고, 없으면 비활성화합니다.
-            binding.diaryFinishBtn.isEnabled = selectedEmotions.isNotEmpty()
-        }
+        val adaptor = DiaryEmotionAdaptor(tmpemotions, selectedEmotions)
         binding.diaryEmotionRecyclerRcv.apply {
             layoutManager = GridLayoutManager(requireContext(),
                 5, RecyclerView.VERTICAL, false)
