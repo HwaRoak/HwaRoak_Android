@@ -7,18 +7,228 @@
     android:background="@color/colorBackground"
     tools:context=".ui.calendar.CalendarFragment">
 
-    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-        android:id="@+id/calendar_calendar_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="24dp"
-        app:mcv_selectionMode="range"
-        app:mcv_showOtherDates="all"
-        app:mcv_firstDayOfWeek="sunday"
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/calendar_scrollview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <!--달력 : guideLine으로 세로 비 조정-->
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/calendar_guidelineCalendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintGuide_percent="0.55"
+                android:orientation="horizontal"/>
+
+            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                android:id="@+id/calendar_calendar_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/bg_round_corner"
+                android:backgroundTint="@color/colorFrameBackground"
+                android:elevation="2dp"
+
+                app:mcv_selectionColor="@color/colorFrameBackground"
+                app:mcv_selectionMode="single"
+                app:mcv_showOtherDates="none"
+                app:mcv_firstDayOfWeek="sunday"
+                app:mcv_headerTextAppearance="@style/freesentation6_16sp_title"
+                app:mcv_weekDayTextAppearance="@style/freesentation6_16sp_title"
+                app:mcv_dateTextAppearance="@style/freesentation4_16sp"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/calendar_guidelineCalendar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+
+        <!--달력 세부 내용-->
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/calendar_datedetail_cdv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorFrameBackground"
+            android:backgroundTint="@color/colorFrameBackground"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="0dp"
+            app:layout_constraintTop_toBottomOf="@id/calendar_guidelineCalendar"
+            app:layout_constraintStart_toStartOf="@id/calendar_calendar_view"
+            app:layout_constraintEnd_toEndOf="@id/calendar_calendar_view"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="15dp"
+                >
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/clendar_guideline_datedetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintGuide_percent="0.4"
+                    android:orientation="vertical"/>
+
+                <!-- 1) 이전일 화살표 -->
+                <ImageView
+                    android:id="@+id/calendar_dateprev_btn"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_arrow_back"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 2) 다음일 화살표 -->
+                <ImageView
+                    android:id="@+id/calendar_datenext_btn"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_arrow_back"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 3) 오늘의 감정 -->
+                <ImageView
+                    android:id="@+id/calendar_emotion_character_imv"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_bell"
+                    android:backgroundTint="@color/transparent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/calendar_dateprev_btn"
+                    app:layout_constraintEnd_toStartOf="@id/clendar_guideline_datedetail"
+                    />
+
+                <TextView
+                    android:id="@+id/calendar_today_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="08 수"
+                    style="@style/freesentation6_16sp_title"
+                    app:layout_constraintStart_toStartOf="@id/calendar_emotion_character_imv"
+                    app:layout_constraintEnd_toEndOf="@id/calendar_emotion_character_imv"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/calendar_emotion_character_imv"/>
+
+                <TextView
+                    android:id="@+id/calendar_feeling_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="행복함"
+                    style="@style/freesentation4_16sp"
+                    android:textColor="#BCBCBC"
+                    app:layout_constraintStart_toStartOf="@id/calendar_emotion_character_imv"
+                    app:layout_constraintEnd_toEndOf="@id/calendar_emotion_character_imv"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/calendar_emotion_character_imv"/>
+
+
+                <!-- 4) 말풍선 -->
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/calendar_talkbackground_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="125dp"
+                    android:background="@drawable/bg_edittext_round"
+                    android:padding="12dp"
+                    android:layout_marginEnd="5dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/clendar_guideline_datedetail"
+                    app:layout_constraintEnd_toStartOf="@id/calendar_datenext_btn">
+
+                    <TextView
+                        android:id="@+id/calendar_todayHwaroak_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="이날의 화록"
+                        style="@style/freesentation4_16sp"
+                        android:textSize="14sp"
+                        android:textColor="#BCBCBC"
+                        app:layout_constraintStart_toStartOf="@id/calendar_talkbackground_layout"
+                        app:layout_constraintEnd_toEndOf="@id/calendar_talkbackground_layout"
+                        app:layout_constraintTop_toTopOf="@id/calendar_talkbackground_layout"/>
+
+                    <TextView
+                        android:id="@+id/calendar_todayHwaroakTalk_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="오늘 참 재미있는 일이 있었네!!!!!!!!!!!!!!!!!"
+                        android:gravity="center"
+                        style="@style/freesentation4_16sp"
+                        app:layout_constraintTop_toBottomOf="@id/calendar_todayHwaroak_tv"
+                        app:layout_constraintStart_toStartOf="@id/calendar_talkbackground_layout"
+                        app:layout_constraintEnd_toEndOf="@id/calendar_talkbackground_layout"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+            <!--삭제 / 상세보기 버튼-->
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/clendar_guideline_buttons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintGuide_percent="0.5"
+                android:orientation="vertical"/>
+
+            <ImageButton
+                android:id="@+id/calendar_delete_btn"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:background="@color/colorPrimary"
+                android:layout_marginHorizontal="10dp"
+                app:layout_constraintStart_toStartOf="@id/calendar_datedetail_cdv"
+                app:layout_constraintEnd_toStartOf="@id/clendar_guideline_buttons"
+                app:layout_constraintTop_toBottomOf="@id/calendar_datedetail_cdv"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <ImageButton
+                android:id="@+id/calendar_godetail_btn"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:background="@color/colorPrimary"
+                android:layout_marginHorizontal="10dp"
+                app:layout_constraintEnd_toEndOf="@id/calendar_datedetail_cdv"
+                app:layout_constraintStart_toEndOf="@id/clendar_guideline_buttons"
+                app:layout_constraintTop_toBottomOf="@id/calendar_datedetail_cdv"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
