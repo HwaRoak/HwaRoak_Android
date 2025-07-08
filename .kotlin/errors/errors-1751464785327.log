@@ -1,0 +1,214 @@
+kotlin version: 2.0.21
+error message: org.jetbrains.kotlin.backend.common.BackendException: Backend Internal error: Exception during IR lowering
+File being compiled: D:/androidStudio/HwaRoak/app/src/main/java/com/example/hwaroak/ui/diary/DiaryFinishActivity.kt
+The root cause java.lang.RuntimeException was thrown at: org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:47)
+	at org.jetbrains.kotlin.backend.common.CodegenUtil.reportBackendException(CodegenUtil.kt:253)
+	at org.jetbrains.kotlin.backend.common.CodegenUtil.reportBackendException$default(CodegenUtil.kt:236)
+	at org.jetbrains.kotlin.backend.common.phaser.PerformByIrFilePhase.invokeSequential(performByIrFile.kt:65)
+	at org.jetbrains.kotlin.backend.common.phaser.PerformByIrFilePhase.invoke(performByIrFile.kt:52)
+	at org.jetbrains.kotlin.backend.common.phaser.PerformByIrFilePhase.invoke(performByIrFile.kt:38)
+	at org.jetbrains.kotlin.backend.common.phaser.NamedCompilerPhase.phaseBody(CompilerPhase.kt:166)
+	at org.jetbrains.kotlin.backend.common.phaser.AbstractNamedCompilerPhase.invoke(CompilerPhase.kt:113)
+	at org.jetbrains.kotlin.backend.common.phaser.CompositePhase.invoke(PhaseBuilders.kt:27)
+	at org.jetbrains.kotlin.backend.common.phaser.CompositePhase.invoke(PhaseBuilders.kt:14)
+	at org.jetbrains.kotlin.backend.common.phaser.NamedCompilerPhase.phaseBody(CompilerPhase.kt:166)
+	at org.jetbrains.kotlin.backend.common.phaser.AbstractNamedCompilerPhase.invoke(CompilerPhase.kt:113)
+	at org.jetbrains.kotlin.backend.common.phaser.CompilerPhaseKt.invokeToplevel(CompilerPhase.kt:62)
+	at org.jetbrains.kotlin.backend.jvm.JvmIrCodegenFactory.invokeCodegen(JvmIrCodegenFactory.kt:371)
+	at org.jetbrains.kotlin.codegen.CodegenFactory.generateModule(CodegenFactory.kt:47)
+	at org.jetbrains.kotlin.backend.jvm.JvmIrCodegenFactory.generateModuleInFrontendIRMode(JvmIrCodegenFactory.kt:433)
+	at org.jetbrains.kotlin.cli.jvm.compiler.pipeline.JvmCompilerPipelineKt.generateCodeFromIr(jvmCompilerPipeline.kt:246)
+	at org.jetbrains.kotlin.cli.jvm.compiler.pipeline.JvmCompilerPipelineKt.compileModulesUsingFrontendIrAndLightTree(jvmCompilerPipeline.kt:142)
+	at org.jetbrains.kotlin.cli.jvm.K2JVMCompiler.doExecute(K2JVMCompiler.kt:148)
+	at org.jetbrains.kotlin.cli.jvm.K2JVMCompiler.doExecute(K2JVMCompiler.kt:43)
+	at org.jetbrains.kotlin.cli.common.CLICompiler.execImpl(CLICompiler.kt:103)
+	at org.jetbrains.kotlin.cli.common.CLICompiler.execImpl(CLICompiler.kt:49)
+	at org.jetbrains.kotlin.cli.common.CLITool.exec(CLITool.kt:101)
+	at org.jetbrains.kotlin.incremental.IncrementalJvmCompilerRunner.runCompiler(IncrementalJvmCompilerRunner.kt:464)
+	at org.jetbrains.kotlin.incremental.IncrementalJvmCompilerRunner.runCompiler(IncrementalJvmCompilerRunner.kt:73)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.doCompile(IncrementalCompilerRunner.kt:506)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.compileImpl(IncrementalCompilerRunner.kt:423)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.tryCompileIncrementally$lambda$9$compile(IncrementalCompilerRunner.kt:249)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.tryCompileIncrementally(IncrementalCompilerRunner.kt:267)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.compile(IncrementalCompilerRunner.kt:120)
+	at org.jetbrains.kotlin.daemon.CompileServiceImplBase.execIncrementalCompiler(CompileServiceImpl.kt:675)
+	at org.jetbrains.kotlin.daemon.CompileServiceImplBase.access$execIncrementalCompiler(CompileServiceImpl.kt:92)
+	at org.jetbrains.kotlin.daemon.CompileServiceImpl.compile(CompileServiceImpl.kt:1660)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at java.rmi/sun.rmi.server.UnicastServerRef.dispatch(Unknown Source)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Unknown Source)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Unknown Source)
+	at java.base/java.security.AccessController.doPrivileged(Unknown Source)
+	at java.rmi/sun.rmi.transport.Transport.serviceCall(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.handleMessages(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.lambda$run$0(Unknown Source)
+	at java.base/java.security.AccessController.doPrivileged(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.RuntimeException: Exception while generating code for:
+FUN name:startFlicker visibility:private modality:FINAL <> ($this:com.example.hwaroak.ui.diary.DiaryFinishActivity, flame:android.view.View) returnType:kotlin.Unit
+  $this: VALUE_PARAMETER name:<this> type:com.example.hwaroak.ui.diary.DiaryFinishActivity
+  VALUE_PARAMETER name:flame index:0 type:android.view.View
+  BLOCK_BODY
+    VAR name:flickerScaleX type:@[FlexibleNullability] android.animation.ObjectAnimator? [val]
+      CALL 'public open fun ofFloat <T> (p0: @[FlexibleNullability] T of android.animation.ObjectAnimator.ofFloat?, p1: @[FlexibleNullability] android.util.Property<@[FlexibleNullability] T of android.animation.ObjectAnimator.ofFloat?, @[FlexibleNullability] kotlin.Float?>?, vararg p2: kotlin.Float): @[FlexibleNullability] android.animation.ObjectAnimator? declared in android.animation.ObjectAnimator' type=@[FlexibleNullability] android.animation.ObjectAnimator? origin=null
+        <T>: @[FlexibleNullability] android.view.View?
+        p0: GET_VAR 'flame: android.view.View declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=android.view.View origin=null
+        p1: GET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:SCALE_X type:@[FlexibleNullability] android.util.Property<@[FlexibleNullability] android.view.View?, @[FlexibleNullability] kotlin.Float?>? visibility:public [final,static] declared in android.view.View' type=@[FlexibleNullability] android.util.Property<@[FlexibleNullability] android.view.View?, @[FlexibleNullability] kotlin.Float?>? superQualifierSymbol=android.view.View origin=null
+        p2: BLOCK type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+          VAR IR_TEMPORARY_VARIABLE name:tmp0 type:@[FlexibleNullability] kotlin.FloatArray? [val]
+            CONSTRUCTOR_CALL 'public constructor <init> (size: kotlin.Int) [primary] declared in kotlin.FloatArray' type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+              size: CONST Int type=kotlin.Int value=2
+          CALL 'public final fun set (index: kotlin.Int, value: kotlin.Float): kotlin.Unit [operator] declared in kotlin.FloatArray' type=kotlin.Unit origin=null
+            $this: GET_VAR 'val tmp0: @[FlexibleNullability] kotlin.FloatArray? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+            index: CONST Int type=kotlin.Int value=0
+            value: CONST Float type=kotlin.Float value=0.9
+          CALL 'public final fun set (index: kotlin.Int, value: kotlin.Float): kotlin.Unit [operator] declared in kotlin.FloatArray' type=kotlin.Unit origin=null
+            $this: GET_VAR 'val tmp0: @[FlexibleNullability] kotlin.FloatArray? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+            index: CONST Int type=kotlin.Int value=1
+            value: CONST Float type=kotlin.Float value=1.1
+          GET_VAR 'val tmp0: @[FlexibleNullability] kotlin.FloatArray? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+    VAR name:flickerScaleY type:@[FlexibleNullability] android.animation.ObjectAnimator? [val]
+      CALL 'public open fun ofFloat <T> (p0: @[FlexibleNullability] T of android.animation.ObjectAnimator.ofFloat?, p1: @[FlexibleNullability] android.util.Property<@[FlexibleNullability] T of android.animation.ObjectAnimator.ofFloat?, @[FlexibleNullability] kotlin.Float?>?, vararg p2: kotlin.Float): @[FlexibleNullability] android.animation.ObjectAnimator? declared in android.animation.ObjectAnimator' type=@[FlexibleNullability] android.animation.ObjectAnimator? origin=null
+        <T>: @[FlexibleNullability] android.view.View?
+        p0: GET_VAR 'flame: android.view.View declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=android.view.View origin=null
+        p1: GET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:SCALE_Y type:@[FlexibleNullability] android.util.Property<@[FlexibleNullability] android.view.View?, @[FlexibleNullability] kotlin.Float?>? visibility:public [final,static] declared in android.view.View' type=@[FlexibleNullability] android.util.Property<@[FlexibleNullability] android.view.View?, @[FlexibleNullability] kotlin.Float?>? superQualifierSymbol=android.view.View origin=null
+        p2: BLOCK type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+          VAR IR_TEMPORARY_VARIABLE name:tmp0 type:@[FlexibleNullability] kotlin.FloatArray? [val]
+            CONSTRUCTOR_CALL 'public constructor <init> (size: kotlin.Int) [primary] declared in kotlin.FloatArray' type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+              size: CONST Int type=kotlin.Int value=2
+          CALL 'public final fun set (index: kotlin.Int, value: kotlin.Float): kotlin.Unit [operator] declared in kotlin.FloatArray' type=kotlin.Unit origin=null
+            $this: GET_VAR 'val tmp0: @[FlexibleNullability] kotlin.FloatArray? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+            index: CONST Int type=kotlin.Int value=0
+            value: CONST Float type=kotlin.Float value=0.9
+          CALL 'public final fun set (index: kotlin.Int, value: kotlin.Float): kotlin.Unit [operator] declared in kotlin.FloatArray' type=kotlin.Unit origin=null
+            $this: GET_VAR 'val tmp0: @[FlexibleNullability] kotlin.FloatArray? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+            index: CONST Int type=kotlin.Int value=1
+            value: CONST Float type=kotlin.Float value=1.1
+          GET_VAR 'val tmp0: @[FlexibleNullability] kotlin.FloatArray? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+    VAR name:flickerAlpha type:@[FlexibleNullability] android.animation.ObjectAnimator? [val]
+      CALL 'public open fun ofFloat <T> (p0: @[FlexibleNullability] T of android.animation.ObjectAnimator.ofFloat?, p1: @[FlexibleNullability] android.util.Property<@[FlexibleNullability] T of android.animation.ObjectAnimator.ofFloat?, @[FlexibleNullability] kotlin.Float?>?, vararg p2: kotlin.Float): @[FlexibleNullability] android.animation.ObjectAnimator? declared in android.animation.ObjectAnimator' type=@[FlexibleNullability] android.animation.ObjectAnimator? origin=null
+        <T>: @[FlexibleNullability] android.view.View?
+        p0: GET_VAR 'flame: android.view.View declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=android.view.View origin=null
+        p1: GET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:ALPHA type:@[FlexibleNullability] android.util.Property<@[FlexibleNullability] android.view.View?, @[FlexibleNullability] kotlin.Float?>? visibility:public [final,static] declared in android.view.View' type=@[FlexibleNullability] android.util.Property<@[FlexibleNullability] android.view.View?, @[FlexibleNullability] kotlin.Float?>? superQualifierSymbol=android.view.View origin=null
+        p2: BLOCK type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+          VAR IR_TEMPORARY_VARIABLE name:tmp0 type:@[FlexibleNullability] kotlin.FloatArray? [val]
+            CONSTRUCTOR_CALL 'public constructor <init> (size: kotlin.Int) [primary] declared in kotlin.FloatArray' type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+              size: CONST Int type=kotlin.Int value=2
+          CALL 'public final fun set (index: kotlin.Int, value: kotlin.Float): kotlin.Unit [operator] declared in kotlin.FloatArray' type=kotlin.Unit origin=null
+            $this: GET_VAR 'val tmp0: @[FlexibleNullability] kotlin.FloatArray? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+            index: CONST Int type=kotlin.Int value=0
+            value: CONST Float type=kotlin.Float value=0.7
+          CALL 'public final fun set (index: kotlin.Int, value: kotlin.Float): kotlin.Unit [operator] declared in kotlin.FloatArray' type=kotlin.Unit origin=null
+            $this: GET_VAR 'val tmp0: @[FlexibleNullability] kotlin.FloatArray? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+            index: CONST Int type=kotlin.Int value=1
+            value: CONST Float type=kotlin.Float value=1.0
+          GET_VAR 'val tmp0: @[FlexibleNullability] kotlin.FloatArray? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=@[FlexibleNullability] kotlin.FloatArray? origin=null
+    CALL 'public open fun start (): kotlin.Unit declared in android.animation.AnimatorSet' type=kotlin.Unit origin=null
+      $this: CALL 'public final fun apply <T> (block: @[ExtensionFunctionType] kotlin.Function1<T of kotlin.StandardKt.apply, kotlin.Unit>): T of kotlin.StandardKt.apply [inline] declared in kotlin.StandardKt' type=android.animation.AnimatorSet origin=null
+        <T>: android.animation.AnimatorSet
+        $receiver: CONSTRUCTOR_CALL 'public constructor <init> () declared in android.animation.AnimatorSet' type=android.animation.AnimatorSet origin=null
+        block: BLOCK type=@[ExtensionFunctionType] kotlin.Function1<android.animation.AnimatorSet, kotlin.Unit> origin=LAMBDA
+          COMPOSITE type=kotlin.Unit origin=null
+          FUNCTION_REFERENCE 'private final fun startFlicker$lambda$6 ($flickerScaleX: @[FlexibleNullability] android.animation.ObjectAnimator?, $flickerScaleY: @[FlexibleNullability] android.animation.ObjectAnimator?, $flickerAlpha: @[FlexibleNullability] android.animation.ObjectAnimator?): kotlin.Unit declared in com.example.hwaroak.ui.diary.DiaryFinishActivity' type=@[ExtensionFunctionType] kotlin.Function1<android.animation.AnimatorSet, kotlin.Unit> origin=INLINE_LAMBDA reflectionTarget=null
+            $flickerScaleX: GET_VAR 'val flickerScaleX: @[FlexibleNullability] android.animation.ObjectAnimator? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=@[FlexibleNullability] android.animation.ObjectAnimator? origin=null
+            $flickerScaleY: GET_VAR 'val flickerScaleY: @[FlexibleNullability] android.animation.ObjectAnimator? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=@[FlexibleNullability] android.animation.ObjectAnimator? origin=null
+            $flickerAlpha: GET_VAR 'val flickerAlpha: @[FlexibleNullability] android.animation.ObjectAnimator? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker' type=@[FlexibleNullability] android.animation.ObjectAnimator? origin=null
+
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:47)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate$default(FunctionCodegen.kt:40)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generateMethodNode(ClassCodegen.kt:406)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generateMethod(ClassCodegen.kt:423)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generate(ClassCodegen.kt:168)
+	at org.jetbrains.kotlin.backend.jvm.FileCodegen.lower(JvmPhases.kt:39)
+	at org.jetbrains.kotlin.backend.common.phaser.PhaseFactoriesKt.createFilePhase$lambda$4(PhaseFactories.kt:71)
+	at org.jetbrains.kotlin.backend.common.phaser.PhaseBuildersKt$createSimpleNamedCompilerPhase$1.phaseBody(PhaseBuilders.kt:69)
+	at org.jetbrains.kotlin.backend.common.phaser.SimpleNamedCompilerPhase.phaseBody(CompilerPhase.kt:226)
+	at org.jetbrains.kotlin.backend.common.phaser.AbstractNamedCompilerPhase.invoke(CompilerPhase.kt:113)
+	at org.jetbrains.kotlin.backend.common.phaser.PerformByIrFilePhase.invokeSequential(performByIrFile.kt:62)
+	... 44 more
+Caused by: java.lang.RuntimeException: Exception while generating code for:
+FUN INLINE_LAMBDA name:startFlicker$lambda$6 visibility:private modality:FINAL <> ($receiver:android.animation.AnimatorSet, $flickerScaleX:@[FlexibleNullability] android.animation.ObjectAnimator?, $flickerScaleY:@[FlexibleNullability] android.animation.ObjectAnimator?, $flickerAlpha:@[FlexibleNullability] android.animation.ObjectAnimator?) returnType:kotlin.Unit
+  $receiver: VALUE_PARAMETER name:$this$apply type:android.animation.AnimatorSet
+  VALUE_PARAMETER BOUND_VALUE_PARAMETER name:$flickerScaleX index:0 type:@[FlexibleNullability] android.animation.ObjectAnimator?
+  VALUE_PARAMETER BOUND_VALUE_PARAMETER name:$flickerScaleY index:1 type:@[FlexibleNullability] android.animation.ObjectAnimator?
+  VALUE_PARAMETER BOUND_VALUE_PARAMETER name:$flickerAlpha index:2 type:@[FlexibleNullability] android.animation.ObjectAnimator?
+  BLOCK_BODY
+    VAR name:$i$a$-apply-DiaryFinishActivity$startFlicker$1 type:kotlin.Int [val]
+      CONST Int type=kotlin.Int value=0
+    CALL 'public open fun playTogether (vararg p0: @[FlexibleNullability] android.animation.Animator?): kotlin.Unit declared in android.animation.AnimatorSet' type=kotlin.Unit origin=null
+      $this: GET_VAR '$this$apply: android.animation.AnimatorSet declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker$lambda$6' type=android.animation.AnimatorSet origin=null
+      p0: BLOCK type=@[FlexibleNullability] @[FlexibleArrayElementVariance] kotlin.Array<out @[FlexibleNullability] android.animation.Animator?>? origin=null
+        VAR IR_TEMPORARY_VARIABLE name:tmp0 type:@[FlexibleNullability] @[FlexibleArrayElementVariance] kotlin.Array<out @[FlexibleNullability] android.animation.Animator?>? [val]
+          CALL 'public final fun arrayOfNulls <T> (size: kotlin.Int): kotlin.Array<T of kotlin.arrayOfNulls?> declared in kotlin' type=@[FlexibleNullability] @[FlexibleArrayElementVariance] kotlin.Array<out @[FlexibleNullability] android.animation.Animator?>? origin=null
+            <T>: @[FlexibleNullability] android.animation.Animator?
+            size: CONST Int type=kotlin.Int value=3
+        CALL 'public final fun set (index: kotlin.Int, value: T of kotlin.Array): kotlin.Unit [operator] declared in kotlin.Array' type=kotlin.Unit origin=null
+          $this: GET_VAR 'val tmp0: @[FlexibleNullability] @[FlexibleArrayElementVariance] kotlin.Array<out @[FlexibleNullability] android.animation.Animator?>? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker$lambda$6' type=@[FlexibleNullability] @[FlexibleArrayElementVariance] kotlin.Array<out @[FlexibleNullability] android.animation.Animator?>? origin=null
+          index: CONST Int type=kotlin.Int value=0
+          value: GET_VAR '$flickerScaleX: @[FlexibleNullability] android.animation.ObjectAnimator? declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker$lambda$6' type=@[FlexibleNullability] android.animation.ObjectAnimator? origin=null
+        CALL 'public final fun set (index: kotlin.Int, value: T of kotlin.Array): kotlin.Unit [operator] declared in kotlin.Array' type=kotlin.Unit origin=null
+          $this: GET_VAR 'val tmp0: @[FlexibleNullability] @[FlexibleArrayElementVariance] kotlin.Array<out @[FlexibleNullability] android.animation.Animator?>? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker$lambda$6' type=@[FlexibleNullability] @[FlexibleArrayElementVariance] kotlin.Array<out @[FlexibleNullability] android.animation.Animator?>? origin=null
+          index: CONST Int type=kotlin.Int value=1
+          value: GET_VAR '$flickerScaleY: @[FlexibleNullability] android.animation.ObjectAnimator? declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker$lambda$6' type=@[FlexibleNullability] android.animation.ObjectAnimator? origin=null
+        CALL 'public final fun set (index: kotlin.Int, value: T of kotlin.Array): kotlin.Unit [operator] declared in kotlin.Array' type=kotlin.Unit origin=null
+          $this: GET_VAR 'val tmp0: @[FlexibleNullability] @[FlexibleArrayElementVariance] kotlin.Array<out @[FlexibleNullability] android.animation.Animator?>? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker$lambda$6' type=@[FlexibleNullability] @[FlexibleArrayElementVariance] kotlin.Array<out @[FlexibleNullability] android.animation.Animator?>? origin=null
+          index: CONST Int type=kotlin.Int value=2
+          value: GET_VAR '$flickerAlpha: @[FlexibleNullability] android.animation.ObjectAnimator? declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker$lambda$6' type=@[FlexibleNullability] android.animation.ObjectAnimator? origin=null
+        GET_VAR 'val tmp0: @[FlexibleNullability] @[FlexibleArrayElementVariance] kotlin.Array<out @[FlexibleNullability] android.animation.Animator?>? [val] declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker$lambda$6' type=@[FlexibleNullability] @[FlexibleArrayElementVariance] kotlin.Array<out @[FlexibleNullability] android.animation.Animator?>? origin=null
+    CALL 'public open fun setDuration (p0: kotlin.Long): @[FlexibleNullability] android.animation.AnimatorSet? declared in android.animation.AnimatorSet' type=kotlin.Unit origin=EQ
+      $this: GET_VAR '$this$apply: android.animation.AnimatorSet declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker$lambda$6' type=android.animation.AnimatorSet origin=null
+      p0: CONST Long type=kotlin.Long value=700
+    CALL 'public open fun setInterpolator (p0: @[FlexibleNullability] android.animation.TimeInterpolator?): kotlin.Unit declared in android.animation.AnimatorSet' type=kotlin.Unit origin=EQ
+      $this: GET_VAR '$this$apply: android.animation.AnimatorSet declared in com.example.hwaroak.ui.diary.DiaryFinishActivity.startFlicker$lambda$6' type=android.animation.AnimatorSet origin=null
+      p0: CONSTRUCTOR_CALL 'public constructor <init> () declared in android.view.animation.LinearInterpolator' type=android.view.animation.LinearInterpolator origin=null
+    SET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:repeatMode type:kotlin.Int visibility:public [final,static] declared in android.R.attr' type=kotlin.Unit superQualifierSymbol=android.R.attr origin=EQ
+      value: CONST Int type=kotlin.Int value=2
+    SET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:repeatCount type:kotlin.Int visibility:public [final,static] declared in android.R.attr' type=kotlin.Unit superQualifierSymbol=android.R.attr origin=EQ
+      value: CONST Int type=kotlin.Int value=-1
+
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:47)
+	at org.jetbrains.kotlin.backend.jvm.codegen.IrSourceCompilerForInline.generateLambdaBody(IrSourceCompilerForInline.kt:67)
+	at org.jetbrains.kotlin.codegen.inline.ExpressionLambda.generateLambdaBody(LambdaInfo.kt:72)
+	at org.jetbrains.kotlin.backend.jvm.codegen.IrInlineCodegen.genValueAndPut(IrInlineCodegen.kt:100)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitCall$handleParameter(ExpressionCodegen.kt:616)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitCall(ExpressionCodegen.kt:644)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitCall(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.expressions.IrCall.accept(IrCall.kt:24)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.gen(ExpressionCodegen.kt:217)
+	at org.jetbrains.kotlin.backend.jvm.codegen.IrCallGenerator.genValueAndPut(IrCallGenerator.kt:48)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitCall$handleParameter(ExpressionCodegen.kt:616)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitCall(ExpressionCodegen.kt:625)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitCall(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.expressions.IrCall.accept(IrCall.kt:24)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitStatementContainer(ExpressionCodegen.kt:579)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlockBody(ExpressionCodegen.kt:584)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlockBody(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.expressions.IrBlockBody.accept(IrBlockBody.kt:20)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.generate(ExpressionCodegen.kt:240)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.doGenerate(FunctionCodegen.kt:123)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:44)
+	... 54 more
+Caused by: java.lang.AssertionError: access of const val: SET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:repeatMode type:kotlin.Int visibility:public [final,static] declared in android.R.attr' type=kotlin.Unit superQualifierSymbol=android.R.attr origin=EQ
+  value: CONST Int type=kotlin.Int value=2
+
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitFieldAccess(ExpressionCodegen.kt:861)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitFieldAccess(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.visitors.IrElementVisitor$DefaultImpls.visitSetField(IrElementVisitor.kt:206)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitSetField(ExpressionCodegen.kt:908)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitSetField(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.expressions.IrSetField.accept(IrSetField.kt:21)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitStatementContainer(ExpressionCodegen.kt:579)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlockBody(ExpressionCodegen.kt:584)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlockBody(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.expressions.IrBlockBody.accept(IrBlockBody.kt:20)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.generate(ExpressionCodegen.kt:240)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.doGenerate(FunctionCodegen.kt:123)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:44)
+	... 74 more
+
+

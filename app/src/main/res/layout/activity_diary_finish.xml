@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorFrameBackground"
+    tools:context=".ui.diary.DiaryFinishActivity">
+
+    <!--상단 바-->
+
+    <ImageButton
+        android:id="@+id/diaryFinish_back_btn"
+        android:layout_width="12dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_arrow_back"
+        android:background="@color/transparent"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="25dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/diaryFinish_bell_btn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_bell"
+        android:background="@color/transparent"
+        android:layout_marginEnd="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/diaryFinish_back_btn"
+        app:layout_constraintBottom_toBottomOf="@id/diaryFinish_back_btn"/>
+
+    <ImageButton
+        android:id="@+id/diaryFinish_drawer_btn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_drawer"
+        android:background="@android:color/transparent"
+        android:layout_marginEnd="15dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@id/diaryFinish_bell_btn"
+        app:layout_constraintTop_toTopOf="@id/diaryFinish_back_btn"
+        app:layout_constraintBottom_toBottomOf="@id/diaryFinish_back_btn"/>
+
+
+    <TextView
+        android:id="@+id/diaryFinish_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OO이의 화록"
+        android:layout_marginStart="10dp"
+        style="@style/freesentation6_20sp_title"
+        app:layout_constraintStart_toEndOf="@id/diaryFinish_back_btn"
+        app:layout_constraintTop_toTopOf="@id/diaryFinish_back_btn"
+        app:layout_constraintBottom_toBottomOf="@id/diaryFinish_back_btn"/>
+
+
+    <!--중간 Content-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/diaryFinish_content_ctl"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/diaryFinish_back_btn"
+        app:layout_constraintBottom_toTopOf="@id/diaryFinish_finish_ctl">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/diaryFinish_content_cdv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginVertical="30dp"
+            android:layout_marginHorizontal="15dp"
+            android:background="@color/white"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <!--일기 결과 GPT Text-->
+                <TextView
+                    android:id="@+id/diaryFinish_hwatext_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:text="오늘은 참 재미있는 일이 있었네!\n ^O^"
+                    style="@style/freesentation6_20sp_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <ImageView
+                    android:id="@+id/diaryFinish_result_imv"
+                    android:layout_width="200dp"
+                    android:layout_height="240dp"
+                    android:src="@drawable/ic_bell"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/diaryFinish_hwatext_tv"
+                    app:layout_constraintBottom_toTopOf="@id/diaryFinish_modifyDiary_tv"
+                    />
+
+                <TextView
+                    android:id="@+id/diaryFinish_modifyDiary_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="일기 수정하기"
+                    android:textColor="@color/colorGrayIcon"
+                    android:layout_marginBottom="30dp"
+                    style="@style/freesentation4_16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/diaryFinish_getReward_btn"
+                    />
+
+                <View
+                    android:id="@+id/diaryFinish_modifyline_view"
+                    android:layout_width="0dp"
+                    android:layout_height="3px"
+                    android:background="@color/colorGrayIcon"
+                    app:layout_constraintEnd_toEndOf="@id/diaryFinish_modifyDiary_tv"
+                    app:layout_constraintStart_toStartOf="@id/diaryFinish_modifyDiary_tv"
+                    app:layout_constraintTop_toBottomOf="@id/diaryFinish_modifyDiary_tv" />
+
+
+                <ImageButton
+                    android:id="@+id/diaryFinish_getReward_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginHorizontal="24dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_marginBottom="36dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--하단 버튼-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/diaryFinish_finish_ctl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        >
+
+        <ImageButton
+            android:id="@+id/diaryFinish_finish_btn"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_margin="20dp"
+            android:background="@color/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

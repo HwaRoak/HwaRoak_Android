@@ -10,6 +10,7 @@
     <color name="colorBackground">#FBFBFB</color>
     <color name="colorGrayIcon">#D1D1D1</color>
     <color name="colorFont">#4C4C4C</color>
+    <color name="colorFrameBackground">#FFFFFF</color>
     <color name="colorTextBackground">#F9F9F9</color>
 
     <!--상단 바 색상-->

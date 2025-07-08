@@ -19,19 +19,41 @@
 
         <!--앱 시작점 변경 mainactivity->카카오로그인액티비티로-->
         <activity
+            android:name=".ui.diary.DiaryFinishActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="true">
+
+            <!--
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
+-->
+
+        </activity>
+
+        <activity
             android:name=".ui.login.LoginKakaoActivity"
             android:exported="true"
             android:theme="@style/HwaRoakSplashTheme">
+
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
+
         </activity>
 
-        <activity
-            android:name=".ui.main.MainActivity"
-            android:exported="true" />
+
 
         <!--소셜로그인 관련 activity-->
         <activity
