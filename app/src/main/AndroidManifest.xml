@@ -19,10 +19,8 @@
 
         <!--앱 시작점 변경 mainactivity->카카오로그인액티비티로-->
         <activity
-            android:name=".ui.diary.DiaryFinishActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.main.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
 
             <!--

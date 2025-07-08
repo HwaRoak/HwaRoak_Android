@@ -36,7 +36,7 @@ class DiaryEmotionAdaptor(
 
         //선택된 것에 포함되었는지 비교해서 색깔 check
         val bgColor = ContextCompat.getColor(holder.emotionLayout.context,
-            if(selecteditems.contains(item)) R.color.colorGrayIcon else R.color.colorBackground)
+            if(selecteditems.contains(item)) R.color.colorGrayIcon else R.color.white)
 
         holder.emotionLayout.setBackgroundColor(bgColor)
 
@@ -59,5 +59,7 @@ class DiaryEmotionAdaptor(
     override fun getItemCount(): Int {
         return items.size
     }
+
+    fun getSelectedEmotions(): Set<DiaryEmotion> = selecteditems
 
 }

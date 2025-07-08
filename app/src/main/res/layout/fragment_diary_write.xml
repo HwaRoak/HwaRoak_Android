@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorBackground"
+    tools:context=".ui.diary.DiaryWriteFragment">
+
+    <!--스크롤 가능한 영역 표시-->
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/diary_scrollview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp"
+            >
+
+            <!--1. 날짜 표시 카드-->
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/diary_date_cdv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                android:layout_marginHorizontal="15dp"
+                android:background="@color/colorFrameBackground"
+                android:backgroundTint="@color/colorFrameBackground"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="1dp"
+                app:strokeWidth="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:paddingHorizontal="12dp">
+
+                    <!-- 1) 이전일 화살표 -->
+                    <ImageView
+                        android:id="@+id/diary_dateprev_btn"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_arrow_back"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <!-- 2) 날짜 텍스트 -->
+                    <TextView
+                        android:id="@+id/diary_nowday_tv"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="5월 20일 화요일"
+                        android:gravity="center"
+                        style="@style/freesentation5_16sp"
+                        app:layout_constraintStart_toEndOf="@id/diary_dateprev_btn"
+                        app:layout_constraintEnd_toStartOf="@id/diary_datenext_btn"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <!-- 3) 다음일 화살표 -->
+                    <ImageView
+                        android:id="@+id/diary_datenext_btn"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_arrow_back"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--2. 감정 선택 카드 헤더-->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/diary_emotionHeader_cdv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="15dp"
+                android:background="@color/colorFrameBackground"
+                android:backgroundTint="@color/colorFrameBackground"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="1dp"
+                app:strokeWidth="0dp"
+                app:layout_constraintTop_toBottomOf="@id/diary_date_cdv"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/diary_emotionHeader_ctl"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:paddingHorizontal="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="감정"
+                        style="@style/freesentation4_16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
+
+                    <ImageView
+                        android:id="@+id/diary_emotionswap_btn"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_arrow_back"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--3. 감정 그리드들-->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/diary_emotionContent_cdv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginHorizontal="15dp"
+                android:background="@color/colorFrameBackground"
+                android:backgroundTint="@color/colorFrameBackground"
+                android:animateLayoutChanges="true"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="1dp"
+                app:strokeWidth="0dp"
+                app:layout_constraintTop_toBottomOf="@id/diary_emotionHeader_cdv"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <!--recylcerview 정의(나중에 동적으로 높이 조절)-->
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/diary_emotionRecycler_rcv"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="10dp"
+                    />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--4. 일기 작성 카드 헤더-->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/diary_writeDiaryHeader_cdv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="15dp"
+                android:background="@color/colorFrameBackground"
+                android:backgroundTint="@color/colorFrameBackground"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="1dp"
+                app:strokeWidth="0dp"
+                app:layout_constraintTop_toBottomOf="@id/diary_emotionContent_cdv"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/diary_writeDiaryHeader_ctl"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:paddingHorizontal="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="오늘의 일기"
+                        style="@style/freesentation4_16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
+
+                    <ImageView
+                        android:id="@+id/diary_writeDiarySwap_btn"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_arrow_back"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--5. 일기 작성 본체-->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/diary_writeDiaryContent_cdv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginHorizontal="15dp"
+                android:background="@color/colorFrameBackground"
+                android:backgroundTint="@color/colorFrameBackground"
+                android:animateLayoutChanges="true"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="1dp"
+                app:strokeWidth="0dp"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintTop_toBottomOf="@id/diary_writeDiaryHeader_cdv"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <EditText
+                    android:id="@+id/diary_diarycontent_edt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_edittext_round"
+                    android:hint="내용을 입력하세요(최대 500자)"
+                    style="@style/freesentation4_16sp"
+                    android:maxLength="500"
+                    android:layout_margin="20dp"
+                    android:textColorHint="#BDBDBD"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--6. 작성하기 버튼 + 배경-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/diary_finish_ctl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorFrameBackground"
+                app:layout_constraintTop_toBottomOf="@id/diary_writeDiaryContent_cdv"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+
+                >
+
+                <ImageButton
+                    android:id="@+id/diary_finish_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_margin="20dp"
+                    android:background="@color/colorPrimary"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
