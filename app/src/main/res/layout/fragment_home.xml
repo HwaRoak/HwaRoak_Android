@@ -1,16 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.HomeFragment">
+    android:background="@color/colorBackground"
+    tools:context=".ui.main.MainActivity">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="home"
-        style="@style/freesentation5_24sp_title"
-        />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rounded_container"
+        android:layout_width="376dp"
+        android:layout_height="505dp"
+        android:background="@drawable/bg_home_rounded_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/iv_character"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/img_home_hwaroaki"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tv_speech_bubble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="무슨 일이 있어?"
+            android:background="@drawable/bg_home_speech_bubble"
+            android:gravity="center"
+            android:fontFamily="@font/freesentation_6semibold"
+            app:layout_constraintBottom_toTopOf="@id/iv_character"
+            app:layout_constraintStart_toStartOf="@id/iv_character"
+            app:layout_constraintEnd_toEndOf="@id/iv_character" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/progress_emotion_gauge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/img_home_emotion_gauge_default"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/rounded_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.gridlayout.widget.GridLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/grid_emotion_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:columnCount="3"
+        app:rowCount="3"
+        app:layout_constraintTop_toBottomOf="@id/progress_emotion_gauge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_sad"
+            android:layout_width="99dp"
+            android:layout_height="45dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_home_emotion_btn"
+            app:backgroundTint="@null"
+            android:text="슬퍼ㅜㅜ"
+            android:fontFamily="@font/freesentation_4regular"
+            android:textColor="#4C4C4C"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_annoyed"
+            android:layout_width="99dp"
+            android:layout_height="45dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_home_emotion_btn"
+            app:backgroundTint="@null"
+            android:text="짜증나::"
+            android:fontFamily="@font/freesentation_4regular"
+            android:textColor="#4C4C4C"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_joy"
+            android:layout_width="99dp"
+            android:layout_height="45dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_home_emotion_btn"
+            app:backgroundTint="@null"
+            android:text="신난다!"
+            android:fontFamily="@font/freesentation_4regular"
+            android:textColor="#4C4C4C"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_depress"
+            android:layout_width="99dp"
+            android:layout_height="45dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_home_emotion_btn"
+            app:backgroundTint="@null"
+            android:text="우울해.."
+            android:fontFamily="@font/freesentation_4regular"
+            android:textColor="#4C4C4C"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_excited"
+            android:layout_width="99dp"
+            android:layout_height="45dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_home_emotion_btn"
+            app:backgroundTint="@null"
+            android:text="설렌다ㅎㅎ"
+            android:fontFamily="@font/freesentation_4regular"
+            android:textColor="#4C4C4C"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_happy"
+            android:layout_width="99dp"
+            android:layout_height="45dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_home_emotion_btn"
+            app:backgroundTint="@null"
+            android:text="행복해~"
+            android:fontFamily="@font/freesentation_4regular"
+            android:textColor="#4C4C4C"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"/>
+    </androidx.gridlayout.widget.GridLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
