@@ -72,6 +72,9 @@ dependencies {
     //6) splash screen
     implementation("androidx.core:core-splashscreen:1.0.0")
 
+    //7) grid layout
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
+
     //달력
     implementation("com.github.prolificinteractive:material-calendarview:2.0.1")
     // ThreeTenABP: Android용 Backport
