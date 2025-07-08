@@ -2,6 +2,7 @@ package com.example.hwaroak.ui.main
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.IdRes
@@ -15,6 +16,7 @@ import com.example.hwaroak.databinding.ActivityMainBinding
 import com.example.hwaroak.ui.calendar.CalendarFragment
 import com.example.hwaroak.ui.diary.DiaryFragment
 import com.example.hwaroak.ui.friend.FriendFragment
+import com.example.hwaroak.ui.locker.LockerFragment
 import com.example.hwaroak.ui.mypage.MypageFragment
 import com.kakao.sdk.common.util.Utility
 
@@ -98,6 +100,17 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        //상단바 연결(보관함, 알림창)
+        //보관함
+        binding.mainLockerBtn.setOnClickListener {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragmentContainer, LockerFragment())
+                .commit()
+            // BottomNavigationView는 보이게 설정
+            binding.mainBnv.visibility = View.VISIBLE
+        }
+        //알림창(추후 구현)
 
 
         //뒤로 가기 시 일단 HomeFragment 이동 후 종료
