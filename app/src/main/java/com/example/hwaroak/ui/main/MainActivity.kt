@@ -25,6 +25,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //ThreeTenABP 초기화(애플리케이션 상 1번)
+        com.jakewharton.threetenabp.AndroidThreeTen.init(applicationContext)
+
         //splash 화면 테마 되돌리기
         setTheme(R.style.Theme_HwaRoak)
 
