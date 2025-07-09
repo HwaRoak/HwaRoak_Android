@@ -3,6 +3,7 @@ package com.example.hwaroak.ui.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.example.hwaroak.databinding.ActivityLoginKakaoBinding
 import com.example.hwaroak.ui.main.MainActivity
@@ -25,6 +26,9 @@ class LoginKakaoActivity : AppCompatActivity() {
                 Toast.makeText(this, "토큰 정보 보기 실패", Toast.LENGTH_SHORT).show()
             }
             else if (tokenInfo != null) {
+                //
+                Log.i("KakaoLogin", "accessTokenInfo 성공, 회원번호: ${tokenInfo.id}, 만료시간: ${tokenInfo.expiresIn}")
+                //
                 Toast.makeText(this, "토큰 정보 보기 성공", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
@@ -69,6 +73,9 @@ class LoginKakaoActivity : AppCompatActivity() {
             }
             else if (token != null) {
                 Toast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show()
+                //
+                Log.i("KakaoLogin", "로그인 성공: ${token.accessToken}")
+                //
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
                 finish()
