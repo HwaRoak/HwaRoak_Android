@@ -2,34 +2,27 @@ package com.example.hwaroak.ui.friend
 
 import android.graphics.Paint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.hwaroak.R
 import com.example.hwaroak.databinding.FragmentFriendBinding
 
 class FriendFragment : Fragment() {
 
+    // 뷰바인딩 선언
     private var _binding: FragmentFriendBinding? = null
     private val binding get() = _binding!!
 
-    var isManageMode = false
-    lateinit var adapter: FriendAdapter
-    lateinit var friendList: MutableList<FriendData>  // 변경 가능하게!
+    var isManageMode = false //현재 관리 모드 여부
+    lateinit var adapter: FriendAdapter // recyclerView 어뎁터
+    lateinit var friendList: MutableList<FriendData>  //친구 목록 리스트
 
-    // 파라미터
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    // 뷰바인딩 초기화 및 레이아웃
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,48 +31,64 @@ class FriendFragment : Fragment() {
         return binding.root
     }
 
+    // 뷰 생성 후 로직 처리
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 밑줄 처리 (textView에 직접)
-        binding.friendManage.paintFlags = binding.friendManage.paintFlags or android.graphics.Paint.UNDERLINE_TEXT_FLAG
+        // 관리 텍스트뷰 밑줄 처리
+        binding.friendManage.paintFlags =
+            binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
-        // 더미 친구 목록 만들기
-        val friendList = MutableList(6) {
-            FriendData("뽀둥이", "현재 슬퍼요ㅠㅠ")
+        // 친구 목록 더미 데이터 생성
+        friendList = MutableList(10) {
+            FriendData("포둥이", "현재 슬퍼요ㅠㅠ")
         }
 
-        //어댑터 연결
-        adapter = FriendAdapter(friendList)
-        binding.friendRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.friendRecyclerView.adapter = adapter
+        // 친구 추가 버튼용 아이템 추가
+        friendList.add(FriendData("", "", isAddButton = true))
 
-        binding.friendManage.paintFlags = binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        adapter = FriendAdapter(friendList) {
+            // 친구 추가 버튼 클릭 시 AddFriendFragment로 전환
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.main_fragmentContainer, AddFriendFragment())
+                .addToBackStack(null)
+                .commit()
+        }
 
-        //관리 버튼 클릭 시 삭제 가능
+        // recyclerview 세팅
+        binding.friendRecyclerview.layoutManager = LinearLayoutManager(requireContext())
+        binding.friendRecyclerview.adapter = adapter
+
+        //한번에 삭제하기 밑줄 처리
+        binding.friendManage.paintFlags =
+            binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+
+        //관리 버튼 클릭 이벤트 설정
         binding.friendManage.setOnClickListener {
-            isManageMode = !isManageMode
-            friendList.forEach { it.isDeletable = isManageMode }
-            adapter.notifyDataSetChanged()
+            isManageMode = !isManageMode //관리 모드
 
-            // 텍스트 변경
+            // 기존 버튼 제거
+            friendList.removeAll { it.isAddButton || it.isDeleteAllButton }
+
             if (isManageMode) {
-                binding.friendManage.text = "완료"
-            } else {
-                binding.friendManage.text = "관리"
-            }
-            binding.friendManage.paintFlags = binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+                // 관리 모드 진입: 각 친구에 삭제 아이콘 표ㅛ시
+                friendList.forEach { it.isDeletable = true }
 
-            // 하단 버튼들 상태 전환
-            binding.btnAddFriend.visibility = if (isManageMode) View.VISIBLE else View.GONE
-            binding.btnAddFriend.visibility = if (isManageMode) View.GONE else View.VISIBLE  // 추가 버튼은 반대
-            //한번에 삭제하기 표시 여부
-            binding.friendDeleteAll.visibility = if (isManageMode) View.VISIBLE else View.GONE
-            binding.friendDeleteAll.paintFlags = binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-        }
-        binding.friendDeleteAll.setOnClickListener {
-            // 전체 삭제
-            friendList.clear()
+                // 전체 삭제 버튼 추가
+                friendList.add(FriendData("", "", isDeleteAllButton = true))
+                binding.friendManage.text = "완료" //관리 텍스트뷰를 누르면 완료로 변경
+            } else {
+                // 일반 모드 복귀: 삭제 아이콘 제거
+                friendList.forEach { it.isDeletable = false }
+
+                // 친구 추가 버튼 추가
+                friendList.add(FriendData("", "", isAddButton = true))
+                binding.friendManage.text = "관리" //완료 텍스트뷰를 관리 텍스트뷰로 변경
+            }
+
+            //밑줄 유지
+            binding.friendManage.paintFlags =
+                binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             adapter.notifyDataSetChanged()
         }
     }
@@ -87,19 +96,5 @@ class FriendFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        private const val ARG_PARAM1 = "param1"
-        private const val ARG_PARAM2 = "param2"
-
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FriendFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }
