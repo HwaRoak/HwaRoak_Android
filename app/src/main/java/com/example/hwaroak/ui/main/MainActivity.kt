@@ -132,6 +132,18 @@ class MainActivity : AppCompatActivity() {
         binding.mainBnv.selectedItemId = menuItemId
     }
 
+    //강제로 일기 작성 탭으로 이동하게 하기(단 bundle에 내용 채워서)
+    fun navigateToDiaryWith(bundle: Bundle) {
+        // 1. programmatically select the Diary tab
+        binding.mainBnv.selectedItemId = R.id.diaryFragment
+        // 2. create & commit your DiaryFragment with args
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragmentContainer, DiaryFragment().apply {
+                arguments = bundle
+            })
+            .commit()
+    }
+
 
     //뒤로 가기 제어
     private fun handleBack(){

@@ -15,8 +15,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.DiaryEmotionAdaptor
+import com.example.hwaroak.data.DiaryContent
 import com.example.hwaroak.data.DiaryEmotion
 import com.example.hwaroak.databinding.FragmentDiaryWriteBinding
+import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -44,12 +46,16 @@ class DiaryWriteFragment : Fragment() {
     //달력 개체
     private val calendar = Calendar.getInstance()
 
+    //수정 모드인지 아니면 새로 쓰는지 확인
+    private var isEditMode = false
+    private lateinit var diaryContent : DiaryContent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+        //fragment 인자로 받았는지 확인
+        arguments?.getParcelable<DiaryContent>("KEY_RESULT")?.let {
+            isEditMode = true
+            diaryContent = it
         }
     }
 
@@ -65,28 +71,18 @@ class DiaryWriteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 맨 처음 날짜 표시
+        //맨 처음 날짜 표시
         updateDateText()
+
+        //만약 bundle로 가져올 경우 미리 세팅
+        if(isEditMode){
+            Log.d("log_diary", "Edit Mode IN")
+            settingUIFromData()
+        }
+
         //recyclerviwe 연결 + 일기 작성 버튼 핸들링
         setRecyclerview()
 
-
-        // 이전 날짜 버튼 클릭 리스너 설정
-        binding.diaryDateprevBtn.setOnClickListener {
-            calendar.add(Calendar.DAY_OF_MONTH, -1)
-            updateDateText()
-        }
-
-        // 다음 날짜 버튼 클릭 리스너 설정
-        binding.diaryDatenextBtn.setOnClickListener {
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-            updateDateText()
-        }
-
-        // 날짜 직접 선택 클릭 리스너 설정
-        binding.diaryNowdayTv.setOnClickListener {
-            pickDayFromCalendar()
-        }
 
         // 다이어리 작성 버튼 클릭 리스너 설정
         binding.diaryWriteDiarySwapBtn.setOnClickListener {
@@ -94,7 +90,7 @@ class DiaryWriteFragment : Fragment() {
             val isVisible = binding.diaryWriteDiaryContentCdv.isVisible
             binding.diaryWriteDiaryContentCdv.visibility = if (isVisible) View.GONE else View.VISIBLE
 
-            val angle = if (isVisible) 180f else 0f
+            val angle = if (isVisible) -90f else 0f
             binding.diaryWriteDiarySwapBtn.animate()
                 .rotation(angle)
                 .setDuration(300)
@@ -108,7 +104,7 @@ class DiaryWriteFragment : Fragment() {
             val isVisible = binding.diaryEmotionContentCdv.isVisible
             binding.diaryEmotionContentCdv.visibility = if (isVisible) View.GONE else View.VISIBLE
 
-            val angle = if (isVisible) 180f else 0f
+            val angle = if (isVisible) -90f else 0f
             binding.diaryEmotionswapBtn.animate()
                 .rotation(angle)
                 .setDuration(300)
@@ -131,6 +127,35 @@ class DiaryWriteFragment : Fragment() {
 
     }
 
+    //bundle에 값 있을 경우 이걸로 하기
+    private fun settingUIFromData(){
+        var today = diaryContent.date
+        var content = diaryContent.content
+        var emotions = diaryContent.emotions
+        
+        //1. 날짜 string
+        val dfm = DateTimeFormatter.ofPattern("MM월 dd일 E요일", Locale.KOREAN)
+        val dayFormat = today.date.format(dfm)
+        Log.d("log_diary", dayFormat)
+
+        val cal = Calendar.getInstance().apply {
+            set(Calendar.YEAR,  today.year)
+            set(Calendar.MONTH, today.month - 1)
+            set(Calendar.DAY_OF_MONTH, today.day)
+        }
+        val sdf = SimpleDateFormat("MM월 dd일 E요일", Locale.KOREAN)
+        val dateString = sdf.format(cal.time)
+        binding.diaryNowdayTv.text = dayFormat
+
+        //2. 내용
+        binding.diaryDiarycontentEdt.setText(content)
+        
+        //3. 이모션 넣기
+        selectedEmotions.addAll(emotions)
+
+
+    }
+
     //현재 날짜에 따라 텍스트 변경
     private fun updateDateText(){
         //"yyyy년 MM월 dd일 E요일"
@@ -139,42 +164,26 @@ class DiaryWriteFragment : Fragment() {
         binding.diaryNowdayTv.text = dateString
     }
 
-    //달력 다이얼로그를 열어서 날짜 선택
-    private fun pickDayFromCalendar(){
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        //기존 지원 달력 다이얼로그 활용
-        //콜백 함수를 통해 선택한 y,m,d를 get해서 calendar 객체에 적용
-        DatePickerDialog(requireContext(), { _, y, m, d ->
-            calendar.set(Calendar.YEAR, y)
-            calendar.set(Calendar.MONTH, m)
-            calendar.set(Calendar.DAY_OF_MONTH, d)
-            updateDateText()
-        }, year, month, day).show()
-    }
-
     //감정 recyclerview 연결
     private fun setRecyclerview(){
 
         //일단 임시 dataset
         val tmpemotions = listOf(
-            DiaryEmotion( "차분한1", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한2", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한3", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한4", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한5", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한6", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한7", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한8", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한9", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한10", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한11", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한12", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한13", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한14", R.drawable.ic_emotion1),
-            DiaryEmotion( "차분한15", R.drawable.ic_emotion1),
+            DiaryEmotion( "차분한", R.drawable.ic_emotion1),
+            DiaryEmotion( "뿌듯한", R.drawable.ic_emotion2),
+            DiaryEmotion( "행복한", R.drawable.ic_emotion3),
+            DiaryEmotion( "기대됨", R.drawable.ic_emotion4),
+            DiaryEmotion( "설렘", R.drawable.ic_emotion1),
+            DiaryEmotion( "감사함", R.drawable.ic_emotion6),
+            DiaryEmotion( "신나는", R.drawable.ic_emotion7),
+            DiaryEmotion( "슬픈", R.drawable.ic_emotion8),
+            DiaryEmotion( "화나는", R.drawable.ic_emotion9),
+            DiaryEmotion( "무료함", R.drawable.ic_emotion10),
+            DiaryEmotion( "피곤함", R.drawable.ic_emotion11),
+            DiaryEmotion( "짜증남", R.drawable.ic_emotion12),
+            DiaryEmotion( "외로움", R.drawable.ic_emotion13),
+            DiaryEmotion( "우울함", R.drawable.ic_emotion14),
+            DiaryEmotion( "스트레스", R.drawable.ic_emotion15),
         )
 
         //어댑터 설정
@@ -215,15 +224,28 @@ class DiaryWriteFragment : Fragment() {
     private fun updateConfirmButton(adaptor: DiaryEmotionAdaptor){
         if(adaptor.getSelectedEmotions().isEmpty()){
             binding.diaryFinishBtn.isEnabled = false
-            binding.diaryFinishBtn.setBackgroundColor(resources.getColor(R.color.colorGrayIcon, null))
+            binding.diaryFinishBtn.setImageResource(R.drawable.ic_diary_write_no)
         }
         else{
             binding.diaryFinishBtn.isEnabled = true
-            binding.diaryFinishBtn.setBackgroundColor(resources.getColor(R.color.colorPrimary, null))
+            binding.diaryFinishBtn.setImageResource(R.drawable.ic_diary_write)
         }
+    }
 
+    //달력 다이얼로그를 열어서 날짜 선택
+    private fun pickDayFromCalendar(){
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-
+        //기존 지원 달력 다이얼로그 활용
+        //콜백 함수를 통해 선택한 y,m,d를 get해서 calendar 객체에 적용
+        DatePickerDialog(requireContext(), { _, y, m, d ->
+            calendar.set(Calendar.YEAR, y)
+            calendar.set(Calendar.MONTH, m)
+            calendar.set(Calendar.DAY_OF_MONTH, d)
+            updateDateText()
+        }, year, month, day).show()
     }
 
 
@@ -238,11 +260,10 @@ class DiaryWriteFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(content: DiaryContent) =
             DiaryWriteFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putParcelable("KEY_RESULT", content)
                 }
             }
     }

@@ -54,6 +54,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/ic_arrow_back"
+                        android:visibility="invisible"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -77,6 +78,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/ic_arrow_back"
+                        android:visibility="invisible"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -120,7 +122,7 @@
                         android:id="@+id/diary_emotionswap_btn"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:src="@drawable/ic_arrow_back"
+                        android:src="@drawable/ic_arrow_down"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -193,7 +195,7 @@
                         android:id="@+id/diary_writeDiarySwap_btn"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:src="@drawable/ic_arrow_back"
+                        android:src="@drawable/ic_arrow_down"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -251,11 +253,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_margin="20dp"
-                    android:background="@color/colorPrimary"
+                    android:src="@drawable/ic_diary_write"
+                    android:backgroundTint="@android:color/transparent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="작성하기"
+                    style="@style/freesentation7_22sp_title"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toStartOf="@id/diary_finish_btn"
+                    app:layout_constraintEnd_toEndOf="@id/diary_finish_btn"
+                    app:layout_constraintTop_toTopOf="@id/diary_finish_btn"
+                    app:layout_constraintBottom_toBottomOf="@id/diary_finish_btn"/>
+
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

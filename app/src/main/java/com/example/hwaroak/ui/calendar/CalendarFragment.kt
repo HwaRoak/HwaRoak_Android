@@ -14,8 +14,10 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.hwaroak.R
+import com.example.hwaroak.data.DiaryContent
 import com.example.hwaroak.data.DiaryEmotion
 import com.example.hwaroak.databinding.FragmentCalendarBinding
+import com.example.hwaroak.ui.main.MainActivity
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.CalendarMode
 import org.threeten.bp.DayOfWeek
@@ -67,6 +69,12 @@ class CalendarFragment : Fragment() {
                 emotion = "복합적"
             )
     )
+    private var selectedEmotions: MutableSet<DiaryEmotion> =
+        mutableSetOf(
+            DiaryEmotion("차분한", R.drawable.ic_emotion1),
+            DiaryEmotion("뿌듯한", R.drawable.ic_emotion2),
+            DiaryEmotion("행복한", R.drawable.ic_emotion3)
+        )
 
 
 
@@ -118,22 +126,23 @@ class CalendarFragment : Fragment() {
 
     //상세 보기 페이지로 이동
     private fun goEditFragment(){
-        //일단 그날의 날짜 + 감정 + 화록의 한마디를 보내야 함
+        //일단 그날에 대한 일기 정보(날짜, 일기 내용, 감정)
 
         binding.calendarGodetailBtn.setOnClickListener {
-            //번들에 담기
+            //1. 번들에 담기
+            val emotionsList = ArrayList<DiaryEmotion>(selectedEmotions)
+            Log.d("log_diary", "SEND: " + selectedDate.toString())
+            val diaryContent = DiaryContent(
+                date = selectedDate,
+                content = "끼앗호우",
+                emotions = emotionsList
+            )
             val bundle = Bundle().apply {
-                putParcelable("KEY_DATE", selectedDate)
-                putString("KEY_EMOTION", binding.calendarFeelingTv.text.toString())
-                putString("KEY_TALK", binding.calendarTodayHwaroakTalkTv.text.toString())
+                putParcelable("KEY_RESULT", diaryContent)
             }
-            val fragment = CalendarEditFragment().apply {
-                arguments = bundle
-            }
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, fragment)
-                .addToBackStack(null)
-                .commit()
+            Log.d("log_diary", "보내기")
+            //2. 이동
+            (requireActivity() as MainActivity).navigateToDiaryWith(bundle)
         }
     }
 
@@ -229,8 +238,8 @@ class CalendarFragment : Fragment() {
                     invalidateDecorators()
                     //3. 로그 출력
                     Log.d("log_calendar", date.toString())
+                    Log.d("log_diary", "TOUCH: " + date.toString())
                     //4. 선택한 날짜 저장 및 상세 페이지 넣기
-                    selectedDate = date
                     getDataFromDate(selectedDate!!)
                 }
             }
@@ -250,6 +259,7 @@ class CalendarFragment : Fragment() {
          * **/
 
         val entry = tmpData[date] ?: EmotionResult("", "")
+        selectedDate = date
 
         // 1) “2025-07-04” 형태
         val ISO_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd")
