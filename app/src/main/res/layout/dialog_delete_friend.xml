@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="270dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal">
+
+    <!-- 친구 삭제 다이얼로그 텍스트뷰 -->
+    <TextView
+        android:id="@+id/friend_dialog_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/freesentation_6semibold"
+        android:text="친구를 삭제하시겠습니까?"
+        android:textColor="#333333"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_marginStart="0dp"
+        android:layout_width="208dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <!-- 친구 삭제 취소 버튼 -->
+        <TextView
+            android:id="@+id/friend_btn_cancel"
+            android:layout_width="93dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_cancel_button"
+            android:textColor="#999999" />
+
+        <!-- 친구 삭제 버튼 -->
+        <TextView
+            android:id="@+id/friend_btn_delete"
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/bg_delete_button"
+            android:paddingHorizontal="20dp"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+</LinearLayout>
