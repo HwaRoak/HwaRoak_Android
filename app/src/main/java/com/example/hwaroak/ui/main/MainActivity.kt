@@ -3,6 +3,7 @@ package com.example.hwaroak.ui.main
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.IdRes
