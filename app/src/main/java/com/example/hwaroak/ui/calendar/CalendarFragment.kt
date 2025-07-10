@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.hwaroak.R
 import com.example.hwaroak.data.DiaryEmotion
@@ -50,8 +52,8 @@ class CalendarFragment : Fragment() {
     //일단 임시 data (선택한 날짜 및 정보)
     private lateinit var selectedDate: CalendarDay
     private lateinit var todayDate : LocalDate
-    private var tmpData: Map<CalendarDay, EmotionResult> =
-        mapOf(
+    private var tmpData: MutableMap<CalendarDay, EmotionResult> =
+        mutableMapOf(
             CalendarDay.today() to EmotionResult(
             conversation = "오늘도 참 재미있는 일이 있었네!",
             emotion = "행복함"
@@ -100,7 +102,72 @@ class CalendarFragment : Fragment() {
         selectedDec = SelectedDecorator(requireContext())
         sundayDec   = SundayDecorator(requireContext())
 
+        //달력 초기화 및 리스너 달기
         initCalendar()
+
+        //상세보기(수정하기 페이지 이동)
+        goEditFragment()
+
+        //삭제하기
+        showDeleteDialog()
+
+
+
+
+    }
+
+    //상세 보기 페이지로 이동
+    private fun goEditFragment(){
+        //일단 그날의 날짜 + 감정 + 화록의 한마디를 보내야 함
+
+        binding.calendarGodetailBtn.setOnClickListener {
+            //번들에 담기
+            val bundle = Bundle().apply {
+                putParcelable("KEY_DATE", selectedDate)
+                putString("KEY_EMOTION", binding.calendarFeelingTv.text.toString())
+                putString("KEY_TALK", binding.calendarTodayHwaroakTalkTv.text.toString())
+            }
+            val fragment = CalendarEditFragment().apply {
+                arguments = bundle
+            }
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.main_fragmentContainer, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+
+    //삭제 다이얼로그 띄우기
+    private fun showDeleteDialog(){
+
+        binding.calendarDeleteBtn.setOnClickListener {
+            //1. view 생성
+            val view = LayoutInflater.from(requireContext()).
+            inflate(R.layout.dialog_custom_delete_check, null, false)
+
+            //2. 각 view의 요소 세팅 (다이얼로그에 보여줄 textView만 설정)
+            view.findViewById<TextView>(R.id.dialog_main_tv).text = "기록을 삭제하시겠습니까?"
+
+            //3. 다이얼로그 생성
+            val dialog = androidx.appcompat.app.AlertDialog
+                .Builder(requireContext(), R.style.CustomAlertDialog)
+                .setView(view)
+                .create()
+
+            //4. 각 버튼의 리스너 달기
+            view.findViewById<ImageButton>(R.id.dialog_cancel_btn).setOnClickListener {
+                dialog.dismiss()
+            }
+            view.findViewById<ImageButton>(R.id.dialog_delete_btn).setOnClickListener {
+                tmpData.remove(selectedDate)
+                getDataFromDate(selectedDate)
+                dialog.dismiss()
+
+            }
+
+            //5. 보여주기
+            dialog.show()
+        }
     }
 
 

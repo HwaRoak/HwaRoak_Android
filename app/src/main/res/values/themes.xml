@@ -94,6 +94,17 @@
         <item name="android:textSize">24sp</item>
         <item name="android:textColor">@color/colorFont</item>
     </style>
+
+    <!--커스텀 다이얼로그 조정-->
+    <style name="CustomAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!-- 화면 너비의 최소 0% 로: wrap_content 처럼 동작 -->
+        <item name="android:windowMinWidthMajor">0%</item>
+        <item name="android:windowMinWidthMinor">0%</item>
+        <!-- 윈도우 배경을 완전 투명으로 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
