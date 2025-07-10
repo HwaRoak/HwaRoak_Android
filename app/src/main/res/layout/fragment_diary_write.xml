@@ -221,17 +221,16 @@
 
                 <EditText
                     android:id="@+id/diary_diarycontent_edt"
+                    style="@style/freesentation4_16sp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/bg_edittext_round"
-                    android:hint="내용을 입력하세요(최대 500자)"
-                    style="@style/freesentation4_16sp"
-                    android:maxLength="500"
                     android:layout_margin="20dp"
-                    android:textColorHint="#BDBDBD"
+                    android:background="@drawable/bg_edittext_round"
                     android:gravity="top"
+                    android:hint="내용을 입력하세요(최대 500자)"
                     android:inputType="textMultiLine"
-                    />
+                    android:maxLength="500"
+                    android:textColorHint="#BDBDBD" />
 
             </com.google.android.material.card.MaterialCardView>
 
