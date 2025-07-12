@@ -248,6 +248,8 @@
 
                 >
 
+                <!--
+
                 <ImageButton
                     android:id="@+id/diary_finish_btn"
                     android:layout_width="match_parent"
@@ -260,7 +262,30 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
+                -->
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/diary_finish_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/bg_diary_write_btn"
+                    app:backgroundTint="@null"
+                    app:iconGravity="textStart"
+                    app:iconTint="@null"
+                    android:insetLeft="0dp"
+                    android:insetTop="0dp"
+                    android:insetRight="0dp"
+                    android:insetBottom="0dp"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
                 <TextView
+                    android:id="@+id/diary_finish_or_edit_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="작성하기"
@@ -270,7 +295,6 @@
                     app:layout_constraintEnd_toEndOf="@id/diary_finish_btn"
                     app:layout_constraintTop_toTopOf="@id/diary_finish_btn"
                     app:layout_constraintBottom_toBottomOf="@id/diary_finish_btn"/>
-
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

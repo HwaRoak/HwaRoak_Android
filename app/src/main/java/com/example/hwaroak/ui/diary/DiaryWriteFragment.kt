@@ -74,10 +74,15 @@ class DiaryWriteFragment : Fragment() {
         //맨 처음 날짜 표시
         updateDateText()
 
-        //만약 bundle로 가져올 경우 미리 세팅
+        //만약 bundle로 가져올 경우
+        //1. 일단 calender에서 온 것이니 날짜 최신화 체크
+        //2. 만약 emotion이 1개 이상이면 기존 꺼 수정이니 수정 check
         if(isEditMode){
             Log.d("log_diary", "Edit Mode IN")
             settingUIFromData()
+            if(diaryContent.emotions.size>0){
+                binding.diaryFinishOrEditTv.text = "수정하기"
+            }
         }
 
         //recyclerviwe 연결 + 일기 작성 버튼 핸들링
@@ -143,8 +148,6 @@ class DiaryWriteFragment : Fragment() {
             set(Calendar.MONTH, today.month - 1)
             set(Calendar.DAY_OF_MONTH, today.day)
         }
-        val sdf = SimpleDateFormat("MM월 dd일 E요일", Locale.KOREAN)
-        val dateString = sdf.format(cal.time)
         binding.diaryNowdayTv.text = dayFormat
 
         //2. 내용
@@ -173,7 +176,7 @@ class DiaryWriteFragment : Fragment() {
             DiaryEmotion( "뿌듯한", R.drawable.ic_emotion2),
             DiaryEmotion( "행복한", R.drawable.ic_emotion3),
             DiaryEmotion( "기대됨", R.drawable.ic_emotion4),
-            DiaryEmotion( "설렘", R.drawable.ic_emotion1),
+            DiaryEmotion( "설렘", R.drawable.ic_emotion5),
             DiaryEmotion( "감사함", R.drawable.ic_emotion6),
             DiaryEmotion( "신나는", R.drawable.ic_emotion7),
             DiaryEmotion( "슬픈", R.drawable.ic_emotion8),
@@ -224,11 +227,11 @@ class DiaryWriteFragment : Fragment() {
     private fun updateConfirmButton(adaptor: DiaryEmotionAdaptor){
         if(adaptor.getSelectedEmotions().isEmpty()){
             binding.diaryFinishBtn.isEnabled = false
-            binding.diaryFinishBtn.setImageResource(R.drawable.ic_diary_write_no)
+            binding.diaryFinishBtn.setBackgroundResource(R.drawable.bg_diary_write_no_btn)
         }
         else{
             binding.diaryFinishBtn.isEnabled = true
-            binding.diaryFinishBtn.setImageResource(R.drawable.ic_diary_write)
+            binding.diaryFinishBtn.setBackgroundResource(R.drawable.bg_diary_write_btn)
         }
     }
 

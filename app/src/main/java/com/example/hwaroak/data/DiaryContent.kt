@@ -8,5 +8,5 @@ import android.os.Parcelable
 data class DiaryContent(
     val date: CalendarDay,
     val content: String,
-    val emotions: List<DiaryEmotion>
+    val emotions: MutableSet<DiaryEmotion>
 ) : Parcelable

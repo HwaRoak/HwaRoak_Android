@@ -145,6 +145,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+
     //뒤로 가기 제어
     private fun handleBack(){
 
