@@ -80,4 +80,7 @@ dependencies {
     // ThreeTenABP: Android용 Backport
     implementation("com.jakewharton.threetenabp:threetenabp:1.3.1")
 
+    //원형 그래프(PieChart)
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
 }
