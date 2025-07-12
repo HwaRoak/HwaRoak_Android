@@ -88,38 +88,35 @@
                     app:layout_constraintGuide_percent="0.4"
                     android:orientation="vertical"/>
 
-                <!-- 1) 이전일 화살표 -->
-                <ImageView
-                    android:id="@+id/calendar_dateprev_btn"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_arrow_back"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <!-- 2) 다음일 화살표 -->
-                <ImageView
-                    android:id="@+id/calendar_datenext_btn"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_arrow_back"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
 
                 <!-- 3) 오늘의 감정 -->
+
+                <ImageView
+                    android:id="@+id/calendar_emotion_flat_imv"
+                    android:layout_width="55dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_calendar_flat"
+                    android:backgroundTint="@color/transparent"
+                    app:layout_constraintTop_toBottomOf="@id/calendar_emotion_character_imv"
+                    app:layout_constraintBottom_toBottomOf="@id/calendar_emotion_character_imv"
+                    app:layout_constraintStart_toStartOf="@id/calendar_emotion_character_imv"
+                    app:layout_constraintEnd_toEndOf="@id/calendar_emotion_character_imv"
+                    />
+
                 <ImageView
                     android:id="@+id/calendar_emotion_character_imv"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:src="@drawable/ic_bell"
+                    android:layout_marginEnd="10dp"
+                    android:padding="5dp"
                     android:backgroundTint="@color/transparent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/calendar_dateprev_btn"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/clendar_guideline_datedetail"
                     />
+
 
                 <TextView
                     android:id="@+id/calendar_today_tv"
@@ -134,15 +131,19 @@
 
                 <TextView
                     android:id="@+id/calendar_feeling_tv"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="행복함"
                     style="@style/freesentation4_16sp"
                     android:textColor="#BCBCBC"
+                    android:gravity="center"
                     app:layout_constraintStart_toStartOf="@id/calendar_emotion_character_imv"
                     app:layout_constraintEnd_toEndOf="@id/calendar_emotion_character_imv"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/calendar_emotion_character_imv"/>
+                    app:layout_constraintTop_toBottomOf="@id/calendar_emotion_flat_imv"
+                    android:breakStrategy="balanced"
+                    android:maxLines="3"
+                    />
 
 
                 <!-- 4) 말풍선 -->
@@ -151,13 +152,16 @@
                     android:id="@+id/calendar_talkbackground_layout"
                     android:layout_width="0dp"
                     android:layout_height="125dp"
-                    android:background="@drawable/bg_edittext_round"
-                    android:padding="12dp"
+                    android:background="@drawable/ic_calendar_message"
+                    android:paddingStart="28dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="12dp"
                     android:layout_marginEnd="5dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/clendar_guideline_datedetail"
-                    app:layout_constraintEnd_toStartOf="@id/calendar_datenext_btn">
+                    app:layout_constraintEnd_toEndOf="parent">
 
                     <TextView
                         android:id="@+id/calendar_todayHwaroak_tv"
@@ -203,29 +207,75 @@
                 app:layout_constraintGuide_percent="0.5"
                 android:orientation="vertical"/>
 
-            <ImageButton
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/calendar_delete_btn"
                 android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:background="@color/colorPrimary"
+                android:layout_height="45dp"
+                android:background="@drawable/bg_diary_write_btn"
+                app:backgroundTint="@null"
+                app:iconGravity="textStart"
+                app:iconTint="@null"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_marginHorizontal="10dp"
                 app:layout_constraintStart_toStartOf="@id/calendar_datedetail_cdv"
                 app:layout_constraintEnd_toStartOf="@id/clendar_guideline_buttons"
                 app:layout_constraintTop_toBottomOf="@id/calendar_datedetail_cdv"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <ImageButton
+            <TextView
+                android:id="@+id/calendar_delete_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="삭제"
+                style="@style/freesentation6_20sp_title"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="@id/calendar_delete_btn"
+                app:layout_constraintEnd_toEndOf="@id/calendar_delete_btn"
+                app:layout_constraintTop_toTopOf="@id/calendar_delete_btn"
+                app:layout_constraintBottom_toBottomOf="@id/calendar_delete_btn"/>
+
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/calendar_godetail_btn"
                 android:layout_width="0dp"
-                android:layout_height="56dp"
-                android:background="@color/colorPrimary"
+                android:layout_height="45dp"
+                android:background="@drawable/bg_diary_write_btn"
+                app:backgroundTint="@null"
+                app:iconGravity="textStart"
+                app:iconTint="@null"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_marginHorizontal="10dp"
                 app:layout_constraintEnd_toEndOf="@id/calendar_datedetail_cdv"
                 app:layout_constraintStart_toEndOf="@id/clendar_guideline_buttons"
                 app:layout_constraintTop_toBottomOf="@id/calendar_datedetail_cdv"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+            <TextView
+                android:id="@+id/calendar_detail_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="상세보기"
+                style="@style/freesentation6_20sp_title"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="@id/calendar_godetail_btn"
+                app:layout_constraintEnd_toEndOf="@id/calendar_godetail_btn"
+                app:layout_constraintTop_toTopOf="@id/calendar_godetail_btn"
+                app:layout_constraintBottom_toBottomOf="@id/calendar_godetail_btn"/>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

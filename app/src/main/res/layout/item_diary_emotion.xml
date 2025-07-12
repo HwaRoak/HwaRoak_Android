@@ -11,10 +11,12 @@
     
     <ImageView
         android:id="@+id/diary_recycler_imv"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_emotion1"
-        android:scaleType="centerInside"
+        android:scaleType="fitCenter"
+        android:paddingVertical="2dp"
+        android:paddingHorizontal="3dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

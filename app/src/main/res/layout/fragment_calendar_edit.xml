@@ -1,14 +1,234 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorBackground"
+    android:padding="10dp"
     tools:context=".ui.calendar.CalendarEditFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <!--1. 날짜 표시 카드-->
 
-</FrameLayout>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/calendar_edit_date_cdv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:layout_marginHorizontal="15dp"
+        android:background="@color/colorFrameBackground"
+        android:backgroundTint="@color/colorFrameBackground"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="1dp"
+        app:strokeWidth="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:paddingHorizontal="12dp">
+
+            <!-- 1) 이전일 화살표 -->
+            <ImageView
+                android:id="@+id/calendar_edit_dateprev_btn"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_arrow_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <!-- 2) 날짜 텍스트 -->
+            <TextView
+                android:id="@+id/calendar_edit_nowday_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="5월 20일 화요일"
+                android:gravity="center"
+                style="@style/freesentation5_16sp"
+                app:layout_constraintStart_toEndOf="@id/calendar_edit_dateprev_btn"
+                app:layout_constraintEnd_toStartOf="@id/calendar_edit_datenext_btn"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <!-- 3) 다음일 화살표 -->
+            <ImageView
+                android:id="@+id/calendar_edit_datenext_btn"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_arrow_back"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!--2. 세부 내용-->
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/calendar_edit_datedetail_cdv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@color/colorFrameBackground"
+        android:backgroundTint="@color/colorFrameBackground"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="1dp"
+        app:strokeWidth="0dp"
+        app:layout_constraintTop_toBottomOf="@id/calendar_edit_date_cdv"
+        app:layout_constraintStart_toStartOf="@id/calendar_edit_date_cdv"
+        app:layout_constraintEnd_toEndOf="@id/calendar_edit_date_cdv"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="15dp"
+            >
+
+            <!--2-1. 오늘의 화록 한마디-->
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/calendar_edit_guideline_datedetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintGuide_percent="0.4"
+                android:orientation="vertical"/>
+
+
+            <!-- 2-1-1.) 오늘의 감정 -->
+
+
+            <ImageView
+                android:id="@+id/calendar_edit_emotion_character_imv"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:backgroundTint="@color/transparent"
+                android:src="@drawable/ic_bell"
+                app:layout_constraintHorizontal_bias="0.526"
+                app:layout_constraintEnd_toStartOf="@id/calendar_edit_guideline_datedetail"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/calendar_edit_talkbackground_layout"
+                app:layout_constraintBottom_toTopOf="@id/calendar_edit_feeling_tv"
+                />
+
+            <TextView
+                android:id="@+id/calendar_edit_feeling_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="행복함"
+                style="@style/freesentation4_16sp"
+                android:textColor="#BCBCBC"
+                app:layout_constraintStart_toStartOf="@id/calendar_edit_emotion_character_imv"
+                app:layout_constraintEnd_toEndOf="@id/calendar_edit_emotion_character_imv"
+                app:layout_constraintTop_toBottomOf="@id/calendar_edit_emotion_character_imv"
+                app:layout_constraintBottom_toBottomOf="@id/calendar_edit_talkbackground_layout"
+                />
+
+
+            <!-- 2-1-2.) 말풍선 -->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/calendar_edit_talkbackground_layout"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:background="@drawable/bg_edittext_round"
+                android:padding="12dp"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/calendar_edit_guideline_datedetail"
+                app:layout_constraintEnd_toEndOf="parent">
+
+
+                <TextView
+                    android:id="@+id/calendar_edittodayHwaroakTalk_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="오늘 참 재미있는 일이 있었네!!!!!!!!!!!!!!!!!"
+                    android:gravity="center"
+                    style="@style/freesentation4_16sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!--2-2. 수정 페이지-->
+
+
+
+            <EditText
+                android:id="@+id/calender_edit_content_edt"
+                style="@style/freesentation4_16sp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/bg_edittext_round"
+                android:gravity="top"
+                android:hint="상세 내용을 입력하세요"
+                android:inputType="textMultiLine"
+                android:maxLength="500"
+                android:textColorHint="#BDBDBD"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintTop_toBottomOf="@id/calendar_edit_talkbackground_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
+
+
+
+
+            <!--2.3 버튼 세트-->
+
+            <!--삭제 / 상세보기 버튼-->
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/calendar_edit_guideline_buttons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintGuide_percent="0.5"
+                android:orientation="vertical"/>
+
+            <ImageButton
+                android:id="@+id/calendar_editdelete_btn"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:backgroundTint="@color/transparent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_calendar_delete"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/calendar_edit_guideline_buttons"
+                app:layout_constraintTop_toBottomOf="@id/calender_edit_content_edt"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <ImageButton
+                android:id="@+id/calendar_edit_modify_btn"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:backgroundTint="@color/transparent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_calendar_detail"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/calendar_edit_guideline_buttons"
+                app:layout_constraintTop_toBottomOf="@id/calender_edit_content_edt"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

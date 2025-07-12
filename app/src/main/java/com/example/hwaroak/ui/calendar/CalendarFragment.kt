@@ -10,16 +10,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.hwaroak.R
+import com.example.hwaroak.data.DiaryContent
 import com.example.hwaroak.data.DiaryEmotion
 import com.example.hwaroak.databinding.FragmentCalendarBinding
+import com.example.hwaroak.ui.main.MainActivity
+import com.google.android.material.button.MaterialButton
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.CalendarMode
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.collections.mutableSetOf
 import kotlin.math.E
 
 // TODO: Rename parameter arguments, choose names that match
@@ -33,10 +39,10 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 
-//임시 클래스
+//임시 클래스(여기는 달력의 결과만이 담긴다)
 data class EmotionResult(
     var conversation: String,
-    var emotion: String,
+    var emotion: MutableSet<DiaryEmotion>
 )
 
 
@@ -50,21 +56,43 @@ class CalendarFragment : Fragment() {
     //일단 임시 data (선택한 날짜 및 정보)
     private lateinit var selectedDate: CalendarDay
     private lateinit var todayDate : LocalDate
-    private var tmpData: Map<CalendarDay, EmotionResult> =
-        mapOf(
+    private var tmpData: MutableMap<CalendarDay, EmotionResult> =
+        mutableMapOf(
             CalendarDay.today() to EmotionResult(
             conversation = "오늘도 참 재미있는 일이 있었네!",
-            emotion = "행복함"
+            emotion = mutableSetOf<DiaryEmotion>(
+                DiaryEmotion("행복한", R.drawable.ic_emotion3)
+            )
             ),
             CalendarDay.from(2025, 7, 7) to EmotionResult(
             conversation = "오늘은 그저 그랬구나!",
-            emotion = "복합적"
+            emotion = mutableSetOf<DiaryEmotion>(
+                DiaryEmotion("무료함", R.drawable.ic_emotion10),
+                DiaryEmotion("피곤함", R.drawable.ic_emotion11),
+                DiaryEmotion("스트레스", R.drawable.ic_emotion15)
+            )
             ),
             CalendarDay.from(2025, 7, 6) to EmotionResult(
                 conversation = "오늘은 집에 가고 싶었구나!",
-                emotion = "복합적"
+                emotion = mutableSetOf<DiaryEmotion>(
+                    DiaryEmotion("스트레스", R.drawable.ic_emotion15)
+                )
+            ),
+            CalendarDay.from(2025, 6, 6) to EmotionResult(
+            conversation = "오늘은 집에 가고 싶었구나!",
+            emotion = mutableSetOf<DiaryEmotion>(
+                DiaryEmotion("피곤함", R.drawable.ic_emotion11)
             )
+        )
     )
+    
+    //얘는 달력에 있는 감정들이라고 생각
+    private var selectedEmotions: MutableSet<DiaryEmotion> =
+        mutableSetOf(
+            DiaryEmotion("차분한", R.drawable.ic_emotion1),
+            DiaryEmotion("뿌듯한", R.drawable.ic_emotion2),
+            DiaryEmotion("행복한", R.drawable.ic_emotion3)
+        )
 
 
 
@@ -72,6 +100,7 @@ class CalendarFragment : Fragment() {
     private lateinit var todayDec: TodayDecorator
     private lateinit var selectedDec: SelectedDecorator
     private lateinit var sundayDec: SundayDecorator
+    private lateinit var monthDec: MonthDecorator
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,8 +128,79 @@ class CalendarFragment : Fragment() {
         todayDec    = TodayDecorator(requireContext())
         selectedDec = SelectedDecorator(requireContext())
         sundayDec   = SundayDecorator(requireContext())
+        /**이 부분은 최초에 AP에서 값들들 가져왔을 때의 경우**/
+        monthDec = MonthDecorator(requireContext(), tmpData.keys)
 
+        //달력 초기화 및 리스너 달기
         initCalendar()
+
+        //상세보기(수정하기 페이지 이동)
+        goEditFragment()
+
+        //삭제하기
+        showDeleteDialog()
+
+
+
+
+    }
+
+    //상세 보기 페이지로 이동(여부 판단)
+    private fun goEditFragment(){
+        //일단 그날에 대한 일기 정보(날짜, 일기 내용, 감정)
+
+        binding.calendarGodetailBtn.setOnClickListener {
+            //1. 번들에 담기 전에 일기 작성 기록이 있는지 체크
+            val nowDiary = tmpData[selectedDate] ?: EmotionResult("",
+                mutableSetOf<DiaryEmotion>())
+
+
+            val diaryContent = DiaryContent(
+                date = selectedDate,
+                content = "이게 일기의 내용이래요!!!",
+                emotions = nowDiary.emotion
+            )
+            val bundle = Bundle().apply {
+                putParcelable("KEY_RESULT", diaryContent)
+            }
+            Log.d("log_diary", "CalendarFragment에서 오늘 선택한 날짜의 일기 정보 bundle에 넣어 보내기")
+            //2. 이동
+            (requireActivity() as MainActivity).navigateToDiaryWith(bundle)
+
+        }
+    }
+
+    //삭제 다이얼로그 띄우기
+    private fun showDeleteDialog(){
+
+        binding.calendarDeleteBtn.setOnClickListener {
+            //1. view 생성
+            val view = LayoutInflater.from(requireContext()).
+            inflate(R.layout.dialog_custom_delete_check, null, false)
+
+            //2. 각 view의 요소 세팅 (다이얼로그에 보여줄 textView만 설정)
+            view.findViewById<TextView>(R.id.dialog_main_tv).text = "기록을 삭제하시겠습니까?"
+
+            //3. 다이얼로그 생성
+            val dialog = androidx.appcompat.app.AlertDialog
+                .Builder(requireContext(), R.style.CustomAlertDialog)
+                .setView(view)
+                .create()
+
+            //4. 각 버튼의 리스너 달기
+            view.findViewById<MaterialButton>(R.id.dialog_cancel_btn).setOnClickListener {
+                dialog.dismiss()
+            }
+            view.findViewById<MaterialButton>(R.id.dialog_delete_btn).setOnClickListener {
+                tmpData.remove(selectedDate)
+                getDataFromDate(selectedDate)
+                dialog.dismiss()
+
+            }
+
+            //5. 보여주기
+            dialog.show()
+        }
     }
 
 
@@ -148,6 +248,7 @@ class CalendarFragment : Fragment() {
         cal.apply {
             // 한 번만 add!
             addDecorators(todayDec, selectedDec, sundayDec)
+            addDecorators(monthDec)
 
             //특정 날짜를 눌렀을 때 반응
             setOnDateChangedListener { _, date, selected ->
@@ -163,9 +264,17 @@ class CalendarFragment : Fragment() {
                     //3. 로그 출력
                     Log.d("log_calendar", date.toString())
                     //4. 선택한 날짜 저장 및 상세 페이지 넣기
-                    selectedDate = date
                     getDataFromDate(selectedDate!!)
                 }
+            }
+
+            //이번에는 월이 바뀌었을 때 반응
+            setOnMonthChangedListener { _, date ->
+                //1. 데코레이터에 새 월 값을 보내고
+                monthDec.updateDates(tmpData.keys)
+                //2. 달력 리프레시
+                invalidateDecorators()
+                
             }
         }
         
@@ -180,9 +289,32 @@ class CalendarFragment : Fragment() {
 
         /**원래는 date를 파싱해서 API 주고 받는 거
          * 그러나 지금은 map에서 가져온다고 가정
+         * 근데 이미 해당 월에 대한 데이터를 가져온다면??
          * **/
 
-        val entry = tmpData[date] ?: EmotionResult("", "")
+        val emotionIcon : MutableMap<String, Int> = mutableMapOf(
+            "차분한" to R.drawable.ic_emotion1,
+            "뿌듯한" to R.drawable.ic_emotion2,
+            "행복한" to R.drawable.ic_emotion3,
+            "기대됨" to R.drawable.ic_emotion4,
+            "설렘" to R.drawable.ic_emotion5,
+            "감사함" to R.drawable.ic_emotion6,
+            "신나는" to R.drawable.ic_emotion7,
+            "슬픈" to R.drawable.ic_emotion8,
+            "화나는" to R.drawable.ic_emotion9,
+            "무료함" to R.drawable.ic_emotion10,
+            "피곤함" to R.drawable.ic_emotion11,
+            "짜증남" to R.drawable.ic_emotion12,
+            "외로움" to R.drawable.ic_emotion13,
+            "우울함" to R.drawable.ic_emotion14,
+            "스트레스" to R.drawable.ic_emotion15
+
+        )
+
+        //일기 기록이 없는 경우
+        val entry = tmpData[date] ?: EmotionResult("아직 일기를 기록하지\n않았어요",
+            mutableSetOf<DiaryEmotion>())
+        selectedDate = date
 
         // 1) “2025-07-04” 형태
         val ISO_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -194,9 +326,34 @@ class CalendarFragment : Fragment() {
         Log.d("log_calendar", dayFormat1)
         Log.d("log_calendar", dayFormat2)
 
+        //감정들 string만 뽑아서
+        var emotionString = entry.emotion.joinToString(" ") { it.name }
+        if(emotionString.equals("")){emotionString = "기록 없음"}
+        //화록의 한마디
         binding.calendarTodayHwaroakTalkTv.text = entry.conversation
+        //오늘의 날짜
         binding.calendarTodayTv.text = dayFormat2
-        binding.calendarFeelingTv.text = entry.emotion
+        //감정 출력
+        binding.calendarFeelingTv.text = emotionString
+        //감정 이모티콘
+        if(entry.emotion.size > 1){
+            binding.calendarEmotionCharacterImv.setImageResource(R.drawable.ic_calendar_asura)
+        }
+        else{
+            var tmpIconId : Int
+            if(emotionString.equals("기록 없음")){tmpIconId = R.drawable.ic_bell}
+            else{tmpIconId = emotionIcon[emotionString] ?: R.drawable.ic_bell}
+            binding.calendarEmotionCharacterImv.setImageResource(tmpIconId)
+        }
+        //삭제 버튼 활성화 여부
+        if(entry.emotion.size > 0){
+            binding.calendarDeleteBtn.isEnabled = true
+            binding.calendarDeleteBtn.setBackgroundResource(R.drawable.bg_diary_write_btn)
+        }
+        else{
+            binding.calendarDeleteBtn.isEnabled = false
+            binding.calendarDeleteBtn.setBackgroundResource(R.drawable.bg_diary_write_no_btn)
+        }
 
     }
 
