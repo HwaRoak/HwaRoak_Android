@@ -66,6 +66,46 @@
                     app:layout_constraintBottom_toTopOf="@id/diaryFinish_modifyDiary_tv"
                     />
 
+                <ImageView
+                    android:id="@+id/diaryFinish_fire1_imv"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_diary_fire"
+                    android:backgroundTint="@color/transparent"
+                    android:translationY="-20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/diaryFinish_result_imv"
+                    app:layout_constraintTop_toTopOf="@id/diaryFinish_result_imv"
+                    app:layout_constraintBottom_toBottomOf="@id/diaryFinish_result_imv"
+                    />
+
+                <ImageView
+                    android:id="@+id/diaryFinish_fire2_imv"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_diary_fire"
+                    android:backgroundTint="@color/transparent"
+                    android:translationY="-40dp"
+                    android:translationX="-10dp"
+                    app:layout_constraintStart_toEndOf="@id/diaryFinish_result_imv"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/diaryFinish_result_imv"
+                    app:layout_constraintBottom_toBottomOf="@id/diaryFinish_result_imv"
+                    />
+
+                <ImageView
+                    android:id="@+id/diaryFinish_fire3_imv"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_diary_fire"
+                    android:backgroundTint="@color/transparent"
+                    android:translationY="-40dp"
+                    android:translationX="-10dp"
+                    app:layout_constraintStart_toEndOf="@id/diaryFinish_result_imv"
+                    app:layout_constraintEnd_toStartOf="@id/diaryFinish_fire2_imv"
+                    app:layout_constraintBottom_toTopOf="@id/diaryFinish_fire2_imv"
+                    />
+
                 <TextView
                     android:id="@+id/diaryFinish_modifyDiary_tv"
                     android:layout_width="wrap_content"
@@ -163,17 +203,26 @@
 
         >
 
-        <ImageButton
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/diaryFinish_finish_btn"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_margin="20dp"
-            android:src="@drawable/ic_diary_write"
-            android:backgroundTint="@android:color/transparent"
+            android:background="@drawable/bg_diary_write_btn"
+            app:backgroundTint="@null"
+            app:iconGravity="textStart"
+            app:iconTint="@null"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
+
 
         <TextView
             android:layout_width="wrap_content"

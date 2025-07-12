@@ -18,6 +18,7 @@ import com.example.hwaroak.data.DiaryContent
 import com.example.hwaroak.data.DiaryEmotion
 import com.example.hwaroak.databinding.FragmentCalendarBinding
 import com.example.hwaroak.ui.main.MainActivity
+import com.google.android.material.button.MaterialButton
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.CalendarMode
 import org.threeten.bp.DayOfWeek
@@ -187,10 +188,10 @@ class CalendarFragment : Fragment() {
                 .create()
 
             //4. 각 버튼의 리스너 달기
-            view.findViewById<ImageButton>(R.id.dialog_cancel_btn).setOnClickListener {
+            view.findViewById<MaterialButton>(R.id.dialog_cancel_btn).setOnClickListener {
                 dialog.dismiss()
             }
-            view.findViewById<ImageButton>(R.id.dialog_delete_btn).setOnClickListener {
+            view.findViewById<MaterialButton>(R.id.dialog_delete_btn).setOnClickListener {
                 tmpData.remove(selectedDate)
                 getDataFromDate(selectedDate)
                 dialog.dismiss()
@@ -343,6 +344,15 @@ class CalendarFragment : Fragment() {
             if(emotionString.equals("기록 없음")){tmpIconId = R.drawable.ic_bell}
             else{tmpIconId = emotionIcon[emotionString] ?: R.drawable.ic_bell}
             binding.calendarEmotionCharacterImv.setImageResource(tmpIconId)
+        }
+        //삭제 버튼 활성화 여부
+        if(entry.emotion.size > 0){
+            binding.calendarDeleteBtn.isEnabled = true
+            binding.calendarDeleteBtn.setBackgroundResource(R.drawable.bg_diary_write_btn)
+        }
+        else{
+            binding.calendarDeleteBtn.isEnabled = false
+            binding.calendarDeleteBtn.setBackgroundResource(R.drawable.bg_diary_write_no_btn)
         }
 
     }

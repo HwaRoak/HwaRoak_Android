@@ -36,29 +36,70 @@
             android:orientation="vertical"
             />
 
-        <ImageButton
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/dialog_cancel_btn"
             android:layout_width="105dp"
             android:layout_height="40dp"
-            android:scaleType="centerCrop"
+            android:background="@drawable/bg_diary_cancel_btn"
+            app:backgroundTint="@null"
+            app:iconGravity="textStart"
+            app:iconTint="@null"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
             android:layout_marginTop="20dp"
-            android:src="@drawable/ic_calendar_dialog_cancel"
-            android:backgroundTint="@color/transparent"
+            android:layout_marginEnd="5dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             app:layout_constraintEnd_toEndOf="@id/dialog_guideline"
             app:layout_constraintTop_toBottomOf="@id/dialog_main_tv"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <ImageButton
+        <TextView
+            android:id="@+id/dialog_cancel_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="취소"
+            style="@style/freesentation5_16sp"
+            android:textColor="@color/colorFont"
+            app:layout_constraintStart_toStartOf="@id/dialog_cancel_btn"
+            app:layout_constraintEnd_toEndOf="@id/dialog_cancel_btn"
+            app:layout_constraintTop_toTopOf="@id/dialog_cancel_btn"
+            app:layout_constraintBottom_toBottomOf="@id/dialog_cancel_btn"/>
+
+
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/dialog_delete_btn"
             android:layout_width="105dp"
             android:layout_height="40dp"
-            android:scaleType="centerCrop"
+            android:background="@drawable/bg_diary_write_btn"
+            app:backgroundTint="@null"
+            app:iconGravity="textStart"
+            app:iconTint="@null"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
             android:layout_marginTop="20dp"
-            android:src="@drawable/ic_calendar_dialog_delete"
-            android:backgroundTint="@color/transparent"
+            android:layout_marginStart="5dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             app:layout_constraintStart_toEndOf="@id/dialog_guideline"
             app:layout_constraintTop_toBottomOf="@id/dialog_main_tv"
             app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/dialog_delete_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="삭제"
+            style="@style/freesentation5_16sp"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="@id/dialog_delete_btn"
+            app:layout_constraintEnd_toEndOf="@id/dialog_delete_btn"
+            app:layout_constraintTop_toTopOf="@id/dialog_delete_btn"
+            app:layout_constraintBottom_toBottomOf="@id/dialog_delete_btn"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

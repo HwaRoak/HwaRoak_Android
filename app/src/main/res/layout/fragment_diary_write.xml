@@ -248,22 +248,6 @@
 
                 >
 
-                <!--
-
-                <ImageButton
-                    android:id="@+id/diary_finish_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_margin="20dp"
-                    android:src="@drawable/ic_diary_write"
-                    android:backgroundTint="@android:color/transparent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-                -->
-
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/diary_finish_btn"
