@@ -30,6 +30,13 @@ class MypageFragment : Fragment() {
 
         initPieChart()
 
+        binding.btnMyinfo.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragmentContainer, EditProfileFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
         return binding.root
     }
 
