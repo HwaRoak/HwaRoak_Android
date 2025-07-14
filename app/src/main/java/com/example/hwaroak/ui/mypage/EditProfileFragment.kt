@@ -1,10 +1,13 @@
 package com.example.hwaroak.ui.mypage
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.FragmentEditProfileBinding
 import com.example.hwaroak.databinding.FragmentMypageBinding
