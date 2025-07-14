@@ -341,8 +341,8 @@ class CalendarFragment : Fragment() {
         }
         else{
             var tmpIconId : Int
-            if(emotionString.equals("기록 없음")){tmpIconId = R.drawable.ic_bell}
-            else{tmpIconId = emotionIcon[emotionString] ?: R.drawable.ic_bell}
+            if(emotionString.equals("기록 없음")){tmpIconId = R.drawable.ic_calendar_mupyojeong}
+            else{tmpIconId = emotionIcon[emotionString] ?: R.drawable.ic_calendar_mupyojeong}
             binding.calendarEmotionCharacterImv.setImageResource(tmpIconId)
         }
         //삭제 버튼 활성화 여부

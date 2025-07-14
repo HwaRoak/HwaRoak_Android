@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import com.example.hwaroak.databinding.ActivityLoginKakaoBinding
 import com.example.hwaroak.ui.main.MainActivity
+import com.kakao.sdk.auth.TokenManagerProvider
 //import com.kakao.sdk.auth.LoginClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause
@@ -26,9 +27,17 @@ class LoginKakaoActivity : AppCompatActivity() {
                 Toast.makeText(this, "토큰 정보 보기 실패", Toast.LENGTH_SHORT).show()
             }
             else if (tokenInfo != null) {
-                //
+                // 토큰 정보 보기
                 Log.i("KakaoLogin", "accessTokenInfo 성공, 회원번호: ${tokenInfo.id}, 만료시간: ${tokenInfo.expiresIn}")
-                //
+                // 토큰 그대로 꺼내서 로그 찍기
+                val token = TokenManagerProvider
+                    .instance
+                    .manager
+                    .getToken()
+                    ?.accessToken
+                Log.i("KakaoLogin", "실제 AccessToken: $token")
+
+
                 Toast.makeText(this, "토큰 정보 보기 성공", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
