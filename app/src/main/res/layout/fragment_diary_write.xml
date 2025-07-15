@@ -54,6 +54,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/ic_arrow_back"
+                        android:visibility="invisible"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -77,6 +78,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/ic_arrow_back"
+                        android:visibility="invisible"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -120,7 +122,7 @@
                         android:id="@+id/diary_emotionswap_btn"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:src="@drawable/ic_arrow_back"
+                        android:src="@drawable/ic_arrow_down"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -193,7 +195,7 @@
                         android:id="@+id/diary_writeDiarySwap_btn"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:src="@drawable/ic_arrow_back"
+                        android:src="@drawable/ic_arrow_down"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -221,17 +223,16 @@
 
                 <EditText
                     android:id="@+id/diary_diarycontent_edt"
+                    style="@style/freesentation4_16sp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/bg_edittext_round"
-                    android:hint="내용을 입력하세요(최대 500자)"
-                    style="@style/freesentation4_16sp"
-                    android:maxLength="500"
                     android:layout_margin="20dp"
-                    android:textColorHint="#BDBDBD"
+                    android:background="@drawable/bg_edittext_round"
                     android:gravity="top"
+                    android:hint="내용을 입력하세요(최대 500자)"
                     android:inputType="textMultiLine"
-                    />
+                    android:maxLength="500"
+                    android:textColorHint="#BDBDBD" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -247,16 +248,37 @@
 
                 >
 
-                <ImageButton
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/diary_finish_btn"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_margin="20dp"
-                    android:background="@color/colorPrimary"
+                    android:background="@drawable/bg_diary_write_btn"
+                    app:backgroundTint="@null"
+                    app:iconGravity="textStart"
+                    app:iconTint="@null"
+                    android:insetLeft="0dp"
+                    android:insetTop="0dp"
+                    android:insetRight="0dp"
+                    android:insetBottom="0dp"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:id="@+id/diary_finish_or_edit_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="작성하기"
+                    style="@style/freesentation7_22sp_title"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toStartOf="@id/diary_finish_btn"
+                    app:layout_constraintEnd_toEndOf="@id/diary_finish_btn"
+                    app:layout_constraintTop_toTopOf="@id/diary_finish_btn"
+                    app:layout_constraintBottom_toBottomOf="@id/diary_finish_btn"/>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

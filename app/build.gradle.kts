@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    //fragment에 직렬화를 위해
+    id("kotlin-parcelize") 
 }
 
 android {

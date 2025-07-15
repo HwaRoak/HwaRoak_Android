@@ -50,6 +50,9 @@ class DiaryFinishFragment : Fragment() {
 
         //애니메이션
         binding.diaryFinishResultImv.visibility = TextView.INVISIBLE
+        binding.diaryFinishFire1Imv.visibility= TextView.INVISIBLE
+        binding.diaryFinishFire2Imv.visibility = TextView.INVISIBLE
+        binding.diaryFinishFire3Imv.visibility = TextView.INVISIBLE
         setImageAnimate()
 
 
@@ -57,6 +60,9 @@ class DiaryFinishFragment : Fragment() {
         binding.diaryFinishModifyDiaryTv.setOnClickListener {
             //일단 안보이게 하기
             binding.diaryFinishResultImv.visibility = TextView.INVISIBLE
+            binding.diaryFinishFire1Imv.visibility= TextView.INVISIBLE
+            binding.diaryFinishFire2Imv.visibility = TextView.INVISIBLE
+            binding.diaryFinishFire3Imv.visibility = TextView.INVISIBLE
 
             (parentFragment as DiaryFragment)
                 .binding
@@ -77,9 +83,21 @@ class DiaryFinishFragment : Fragment() {
     //중간 이미지에 애니메이션 + 팝 애니메이션
     private fun setImageAnimate() {
 
+        //중앙 이미지 초기세팅
         binding.diaryFinishResultImv.visibility = TextView.VISIBLE
         binding.diaryFinishResultImv.scaleX = 0f;
         binding.diaryFinishResultImv.scaleY = 0f;
+
+        //옆에 불들 초기세팅
+        val fire1 = binding.diaryFinishFire1Imv
+        val fire2 = binding.diaryFinishFire2Imv
+        val fire3 = binding.diaryFinishFire3Imv
+        listOf(fire1, fire2, fire3).forEach { view ->
+            view.visibility = View.VISIBLE
+            view.scaleX = 0f
+            view.scaleY = 0f
+        }
+        
 
         //setInterpolator로 애니메이션 진행 속도 조절 + OvershootInterpolator로 튕기는 듯한 (뿅)
         binding.diaryFinishResultImv.post {
@@ -88,11 +106,52 @@ class DiaryFinishFragment : Fragment() {
                 .scaleY(1f)
                 .setInterpolator(OvershootInterpolator(2f))
                 .setDuration(500)
-                .withEndAction {  }
+                .withEndAction { setFireAnimate() }
+                .start()
+
+        }
+
+    }
+
+    private fun setFireAnimate(){
+        val fire1 = binding.diaryFinishFire1Imv
+        val fire2 = binding.diaryFinishFire2Imv
+        val fire3 = binding.diaryFinishFire3Imv
+      
+        //애니메이션 시간 및 지연시간
+        val duration = 300L
+        val delay = 150L
+
+        fire1.post {
+            fire1.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .setInterpolator(OvershootInterpolator(2f))
+                .setDuration(duration)
+                .setStartDelay(0)
+                .start()
+        }
+        fire2.post {
+            fire2.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .setInterpolator(OvershootInterpolator(2f))
+                .setDuration(duration)
+                .setStartDelay((duration / 2) + delay)
+                .start()
+        }
+        fire3.post {
+            fire3.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .setInterpolator(OvershootInterpolator(2f))
+                .setDuration(duration)
+                .setStartDelay(duration + delay)
                 .start()
         }
 
     }
+
 
     //일기 다시 쓰고 돌아와도 고
     override fun onResume() {

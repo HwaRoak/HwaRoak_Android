@@ -16,6 +16,7 @@ import androidx.transition.TransitionManager
 import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.DiaryEmotionAdaptor
 import com.example.hwaroak.adaptor.DiaryViewPagerAdaptor
+import com.example.hwaroak.data.DiaryContent
 import com.example.hwaroak.data.DiaryEmotion
 import com.example.hwaroak.databinding.FragmentDiaryBinding
 import java.text.SimpleDateFormat
@@ -38,11 +39,14 @@ class DiaryFragment : Fragment() {
 
     lateinit var binding: FragmentDiaryBinding
 
+    //받았는지 check
+    private var diaryContent : DiaryContent? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+        arguments?.getParcelable<DiaryContent>("KEY_RESULT")?.let {
+            diaryContent = it
+            Log.d("log_diary", "DiartFragment는 받음")
         }
     }
 
@@ -61,7 +65,7 @@ class DiaryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.diaryViewpager.adapter = DiaryViewPagerAdaptor(this)
+        binding.diaryViewpager.adapter = DiaryViewPagerAdaptor(this, diaryContent)
         binding.diaryViewpager.isUserInputEnabled = false
 
     }
