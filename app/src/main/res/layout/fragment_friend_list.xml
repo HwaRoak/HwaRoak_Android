@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--친구목록 리사이클러뷰-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friend_recyclerview"
         android:layout_width="0dp"

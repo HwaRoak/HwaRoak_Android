@@ -14,6 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
+    <!-- 친구 요청이 없는 경우 -->
     <ImageView
         android:id="@+id/friend_request_emptyimg"
         android:layout_width="wrap_content"
@@ -39,6 +40,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

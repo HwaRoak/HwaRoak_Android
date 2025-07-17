@@ -1,5 +1,6 @@
 package com.example.hwaroak.ui.friend
 
+import android.content.Context
 import android.graphics.Paint
 import android.util.Log
 import android.view.LayoutInflater
@@ -36,35 +37,39 @@ class FriendAdapter(private val friendList: MutableList<FriendData>, var isManag
                 if (friend.isDeletable) View.VISIBLE else View.GONE
             // 삭제 아이콘 클릭 시 삭제 확인 다이얼로그 표시
             binding.friendMinus.setOnClickListener {
-                val context = binding.root.context
-                val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_delete_friend, null)
-
-                val alertDialog = AlertDialog.Builder(context)
-                    .setView(dialogView)
-                    .create()
-
-                //다이얼로그 크기 조절(너비 70%)
-                val width = (context.resources.displayMetrics.widthPixels * 0.7).toInt()
-                alertDialog.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
-
-                // 취소 버튼
-                dialogView.findViewById<TextView>(R.id.friend_btn_cancel).setOnClickListener {
-                    alertDialog.dismiss()
-                }
-
-                // 삭제 버튼 클릭 시 해당 아이템 삭제
-                dialogView.findViewById<TextView>(R.id.friend_btn_delete).setOnClickListener {
-                    val position = adapterPosition
-                    if (position != RecyclerView.NO_POSITION) {
-                        friendList.removeAt(position)
-                        notifyItemRemoved(position)
-                    }
-                    alertDialog.dismiss()
-                }
-
-                alertDialog.show()
+                showDeleteDialog(binding.root.context, adapterPosition)
             }
         }
+    }
+
+    // 삭제 다이얼로그 띄우기
+    private fun showDeleteDialog(context: Context, position: Int) {
+        // 1. 다이얼로그에 사용할 레이아웃 뷰 생성
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.dialog_delete_friend, null, false)
+
+        // 2. 다이얼로그 내 텍스트 뷰 설정
+        view.findViewById<TextView>(R.id.dialog_friend_tv).text = "친구를 삭제하시겠습니까?"
+
+        // 3. AlertDialog 생성
+        val dialog = AlertDialog.Builder(context, R.style.CustomAlertDialog)
+            .setView(view)
+            .create()
+
+        //4. 취소 버튼 클릭 시 다이얼로그 종료
+        view.findViewById<MaterialButton>(R.id.friend_cancel_btn).setOnClickListener {
+            dialog.dismiss()
+        }
+        // 5. 삭제 버튼 클릭 시 해당 아이템 삭제 및 다이얼로그 종료
+        view.findViewById<MaterialButton>(R.id.friend_delete_btn).setOnClickListener {
+            if (position != RecyclerView.NO_POSITION) {
+                friendList.removeAt(position) //리스트에서 아이템 제거
+                notifyItemRemoved(position) //리사이클러 갱신
+                dialog.dismiss() // 다이얼로그 닫기
+            }
+        }
+        // 6. 다이얼로그 화면에 표시
+        dialog.show()
     }
 
     // 친구 추가 버튼 ViewHolder

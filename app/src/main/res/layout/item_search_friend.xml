@@ -54,11 +54,11 @@
 
             <!-- 상태 메시지 -->
             <TextView
-                android:id="@+id/friend_search_status"
+                android:id="@+id/friend_search_ID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:text="(자기소개)"
+                android:text="유저아이디"
                 android:textColor="#444444"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@id/friend_search_name"

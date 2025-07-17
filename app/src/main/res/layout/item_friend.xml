@@ -27,8 +27,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <!-- 친구 이름 텍스트 뷰 -->
-
-        <!-- 세로 선 -->
         <TextView
             android:id="@+id/friend_tv_name"
             style="@style/freesentation5_24sp_icon"
@@ -40,6 +38,7 @@
             app:layout_constraintStart_toEndOf="@id/friend_profile"
             app:layout_constraintTop_toTopOf="@id/friend_profile" />
 
+        <!-- 세로 선 -->
         <View
             android:id="@+id/friend_divider"
             android:layout_width="1dp"
@@ -52,10 +51,6 @@
             app:layout_constraintTop_toTopOf="@id/friend_tv_name" />
 
         <!-- 상태 텍스트 뷰 -->
-
-        <!-- 방문 버튼 -->
-
-        <!-- 방문 텍스트 -->
         <TextView
             android:id="@+id/friend_tv_status"
             android:layout_width="wrap_content"
@@ -69,6 +64,7 @@
             app:layout_constraintTop_toTopOf="@id/friend_tv_name"
             app:layout_constraintVertical_bias="0.375" />
 
+        <!-- 방문 버튼 -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/friend_visit_btn"
             style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -87,6 +83,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="12dp"/>
 
+        <!-- 방문 텍스트 -->
         <TextView
             android:id="@+id/friend_visit_tv"
             style="@style/freesentation4_16sp"

@@ -17,7 +17,7 @@ class FriendRequestFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: FriendRequestAdapter
-    private val requestList = mutableListOf<FriendData>()
+    private val requestList = mutableListOf<FriendData>() //친구 요청 목록
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -43,11 +43,11 @@ class FriendRequestFragment : Fragment() {
                 (parentFragment as? FriendFragment)?.addFriendToList(acceptedFriend)
             },
             onReject = { rejectedFriend ->
-                //Toast.makeText(requireContext(), "요청을 거절했습니다", Toast.LENGTH_SHORT).show()
-                // Empty view는 observer에서 처리
+                //거절 시 특별한 동작 X = 데이터만 삭제
+                // toast는 생략
             }
         )
-        // Observer 등록: 리스트 비었는지 자동 체크
+        //리스트 비었는지 자동 체크
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() = updateEmptyViewVisibility()
             override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) =
@@ -62,6 +62,7 @@ class FriendRequestFragment : Fragment() {
 
     }
 
+    //요청 목록이 비었으면 비었어요 이미지/텍스트 보여주기
     private fun updateEmptyViewVisibility() {
         val isEmpty = requestList.isEmpty()
         binding.friendRequestEmptyimg.visibility = if (isEmpty) View.VISIBLE else View.GONE

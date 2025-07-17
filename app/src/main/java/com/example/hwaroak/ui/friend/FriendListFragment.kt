@@ -20,7 +20,7 @@ class FriendListFragment : Fragment() {
 
     var isManageMode = false //현재 관리 모드 여부
     lateinit var adapter: FriendAdapter // recyclerView 어뎁터
-    lateinit var friendList: MutableList<FriendData>  //친구 목록 리스트
+    lateinit var friendList: MutableList<FriendData>  //친구 목록 데이터
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -34,11 +34,11 @@ class FriendListFragment : Fragment() {
 
         // 친구 목록 더미 데이터 생성
         friendList = MutableList(10) {
-            FriendData("포둥이", "(자기소개)")
+            FriendData("포둥이", id = "dummy001", status = "(자기소개)")
         }
 
         // 친구 추가 버튼용 아이템 추가
-        friendList.add(FriendData("", "", isAddButton = true))
+        friendList.add(FriendData("", "", "", isAddButton = true))
 
         adapter = FriendAdapter(friendList) {
 
@@ -66,19 +66,22 @@ class FriendListFragment : Fragment() {
 
         friendList.removeAll { it.isAddButton }
 
+        //관리 모드일 때는 친구추가 버튼 없애고 삭제 아이콘, 일반 모드일 때는 친구 추가 버튼 존재, 삭제 아이콘 없앰
         if (isManageMode) {
             friendList.forEach { it.isDeletable = true }
         } else {
             friendList.forEach { it.isDeletable = false }
-            friendList.add(FriendData("", "", isAddButton = true))
+            friendList.add(FriendData("", "", "", isAddButton = true))
         }
 
         adapter.isManageMode = isManageMode
         adapter.notifyDataSetChanged()
 
+        //friendFragment에 관리 텍스트 갱신 요청
         (parentFragment as? FriendFragment)?.updateManageText(isManageMode)
     }
 
+    //새로운 친구 추가 함수
     fun addFriend(friend: FriendData) {
         val insertIndex = if (isManageMode) {
             friendList.size  // 그냥 맨 끝에 추가

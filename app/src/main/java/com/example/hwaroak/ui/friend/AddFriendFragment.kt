@@ -32,8 +32,9 @@ class AddFriendFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initDummyData()  // 더미 유저 데이터 생성
+        initDummyData()  // 더미 데이터 초기화
 
+        //어댑터 초기화, 요청 버튼 클릭 시 로직 처리
         adapter = FriendSearchAdapter(searchResult,
             onRequestClick = { friend ->
                 friend.isRequested = true
@@ -42,10 +43,12 @@ class AddFriendFragment : Fragment() {
                 Toast.makeText(requireContext(), "요청을 보냈습니다", Toast.LENGTH_SHORT).show()
             })
 
-        binding.friendSearchRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.friendSearchRecyclerView.adapter = adapter
-
-        // 텍스트 입력 감지
+        // RecyclerView 초기 설정
+        binding.friendSearchRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = this@AddFriendFragment.adapter
+        }
+        // 텍스트 입력 이벤트 처리
         binding.friendSearchEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val query = s.toString().trim()
@@ -58,12 +61,12 @@ class AddFriendFragment : Fragment() {
                 }
 
                 val matched = allUsers.filter {
+                    //이름, id가 포함된 항목 필터링
                     it.name.contains(query, ignoreCase = true)
-                    it.status.contains(query, ignoreCase = true)
+                    it.id.contains(query, ignoreCase = true)
                 }
                 searchResult.addAll(matched)
                 adapter.notifyDataSetChanged()
-
                 updateViewState(query, searchResult.isNotEmpty())
 
             }
@@ -72,11 +75,12 @@ class AddFriendFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        // 초기 상태를 'info view'로 설정
+        // 초기 상태를 info view로 설정
         updateViewState("", false)
 
     }
 
+    //query가 비어있으면 기본 안내만 표시, 결과 없으면 없음 표시, 결과 있으면 recycler 표시
     private fun updateViewState(query: String, hasResult: Boolean) {
         // 검색어 없을 때: 기본 안내만 표시
         if (query.isEmpty()) {
@@ -98,11 +102,12 @@ class AddFriendFragment : Fragment() {
         }
     }
 
+    //더미데이터 유저 검색 시 사용 + 유저 이름, 아이디 검색 둘 다 됨 후에 수정할수도 포
     private fun initDummyData() {
-        allUsers.add(FriendData("포둥이", "A3329-22"))
-        allUsers.add(FriendData("뽀둥이", "유저아이디"))
-        allUsers.add(FriendData("냥냥이", "고양이집사"))
-        allUsers.add(FriendData("감자튀김", "바삭바삭"))
+        allUsers.add(FriendData(name = "포둥이", id = "A3329-22"))
+        allUsers.add(FriendData(name = "뽀둥이", id = "B5593-57"))
+        allUsers.add(FriendData(name = "유저3", id = "C9102-48"))
+        allUsers.add(FriendData(name = "유저4", id = "D2830-00"))
     }
 
     override fun onDestroyView() {

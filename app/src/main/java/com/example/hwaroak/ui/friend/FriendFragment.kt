@@ -2,13 +2,10 @@ package com.example.hwaroak.ui.friend
 
 import android.graphics.Paint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.FragmentFriendBinding
 
@@ -20,9 +17,7 @@ class FriendFragment : Fragment() {
     private var currentChild: FriendListFragment? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFriendBinding.inflate(inflater, container, false)
         return binding.root
@@ -31,69 +26,77 @@ class FriendFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.friendManage.paintFlags =
-            binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        // 밑줄 설정
+        binding.friendManage.paintFlags = binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
-        // 초기 화면
+        //처음 진입 시 친구 목록 프래그먼트 표시
         if (savedInstanceState == null) {
-            val fragment = FriendListFragment()
-            currentChild = fragment
-            childFragmentManager.beginTransaction()
-                .replace(R.id.friend_content_container, fragment)
-                .commit()
+            showFriendListFragment()
         }
 
+        // 친구 목록 탭 클릭
         binding.friendListBtn.setOnClickListener {
-            val fragment = FriendListFragment()
-            currentChild = fragment
-            childFragmentManager.beginTransaction()
-                .replace(R.id.friend_content_container, fragment)
-                .commit()
-            updateTabStyle(true)
+            showFriendListFragment()
+            updateTabStyle(isFriendList = true)
         }
 
+        // 친구 요청 탭 클릭
         binding.friendRequestcheckBtn.setOnClickListener {
-            currentChild = null
-            childFragmentManager.beginTransaction()
-                .replace(R.id.friend_content_container, FriendRequestFragment())
-                .commit()
-            updateTabStyle(false)
+            showRequestFragment()
+            updateTabStyle(isFriendList = false)
         }
 
-        // 관리 버튼 클릭 시 -> 현재 프래그먼트가 FriendListFragment일 때만 동작
+        // 관리 버튼 클릭 시 현재 화면이 친구 목록일 때만 동작
         binding.friendManage.setOnClickListener {
             currentChild?.toggleManageMode()
         }
     }
 
+    // 친구 목록 프래그먼트를 표시
+    private fun showFriendListFragment() {
+        val fragment = FriendListFragment()
+        currentChild = fragment
+        childFragmentManager.beginTransaction()
+            .replace(R.id.friend_content_container, fragment)
+            .commit()
+    }
+
+    // 친구 요청 프래그먼트를 표시
+    private fun showRequestFragment() {
+        currentChild = null
+        childFragmentManager.beginTransaction()
+            .replace(R.id.friend_content_container, FriendRequestFragment())
+            .commit()
+    }
+
+    // 관리 모드 텍스트 갱신 (외부에서 호출됨)
     fun updateManageText(isManageMode: Boolean) {
         binding.friendManage.text = if (isManageMode) "완료" else "관리"
-        binding.friendManage.paintFlags =
-            binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        binding.friendManage.paintFlags = binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
     }
 
     private fun updateTabStyle(isFriendList: Boolean) {
         if (isFriendList) {
+            // 처음 화면 색 친구목록(빨간색 버튼, 하얀색 글씨), 친구요청(흰색 버튼, 검정색 글씨)
             binding.friendListBtn.setBackgroundResource(R.drawable.bg_friend_list_btn)
             binding.friendRequestcheckBtn.setBackgroundResource(R.drawable.bg_friend_requestcheck_btn)
-
-            binding.friendListTv.setTextColor(resources.getColor(R.color.white, null)) // 클릭된 친구목록: 흰색
-            binding.friendRequestcheckTv.setTextColor(resources.getColor(R.color.colorFont, null)) // 클릭 안된 요청확인: 회색
-
+            binding.friendListTv.setTextColor(resources.getColor(R.color.white, null))
+            binding.friendRequestcheckTv.setTextColor(resources.getColor(R.color.colorFont, null))
             binding.friendManage.visibility = View.VISIBLE
         } else {
+            // 친구 요청 탭 클릭 시 친구목록(하얀색 버튼, 검정색 글씨), 친구요청(빨간색 버튼, 하얀색 글씨)
             binding.friendListBtn.setBackgroundResource(R.drawable.bg_friend_requestcheck_btn)
             binding.friendRequestcheckBtn.setBackgroundResource(R.drawable.bg_friend_list_btn)
-
-            binding.friendListTv.setTextColor(resources.getColor(R.color.colorFont, null)) // 클릭 안된 친구목록: 회색
-            binding.friendRequestcheckTv.setTextColor(resources.getColor(R.color.white, null)) // 클릭된 요청확인: 흰색
-
+            binding.friendListTv.setTextColor(resources.getColor(R.color.colorFont, null))
+            binding.friendRequestcheckTv.setTextColor(resources.getColor(R.color.white, null))
             binding.friendManage.visibility = View.GONE
         }
     }
 
+    //AddFriendFragment가 FriendListFragment에 새 친구 추가 로직
+    //더미데이터라 구현은 안 보임
     fun addFriendToList(friend: FriendData) {
-        currentChild?.addFriend(friend)  // FriendListFragment에 전달
+        currentChild?.addFriend(friend)
     }
 
     override fun onDestroyView() {

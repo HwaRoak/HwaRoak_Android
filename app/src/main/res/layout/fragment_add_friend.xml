@@ -22,6 +22,15 @@
             android:orientation="horizontal"
             android:padding="12dp">
 
+            <!--검색 이미지-->
+            <ImageView
+                android:id="@+id/friend_search_view"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_friend_search"
+                android:contentDescription="검색" />
+
+            <!-- 친구 검색 텍스트 -->
             <EditText
                 android:id="@+id/friendSearchEditText"
                 android:layout_width="0dp"
@@ -31,12 +40,6 @@
                 android:background="@null"
                 android:fontFamily="@font/freesentation_7bold" />
 
-            <ImageView
-                android:id="@+id/friendBtnSearch"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_search"
-                android:contentDescription="검색 버튼" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -46,7 +49,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <!-- 친구 검색 전 안내 -->
+        <!-- 친구 검색 전 안내 = info -->
         <LinearLayout
             android:id="@+id/friend_search_info_view"
             android:layout_width="match_parent"
