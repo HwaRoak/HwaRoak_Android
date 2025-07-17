@@ -18,10 +18,6 @@ class MypageFragment : Fragment() {
 
     lateinit var binding: FragmentMypageBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,6 +29,20 @@ class MypageFragment : Fragment() {
         binding.btnMyinfo.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragmentContainer, EditProfileFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.btnCheckDetail.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragmentContainer, AnalysisFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.announcement.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragmentContainer, NoticeFragment())
                 .addToBackStack(null)
                 .commit()
         }

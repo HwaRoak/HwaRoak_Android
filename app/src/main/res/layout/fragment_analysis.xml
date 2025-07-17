@@ -309,11 +309,10 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 style="@style/freesentation4_16sp"
-                android:textColor="#9E9E9E"
-
-
+                android:textColor="#9E9E9E" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
