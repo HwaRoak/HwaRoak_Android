@@ -17,6 +17,7 @@ import com.example.hwaroak.ui.diary.DiaryFragment
 import com.example.hwaroak.ui.friend.FriendFragment
 import com.example.hwaroak.ui.locker.LockerFragment
 import com.example.hwaroak.ui.mypage.MypageFragment
+import com.example.hwaroak.ui.mypage.SettingFragment
 import com.example.hwaroak.ui.notification.NoticeFragment
 import com.kakao.sdk.common.util.Utility
 
@@ -93,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                 //마이페이지 화면
                 R.id.mypageFragment -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.main_fragmentContainer, MypageFragment())
+                        .replace(R.id.main_fragmentContainer, SettingFragment())
                         .commit()
                     binding.mainBnv.visibility = ConstraintLayout.VISIBLE
                     true
