@@ -8,11 +8,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hwaroak.R
-import com.example.hwaroak.data.Notice
+import com.example.hwaroak.data.AnnouncementData
 import com.example.hwaroak.databinding.ItemNoticeBinding
 
 class NoticeRVAdaptor(
-    private val noticeList: List<Notice>
+    private val noticeList: List<AnnouncementData>
 ) : RecyclerView.Adapter<NoticeRVAdaptor.NoticeViewHolder>() {
 
     inner class NoticeViewHolder(val binding: ItemNoticeBinding) :
@@ -32,11 +32,11 @@ class NoticeRVAdaptor(
 
         with(holder.binding) {
             // 제목과 상세 내용 설정
-            noticeTitle.text = notice.title
-            noticeDetail.text = notice.detail
+            announcementTitle.text = notice.title
+            announcementDetail.text = notice.detail
 
             // 펼침/접힘 상태에 따른 visibility와 화살표 아이콘 변경
-            noticeDetail.visibility = if (notice.isExpanded) View.VISIBLE else View.GONE
+            announcementDetail.visibility = if (notice.isExpanded) View.VISIBLE else View.GONE
             btnToggle.setImageResource(
                 if (notice.isExpanded) R.drawable.ic_arrow_down else R.drawable.ic_arrow_right
             )

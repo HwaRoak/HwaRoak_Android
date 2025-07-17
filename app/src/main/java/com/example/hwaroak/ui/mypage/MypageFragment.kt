@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat.animate
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.FragmentMypageBinding
 import com.github.mikephil.charting.animation.Easing
@@ -42,7 +41,7 @@ class MypageFragment : Fragment() {
 
         binding.announcement.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, NoticeFragment())
+                .replace(R.id.main_fragmentContainer, AnnouncementFragment())
                 .addToBackStack(null)
                 .commit()
         }

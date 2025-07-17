@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.FragmentAnalysisBinding
-import com.example.hwaroak.databinding.FragmentNoticeBinding
+import com.example.hwaroak.databinding.FragmentAnnouncementBinding
 
 class AnalysisFragment : Fragment() {
 

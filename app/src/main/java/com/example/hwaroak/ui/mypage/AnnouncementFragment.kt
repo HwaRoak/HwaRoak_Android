@@ -6,15 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.NoticeRVAdaptor
-import com.example.hwaroak.data.Notice
-import com.example.hwaroak.databinding.FragmentMypageBinding
-import com.example.hwaroak.databinding.FragmentNoticeBinding
+import com.example.hwaroak.data.AnnouncementData
+import com.example.hwaroak.databinding.FragmentAnnouncementBinding
 
-class NoticeFragment : Fragment() {
+class AnnouncementFragment : Fragment() {
 
-    private var _binding: FragmentNoticeBinding? = null
+    private var _binding: FragmentAnnouncementBinding? = null
     private val binding get() = _binding!!
 
 
@@ -26,7 +24,7 @@ class NoticeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentNoticeBinding.inflate(inflater, container, false)
+        _binding = FragmentAnnouncementBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -34,13 +32,13 @@ class NoticeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val noticeItems = listOf(
-            Notice("Ver. 1.0", "공지사항 내용입니다."),
-            Notice("Ver. 2.0", "새로운 기능이 추가되었습니다.", true)
+        val announcementItems = listOf(
+            AnnouncementData("Ver. 1.0", "공지사항 내용입니다."),
+            AnnouncementData("Ver. 2.0", "새로운 기능이 추가되었습니다.", true)
         )
 
-        binding.noticeRv.layoutManager = LinearLayoutManager(requireContext())
-        binding.noticeRv.adapter = NoticeRVAdaptor(noticeItems)
+        binding.announcementRv.layoutManager = LinearLayoutManager(requireContext())
+        binding.announcementRv.adapter = NoticeRVAdaptor(announcementItems)
     }
 
     override fun onDestroyView() {
