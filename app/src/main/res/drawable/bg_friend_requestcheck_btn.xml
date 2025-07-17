@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- pressed state -->
+  <item android:state_pressed="true">
+    <shape android:shape="rectangle">
+      <!-- 눌렀을 때 조금 밝은 톤 -->
+      <solid android:color="#D1D1D1"/>
+      <corners android:radius="10dp"/>
+    </shape>
+  </item>
+
+  <!-- default state: 그림자 효과 + 버튼 배경 -->
+  <item>
+    <layer-list>
+
+      <!-- 그림자 역할: 조금 아래로, 오른쪽으로 오프셋 -->
+      <item android:bottom="1dp">
+        <shape android:shape="rectangle">
+          <solid android:color="#33000000"/>
+          <corners android:radius="10dp"/>
+        </shape>
+      </item>
+
+      <!-- 실제 버튼 배경: primaryColor -->
+      <item>
+        <shape android:shape="rectangle">
+          <solid android:color="@color/white"/>
+          <corners android:radius="10dp"/>
+        </shape>
+      </item>
+
+    </layer-list>
+  </item>
+
+</selector>

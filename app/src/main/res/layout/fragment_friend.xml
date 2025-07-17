@@ -1,53 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.friend.FriendFragment">
 
-    <!-- 친구 목록 텍스트뷰 -->
-    <TextView
-        android:id="@+id/friend_list_title"
-        style="@style/freesentation5_20sp"
+    <!-- 중앙 기준선 -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/friend_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="15dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="36dp"
-        android:text="친구 목록"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <!-- 친구 목록 버튼 -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/friend_list_btn"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="81dp"
+        android:layout_height="32dp"
+        android:layout_margin="0dp"
+        android:background="@drawable/bg_friend_list_btn"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:backgroundTint="@null"
+        app:iconGravity="textStart"
+        app:iconTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/friend_guideline"
+        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.057" />
+
+    <TextView
+        android:id="@+id/friend_list_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="친구목록"
+        style="@style/freesentation4_16sp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@id/friend_list_btn"
+        app:layout_constraintEnd_toEndOf="@id/friend_list_btn"
+        app:layout_constraintTop_toTopOf="@id/friend_list_btn"
+        app:layout_constraintBottom_toBottomOf="@id/friend_list_btn"/>
+
+    <!--요청확인 버튼-->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/friend_requestcheck_btn"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="81dp"
+        android:layout_height="32dp"
+        android:layout_margin="0dp"
+        android:background="@drawable/bg_friend_requestcheck_btn"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:backgroundTint="@null"
+        app:iconGravity="textStart"
+        app:iconTint="@null"
+        app:layout_constraintBottom_toBottomOf="@id/friend_list_btn"
+        app:layout_constraintEnd_toEndOf="@id/friend_guideline"
+        app:layout_constraintHorizontal_bias="0.912"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/friend_list_btn"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/friend_requestcheck_tv"
+        style="@style/freesentation4_16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="요청확인"
+        app:layout_constraintBottom_toBottomOf="@id/friend_requestcheck_btn"
+        app:layout_constraintEnd_toEndOf="@+id/friend_requestcheck_btn"
+        app:layout_constraintStart_toStartOf="@id/friend_requestcheck_btn"
+        app:layout_constraintTop_toTopOf="@id/friend_requestcheck_btn" />
 
     <!-- 관리 텍스트뷰 -->
     <TextView
         android:id="@+id/friend_manage"
-        style="@style/freesentation5_20sp"
+        style="@style/freesentation4_16sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:text="관리"
         android:textColor="#E18B79"
-        android:textSize="18sp"
-        app:layout_constraintTop_toTopOf="@id/friend_list_title"
-        app:layout_constraintBottom_toBottomOf="@id/friend_list_title"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/friend_recyclerview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/friend_list_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toTopOf="@id/friend_list_btn" />
+
+    <FrameLayout
+        android:id="@+id/friend_content_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/friend_list_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/friend_list_title"
-        app:layout_constraintVertical_bias="1.0"/>
-
-
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

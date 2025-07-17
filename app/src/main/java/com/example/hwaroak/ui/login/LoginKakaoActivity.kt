@@ -12,6 +12,7 @@ import com.kakao.sdk.auth.TokenManagerProvider
 //import com.kakao.sdk.auth.LoginClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause
+import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 
 class LoginKakaoActivity : AppCompatActivity() {
@@ -62,8 +63,8 @@ class LoginKakaoActivity : AppCompatActivity() {
             }
         }
 
-        // val keyHash = Utility.getKeyHash(this)
-        // Log.d("Hash", keyHash)
+        val keyHash = Utility.getKeyHash(this)
+        Log.d("Hash", keyHash)
 
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {

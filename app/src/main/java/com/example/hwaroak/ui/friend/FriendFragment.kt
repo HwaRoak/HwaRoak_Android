@@ -2,95 +2,101 @@ package com.example.hwaroak.ui.friend
 
 import android.graphics.Paint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.FragmentFriendBinding
 
 class FriendFragment : Fragment() {
 
-    // 뷰바인딩 선언
     private var _binding: FragmentFriendBinding? = null
     private val binding get() = _binding!!
 
-    var isManageMode = false //현재 관리 모드 여부
-    lateinit var adapter: FriendAdapter // recyclerView 어뎁터
-    lateinit var friendList: MutableList<FriendData>  //친구 목록 리스트
+    private var currentChild: FriendListFragment? = null
 
-    // 뷰바인딩 초기화 및 레이아웃
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFriendBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    // 뷰 생성 후 로직 처리
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 관리 텍스트뷰 밑줄 처리
-        binding.friendManage.paintFlags =
-            binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        // 밑줄 설정
+        binding.friendManage.paintFlags = binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
-        // 친구 목록 더미 데이터 생성
-        friendList = MutableList(10) {
-            FriendData("포둥이", "현재 슬퍼요ㅠㅠ")
+        //처음 진입 시 친구 목록 프래그먼트 표시
+        if (savedInstanceState == null) {
+            showFriendListFragment()
         }
 
-        // 친구 추가 버튼용 아이템 추가
-        friendList.add(FriendData("", "", isAddButton = true))
-
-        adapter = FriendAdapter(friendList) {
-            // 친구 추가 버튼 클릭 시 AddFriendFragment로 전환
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, AddFriendFragment())
-                .addToBackStack(null)
-                .commit()
+        // 친구 목록 탭 클릭
+        binding.friendListBtn.setOnClickListener {
+            showFriendListFragment()
+            updateTabStyle(isFriendList = true)
         }
 
-        // recyclerview 세팅
-        binding.friendRecyclerview.layoutManager = LinearLayoutManager(requireContext())
-        binding.friendRecyclerview.adapter = adapter
+        // 친구 요청 탭 클릭
+        binding.friendRequestcheckBtn.setOnClickListener {
+            showRequestFragment()
+            updateTabStyle(isFriendList = false)
+        }
 
-        //한번에 삭제하기 밑줄 처리
-        binding.friendManage.paintFlags =
-            binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-
-        //관리 버튼 클릭 이벤트 설정
+        // 관리 버튼 클릭 시 현재 화면이 친구 목록일 때만 동작
         binding.friendManage.setOnClickListener {
-            isManageMode = !isManageMode //관리 모드
-
-            // 기존 버튼 제거
-            friendList.removeAll { it.isAddButton || it.isDeleteAllButton }
-
-            if (isManageMode) {
-                // 관리 모드 진입: 각 친구에 삭제 아이콘 표ㅛ시
-                friendList.forEach { it.isDeletable = true }
-
-                // 전체 삭제 버튼 추가
-                friendList.add(FriendData("", "", isDeleteAllButton = true))
-                binding.friendManage.text = "완료" //관리 텍스트뷰를 누르면 완료로 변경
-            } else {
-                // 일반 모드 복귀: 삭제 아이콘 제거
-                friendList.forEach { it.isDeletable = false }
-
-                // 친구 추가 버튼 추가
-                friendList.add(FriendData("", "", isAddButton = true))
-                binding.friendManage.text = "관리" //완료 텍스트뷰를 관리 텍스트뷰로 변경
-            }
-
-            //밑줄 유지
-            binding.friendManage.paintFlags =
-                binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-            adapter.notifyDataSetChanged()
+            currentChild?.toggleManageMode()
         }
+    }
+
+    // 친구 목록 프래그먼트를 표시
+    private fun showFriendListFragment() {
+        val fragment = FriendListFragment()
+        currentChild = fragment
+        childFragmentManager.beginTransaction()
+            .replace(R.id.friend_content_container, fragment)
+            .commit()
+    }
+
+    // 친구 요청 프래그먼트를 표시
+    private fun showRequestFragment() {
+        currentChild = null
+        childFragmentManager.beginTransaction()
+            .replace(R.id.friend_content_container, FriendRequestFragment())
+            .commit()
+    }
+
+    // 관리 모드 텍스트 갱신 (외부에서 호출됨)
+    fun updateManageText(isManageMode: Boolean) {
+        binding.friendManage.text = if (isManageMode) "완료" else "관리"
+        binding.friendManage.paintFlags = binding.friendManage.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+    }
+
+    private fun updateTabStyle(isFriendList: Boolean) {
+        if (isFriendList) {
+            // 처음 화면 색 친구목록(빨간색 버튼, 하얀색 글씨), 친구요청(흰색 버튼, 검정색 글씨)
+            binding.friendListBtn.setBackgroundResource(R.drawable.bg_friend_list_btn)
+            binding.friendRequestcheckBtn.setBackgroundResource(R.drawable.bg_friend_requestcheck_btn)
+            binding.friendListTv.setTextColor(resources.getColor(R.color.white, null))
+            binding.friendRequestcheckTv.setTextColor(resources.getColor(R.color.colorFont, null))
+            binding.friendManage.visibility = View.VISIBLE
+        } else {
+            // 친구 요청 탭 클릭 시 친구목록(하얀색 버튼, 검정색 글씨), 친구요청(빨간색 버튼, 하얀색 글씨)
+            binding.friendListBtn.setBackgroundResource(R.drawable.bg_friend_requestcheck_btn)
+            binding.friendRequestcheckBtn.setBackgroundResource(R.drawable.bg_friend_list_btn)
+            binding.friendListTv.setTextColor(resources.getColor(R.color.colorFont, null))
+            binding.friendRequestcheckTv.setTextColor(resources.getColor(R.color.white, null))
+            binding.friendManage.visibility = View.GONE
+        }
+    }
+
+    //AddFriendFragment가 FriendListFragment에 새 친구 추가 로직
+    //더미데이터라 구현은 안 보임
+    fun addFriendToList(friend: FriendData) {
+        currentChild?.addFriend(friend)
     }
 
     override fun onDestroyView() {
