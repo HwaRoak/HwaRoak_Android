@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                 //마이페이지 화면
                 R.id.mypageFragment -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.main_fragmentContainer, SettingFragment())
+                        .replace(R.id.main_fragmentContainer, MypageFragment())
                         .commit()
                     binding.mainBnv.visibility = ConstraintLayout.VISIBLE
                     true
