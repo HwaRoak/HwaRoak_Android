@@ -3,7 +3,6 @@ package com.example.hwaroak.ui.main
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.IdRes
@@ -11,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isGone
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.ActivityMainBinding
 import com.example.hwaroak.ui.calendar.CalendarFragment
@@ -19,6 +17,7 @@ import com.example.hwaroak.ui.diary.DiaryFragment
 import com.example.hwaroak.ui.friend.FriendFragment
 import com.example.hwaroak.ui.locker.LockerFragment
 import com.example.hwaroak.ui.mypage.MypageFragment
+import com.example.hwaroak.ui.notification.NoticeFragment
 import com.kakao.sdk.common.util.Utility
 
 class MainActivity : AppCompatActivity() {
@@ -60,6 +59,7 @@ class MainActivity : AppCompatActivity() {
                         .replace(R.id.main_fragmentContainer, HomeFragment())
                         .commit()
                     binding.mainBnv.visibility = ConstraintLayout.VISIBLE
+                    showMainTopBar()
                     true
                 }
 
@@ -112,6 +112,15 @@ class MainActivity : AppCompatActivity() {
             binding.mainBnv.visibility = View.VISIBLE
         }
         //알림창(추후 구현)
+        binding.mainBellBtn.setOnClickListener {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragmentContainer, NoticeFragment())
+                .commit()
+            // NoticeFragment로 갈 때 상단 바 숨김(모양이 다르므로 fragment에서 교체)
+            hideMainTopBar()// 상단 바 숨김
+            // BottomNavigationView는 보이게 설정
+            binding.mainBnv.visibility = View.VISIBLE
+        }
 
 
         //뒤로 가기 시 일단 HomeFragment 이동 후 종료
@@ -144,8 +153,6 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-
-
     //뒤로 가기 제어
     private fun handleBack(){
 
@@ -168,6 +175,22 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+    }
+
+    // 상단 바를 숨기는 함수
+    fun hideMainTopBar() {
+        binding.mainBackBtn.visibility = View.GONE
+        binding.mainBellBtn.visibility = View.GONE
+        binding.mainLockerBtn.visibility = View.GONE
+        binding.mainTitleTv.visibility = View.GONE
+    }
+
+    // 상단 바를 다시 보이게 하는 함수
+    fun showMainTopBar() {
+        binding.mainBackBtn.visibility = View.VISIBLE
+        binding.mainBellBtn.visibility = View.VISIBLE
+        binding.mainLockerBtn.visibility = View.VISIBLE
+        binding.mainTitleTv.visibility = View.VISIBLE
     }
 
 }
