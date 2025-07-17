@@ -5,5 +5,5 @@ data class FriendData(
     val status: String,
     val isAddButton: Boolean = false, // 버튼 여부
     var isDeletable: Boolean = false,  // 삭제 여부
-    val isDeleteAllButton: Boolean = false //전체 삭제(추후 수정)
+    var isRequested: Boolean = false // 요청 보냈는지 여부
 )

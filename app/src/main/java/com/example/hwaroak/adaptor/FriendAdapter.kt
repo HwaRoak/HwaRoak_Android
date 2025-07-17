@@ -11,14 +11,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.ItemFriendBinding
+import com.google.android.material.button.MaterialButton
 
-class FriendAdapter(private val friendList: MutableList<FriendData>, private val onAddFriendClicked: () -> Unit) :
+class FriendAdapter(private val friendList: MutableList<FriendData>, var isManageMode: Boolean = false,private val onAddFriendClicked: () -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     companion object {
         const val VIEW_TYPE_FRIEND = 0 // 일반 친구
         const val VIEW_TYPE_ADD_BUTTON = 1 // 친구 추가 버튼
-        const val VIEW_TYPE_DELETE_ALL_BUTTON = 2 // 전체 삭제 버튼
     }
 
     // 일반 친구 ViewHolder
@@ -28,7 +27,11 @@ class FriendAdapter(private val friendList: MutableList<FriendData>, private val
             binding.friendTvName.text = friend.name
             binding.friendTvStatus.text = friend.status
 
-            // 마이너스 아이콘 표시 여부
+            //방문하기 버튼은 일반 모드에서만 보여주기
+            binding.friendVisitBtn.visibility = if (isManageMode) View.GONE else View.VISIBLE
+            binding.friendVisitTv.visibility = if (isManageMode) View.GONE else View.VISIBLE
+
+            // 마이너스 아이콘(삭제 버튼) 표시 여부
             binding.friendMinus.visibility =
                 if (friend.isDeletable) View.VISIBLE else View.GONE
             // 삭제 아이콘 클릭 시 삭제 확인 다이얼로그 표시
@@ -40,8 +43,6 @@ class FriendAdapter(private val friendList: MutableList<FriendData>, private val
                     .setView(dialogView)
                     .create()
 
-                alertDialog.show()
-
                 //다이얼로그 크기 조절(너비 70%)
                 val width = (context.resources.displayMetrics.widthPixels * 0.7).toInt()
                 alertDialog.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -51,7 +52,7 @@ class FriendAdapter(private val friendList: MutableList<FriendData>, private val
                     alertDialog.dismiss()
                 }
 
-                // 삭제 버튼(현재 전체 삭제로 구현 추후 수정)
+                // 삭제 버튼 클릭 시 해당 아이템 삭제
                 dialogView.findViewById<TextView>(R.id.friend_btn_delete).setOnClickListener {
                     val position = adapterPosition
                     if (position != RecyclerView.NO_POSITION) {
@@ -69,35 +70,18 @@ class FriendAdapter(private val friendList: MutableList<FriendData>, private val
     // 친구 추가 버튼 ViewHolder
     inner class AddButtonViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind() {
-            itemView.setOnClickListener {
+            val addButton = itemView.findViewById<MaterialButton>(R.id.friend_add_btn)
+            addButton.setOnClickListener {
                 onAddFriendClicked()
             }
         }
     }
 
-    // 전체 삭제 버튼 ViewHolder
-    inner class DeleteAllButtonViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val deleteAllTextView: TextView = view.findViewById(R.id.friend_btn_delete_all)
-
-        init {
-            //한번에 삭제하기 밑줄 추가
-            deleteAllTextView.paintFlags = deleteAllTextView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-
-            deleteAllTextView.setOnClickListener {
-                //친구 항목만 삭제 (버튼은 제외) 추후 데이터 없는 경우에는 없앨지 상의
-                friendList.removeAll { !it.isAddButton && !it.isDeleteAllButton }
-                notifyDataSetChanged()
-            }
-        }
-    }
-
-    // 뷰 타입
+    // 뷰 타입 결정
     override fun getItemViewType(position: Int): Int {
         return when {
             // isAddButton이 true면 찬구 추가 버튼
             friendList[position].isAddButton -> VIEW_TYPE_ADD_BUTTON
-            // isDeleteAllButton이 true면 전체 삭제 버튼
-            friendList[position].isDeleteAllButton -> VIEW_TYPE_DELETE_ALL_BUTTON
             else -> VIEW_TYPE_FRIEND
         }
     }
@@ -116,12 +100,6 @@ class FriendAdapter(private val friendList: MutableList<FriendData>, private val
                     .inflate(R.layout.item_add_friend, parent, false)
                 AddButtonViewHolder(view)
             }
-            // 전체 삭제 버튼일 경우(추후 수정 예정)
-            VIEW_TYPE_DELETE_ALL_BUTTON -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_delete_all, parent, false)
-                DeleteAllButtonViewHolder(view)
-            }
             // 예외처리
             else -> throw IllegalArgumentException("Unknown viewType $viewType")
         }
@@ -135,6 +113,13 @@ class FriendAdapter(private val friendList: MutableList<FriendData>, private val
             // 친구 추가 버튼
             is AddButtonViewHolder -> holder.bind() // 버튼 클릭 시 콜백
         }
+    }
+
+    //드래그 이동 기능 추가
+    fun moveItem(fromPosition: Int, toPosition: Int) {
+        val movedItem = friendList.removeAt(fromPosition)
+        friendList.add(toPosition, movedItem)
+        notifyItemMoved(fromPosition, toPosition)
     }
 
     override fun getItemCount(): Int = friendList.size

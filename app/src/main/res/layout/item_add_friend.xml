@@ -3,21 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp"
+    android:padding="5dp"
     android:clickable="true"
     android:focusable="true">
 
     <!-- 친구 추가 버튼 -->
-    <ImageButton
-        android:id="@+id/friend_btn_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@android:color/transparent"
-        android:src="@drawable/ic_friend_plus"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/friend_add_btn"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="390dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/bg_friend_add_btn"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        android:scaleType="center"
+        app:backgroundTint="@null"
+        app:iconGravity="textStart"
+        app:iconTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="친구 추가 버튼"
-        android:clickable="false"
-        android:focusable="false"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/friend_add_ic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_friend_plus"
+        app:layout_constraintStart_toStartOf="@id/friend_add_btn"
+        app:layout_constraintEnd_toEndOf="@id/friend_add_btn"
+        app:layout_constraintTop_toTopOf="@id/friend_add_btn"
+        app:layout_constraintBottom_toBottomOf="@id/friend_add_btn"
+        android:scaleType="center"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 눌러진 상태 -->
+    <!--버튼의 그림자를 없애고 색깔을 그림자 색깔로 바꾸기-->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#E65B2B"/>
+            <corners android:radius="10dp"/>
+        </shape>
+    </item>
+
+    <!-- default 상태: shadow + 버튼 -->
+    <item>
+        <layer-list>
+
+            <!-- 1) 전체 영역에 그림자를 그려두고 -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#E1511D"/>
+                    <corners android:radius="10dp"/>
+                </shape>
+            </item>
+
+            <!-- 2) 그 위에 원본 버튼을 그려놓자-->
+
+            <item
+                android:bottom="5dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/colorPrimary"/>
+                    <corners android:radius="10dp"/>
+                </shape>
+            </item>
+
+        </layer-list>
+    </item>
+
+</selector>

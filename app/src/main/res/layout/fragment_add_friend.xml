@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -21,19 +22,17 @@
             android:orientation="horizontal"
             android:padding="12dp">
 
-            <!-- 친구 검색 창 표시 -->
             <EditText
-                android:id="@+id/friend_search"
+                android:id="@+id/friendSearchEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="친구를 검색하세요"
-                android:fontFamily="@font/freesentation_7bold"
-                android:background="@null" />
+                android:background="@null"
+                android:fontFamily="@font/freesentation_7bold" />
 
-            <!-- 검색 버튼 이미지뷰 -->
             <ImageView
-                android:id="@+id/friend_btn_search"
+                android:id="@+id/friendBtnSearch"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_search"
@@ -41,37 +40,75 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- 친구 없음 안내 -->
-    <LinearLayout
+    <!-- 콘텐츠 영역: info / empty / list 겹쳐 배치 -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:paddingTop="48dp">
+        android:layout_weight="1">
 
-        <!-- 친구 검색 전 화면 이미지뷰 -->
-        <ImageView
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:src="@drawable/ic_friend_empty" />
+        <!-- 친구 검색 전 안내 -->
+        <LinearLayout
+            android:id="@+id/friend_search_info_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingTop="48dp">
 
-        <!-- 친구 검색 전 화면 텍스트뷰 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_friend_empty" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="아이디를 어디서 확인하나요?"
+                android:textColor="#333333"
+                android:fontFamily="@font/freesentation_6semibold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="마이페이지 → 내정보 → 아이디 확인"
+                android:textColor="#999999"
+                android:fontFamily="@font/freesentation_6semibold" />
+        </LinearLayout>
+
+        <!-- 검색 결과 없음 안내 -->
+        <LinearLayout
+            android:id="@+id/friend_search_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingTop="32dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_friend_empty" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="검색 결과가 없습니다."
+                android:textColor="#999999"
+                android:textSize="14sp"
+                android:fontFamily="@font/freesentation_6semibold" />
+        </LinearLayout>
+
+        <!-- 검색 결과 RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/friend_search_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="12dp"
-            android:text="아이디를 어디서 확인하나요?"
-            android:textColor="#333333"
-            android:fontFamily="@font/freesentation_6semibold" />
-
-        <!-- 친구 검색 전 화면 텍스트뷰 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="마이페이지 → 내정보 → 아이디 확인"
-            android:textColor="#999999"
-            android:fontFamily="@font/freesentation_6semibold" />
-    </LinearLayout>
+            android:layout_marginBottom="16dp"
+            android:visibility="gone" />
+    </FrameLayout>
 </LinearLayout>
