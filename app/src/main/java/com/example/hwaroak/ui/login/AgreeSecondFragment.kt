@@ -1,13 +1,15 @@
-package com.example.hwaroak.ui.calendar
+package com.example.hwaroak.ui.login
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.example.hwaroak.R
-import com.example.hwaroak.databinding.FragmentCalendarEditBinding
-import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.example.hwaroak.data.AgreeViewModel
+import com.example.hwaroak.databinding.FragmentAgreeSecondBinding
+import kotlin.getValue
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -16,20 +18,19 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [CalendarEditFragment.newInstance] factory method to
+ * Use the [AgreeSecondFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CalendarEditFragment : Fragment() {
+class AgreeSecondFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
-    private lateinit var binding: FragmentCalendarEditBinding
+    //viewModel
+    private val vm: AgreeViewModel by activityViewModels()
+    private lateinit var binding: FragmentAgreeSecondBinding
 
-    //일단 임시 data IN
-    private var selectedDay : CalendarDay = CalendarDay.today()
-    private var selectedEmotion : String = ""
-    private var selectedTalk : String = ""
+    private var scrollCheck = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,19 +45,41 @@ class CalendarEditFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentCalendarEditBinding.inflate(inflater, container, false)
+        binding = FragmentAgreeSecondBinding.inflate(inflater, container, false)
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //ARGS로 받기(현재 최소 버전을 24로 잡아 최신거 못 쓰는게 발생)
-        selectedDay = arguments?.getParcelable("KEY_DATE") ?: CalendarDay.today()
-        selectedEmotion = arguments?.getString("KEY_EMOTION") ?: ""
-        selectedTalk = arguments?.getString("KEY_TALK") ?: ""
+        binding.agree2FinishBtn.isEnabled = false
+        binding.agree2FinishBtn.setBackgroundResource(R.drawable.bg_diary_write_no_btn)
 
+        //스크롤 확인
+        binding.agree2Scrollview.setOnScrollChangeListener { v, _, _, _, _ ->
+            val atBottom = !v.canScrollVertically(1)
+            if(!atBottom){scrollCheck = true}
+
+            if(scrollCheck){
+                binding.agree2FinishBtn.isEnabled = true
+                binding.agree2FinishBtn.setBackgroundResource(R.drawable.bg_diary_write_btn)
+            }
+        }
+
+        //버튼 리스너
+        binding.agree2FinishBtn.setOnClickListener {
+            if(vm.allGo.value == true) {
+                vm.serviceAgree.value = true
+                vm.privacyAgree.value = true
+            }
+            else{
+                vm.serviceAgree.value = true
+            }
+            (activity as AgreeActivity).goToMainPage()
+        }
     }
+
 
 
     companion object {
@@ -66,12 +89,12 @@ class CalendarEditFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment CalendarEditFragment.
+         * @return A new instance of fragment AgreeSecondFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            CalendarEditFragment().apply {
+            AgreeSecondFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

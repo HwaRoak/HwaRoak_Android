@@ -32,8 +32,8 @@
 
         <ImageView
             android:id="@+id/iv_character"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="167dp"
+            android:layout_height="250dp"
             android:src="@drawable/img_home_hwaroaki"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
