@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorBackground"
+    tools:context=".ui.mypage.SettingFragment">
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/setting_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/setting_one_cdv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:background="@color/colorFrameBackground"
+        android:backgroundTint="@color/colorFrameBackground"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="1dp"
+        app:strokeWidth="0dp"
+        app:layout_constraintTop_toTopOf="@id/setting_guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="15dp"
+            >
+
+            <TextView
+                android:id="@+id/setting_getReminder_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/freesentation4_16sp"
+                android:text="리마인더 받기"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/setting_reminderTime_tv"
+                />
+            
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/setting_getReminder_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:trackTint="@color/color_switch_toggle"
+                app:thumbTint="@color/white"
+                app:layout_constraintTop_toTopOf="@id/setting_getReminder_tv"
+                app:layout_constraintBottom_toBottomOf="@id/setting_getReminder_tv"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/setting_reminderTime_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/freesentation4_16sp"
+                android:text="리마인더 받는 시간"
+                android:layout_marginTop="25dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/setting_getReminder_tv"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/setting_reminderTime_btn"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:backgroundTint="@color/colorPrimary"
+                app:iconGravity="textStart"
+                app:iconTint="@null"
+                android:elevation="0dp"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:paddingVertical="8dp"
+                app:cornerRadius="20dp"
+                style="@style/Widget.MaterialComponents.Button"
+                app:layout_constraintStart_toStartOf="@id/setting_getReminder_switch"
+                app:layout_constraintEnd_toEndOf="@id/setting_getReminder_switch"
+                app:layout_constraintTop_toTopOf="@id/setting_reminderTime_tv"
+                app:layout_constraintBottom_toBottomOf="@id/setting_reminderTime_tv"/>
+
+            <TextView
+                android:id="@+id/setting_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12:12"
+                android:gravity="center"
+                android:elevation="2dp"
+                style="@style/freesentation5_16sp"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="@id/setting_reminderTime_btn"
+                app:layout_constraintEnd_toEndOf="@id/setting_reminderTime_btn"
+                app:layout_constraintTop_toTopOf="@id/setting_reminderTime_btn"
+                app:layout_constraintBottom_toBottomOf="@id/setting_reminderTime_btn"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/setting_two_cdv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:background="@color/colorFrameBackground"
+        android:backgroundTint="@color/colorFrameBackground"
+        android:layout_marginTop="20dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="1dp"
+        app:strokeWidth="0dp"
+        app:layout_constraintTop_toBottomOf="@id/setting_one_cdv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
+            >
+
+            <TextView
+                android:id="@+id/setting_fireAlarm_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/freesentation4_16sp"
+                android:text="불 키우기 알림 받기"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/setting_fireAlarm_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:trackTint="@color/color_switch_toggle"
+                app:thumbTint="@color/white"
+                app:layout_constraintTop_toTopOf="@id/setting_fireAlarm_tv"
+                app:layout_constraintBottom_toBottomOf="@id/setting_fireAlarm_tv"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/setting_three_cdv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:background="@color/colorFrameBackground"
+        android:backgroundTint="@color/colorFrameBackground"
+        android:layout_marginTop="20dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="1dp"
+        app:strokeWidth="0dp"
+        app:layout_constraintTop_toBottomOf="@id/setting_two_cdv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
+            >
+
+            <TextView
+                android:id="@+id/setting_offAlarm_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/freesentation4_16sp"
+                android:text="모든 알림 끄기"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/setting_offAlarm_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:trackTint="@color/color_switch_toggle"
+                app:thumbTint="@color/white"
+                app:layout_constraintTop_toTopOf="@id/setting_offAlarm_tv"
+                app:layout_constraintBottom_toBottomOf="@id/setting_offAlarm_tv"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
