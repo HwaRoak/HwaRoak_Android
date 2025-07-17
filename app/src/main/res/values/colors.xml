@@ -25,5 +25,11 @@
     <color name="colorSpeechBubble">#FDFDFD</color>
     <color name="colorFriendAdd">#FFF5F2</color>
     <color name="colorItemIcon">#F2F2F2</color>
+    <!--마이페이지 감정분석 색상(평온, 행복, 우울, 분노)-->
+    <color name="comfy">#FF9B8B</color>
+    <color name="happy">#FF715B</color>
+    <color name="depressed">#A0C8EA</color>
+    <color name="angry">#81B4E0</color>
+
 
 </resources>
