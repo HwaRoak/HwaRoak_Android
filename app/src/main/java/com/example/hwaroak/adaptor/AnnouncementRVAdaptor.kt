@@ -3,23 +3,20 @@ package com.example.hwaroak.adaptor
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hwaroak.R
 import com.example.hwaroak.data.AnnouncementData
-import com.example.hwaroak.databinding.ItemNoticeBinding
+import com.example.hwaroak.databinding.ItemAnnouncementBinding
 
-class NoticeRVAdaptor(
+class AnnouncementRVAdaptor(
     private val noticeList: List<AnnouncementData>
-) : RecyclerView.Adapter<NoticeRVAdaptor.NoticeViewHolder>() {
+) : RecyclerView.Adapter<AnnouncementRVAdaptor.NoticeViewHolder>() {
 
-    inner class NoticeViewHolder(val binding: ItemNoticeBinding) :
+    inner class NoticeViewHolder(val binding: ItemAnnouncementBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoticeViewHolder {
-        val binding = ItemNoticeBinding.inflate(
+        val binding = ItemAnnouncementBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false

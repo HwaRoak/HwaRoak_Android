@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.hwaroak.adaptor.NoticeRVAdaptor
+import com.example.hwaroak.adaptor.AnnouncementRVAdaptor
 import com.example.hwaroak.data.AnnouncementData
 import com.example.hwaroak.databinding.FragmentAnnouncementBinding
 
@@ -38,7 +38,7 @@ class AnnouncementFragment : Fragment() {
         )
 
         binding.announcementRv.layoutManager = LinearLayoutManager(requireContext())
-        binding.announcementRv.adapter = NoticeRVAdaptor(announcementItems)
+        binding.announcementRv.adapter = AnnouncementRVAdaptor(announcementItems)
     }
 
     override fun onDestroyView() {
