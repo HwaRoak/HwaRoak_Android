@@ -69,7 +69,8 @@ dependencies {
     // 5) 기타 기능 및 위젯들 implement
 
     // 5) kakao login
-    implementation("com.kakao.sdk:v2-user:2.10.0")
+    implementation("com.kakao.sdk:v2-user:2.13.0")
+    implementation("com.kakao.sdk:v2-auth:2.13.0")
 
     //6) splash screen
     implementation("androidx.core:core-splashscreen:1.0.0")

@@ -1,6 +1,7 @@
 package com.example.hwaroak.ui.login
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +22,12 @@ class LoginKakaoActivity : AppCompatActivity() {
         binding = ActivityLoginKakaoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //kakaoLogout()
+
+        //sharedPrefence
+        val agreePref = getSharedPreferences("agree", MODE_PRIVATE)
+        val checkAgree = agreePref.getBoolean("agree", false)
+
         // 로그인 정보 확인
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
             if (error != null) {
@@ -39,9 +46,19 @@ class LoginKakaoActivity : AppCompatActivity() {
 
 
                 Toast.makeText(this, "토큰 정보 보기 성공", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-                finish()
+
+                //약관 동의를 했으면 
+                if(checkAgree) {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                    finish()
+                }
+                //약관 동의를 안했으면
+                else{
+                    val intent = Intent(this, AgreeActivity::class.java)
+                    startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                    finish()
+                }
             }
         }
 
@@ -95,11 +112,44 @@ class LoginKakaoActivity : AppCompatActivity() {
 
         kakao_login_button.setOnClickListener {
             val activityContext = this@LoginKakaoActivity
+
+            val scopes = listOf(
+                "profile_nickname",
+                "profile_image",
+                // 이메일이 필요하면 비즈앱 전환 후에만 사용 가능
+                // "account_email"
+            )
+
+
             if(UserApiClient.instance.isKakaoTalkLoginAvailable(activityContext)){
-                UserApiClient.instance.loginWithKakaoTalk(activityContext, callback = callback)
+                UserApiClient.instance.loginWithKakaoTalk(
+                    activityContext,
+                    //scopes = scopes,
+                    callback = callback)
             }else{
-                UserApiClient.instance.loginWithKakaoAccount(activityContext, callback = callback)
+                UserApiClient.instance.loginWithKakaoAccount(
+                    activityContext,
+                    //scopes = scopes,
+                    callback = callback)
             }
+
         }
     }
+
+    private fun kakaoLogout() {
+        // 1) 카카오 서버에 로그아웃 요청
+        UserApiClient.instance.logout { error ->
+            if (error != null) {
+                Log.e("KakaoLogout", "로그아웃 실패", error)
+            } else {
+                Log.i("KakaoLogout", "로그아웃 성공")
+            }
+            // 2) 로컬에 저장된 토큰(액세스/리프레시) 완전 삭제
+            TokenManagerProvider
+                .instance
+                .manager
+                .clear()
+        }
+    }
+
 }
