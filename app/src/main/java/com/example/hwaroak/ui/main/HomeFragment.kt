@@ -5,8 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hwaroak.R
+import com.example.hwaroak.adaptor.HomeItemRVAdapter
+import com.example.hwaroak.data.ItemViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,6 +26,11 @@ class HomeFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    //rvadapter 선언
+    private lateinit var homeItemRVAdapter: HomeItemRVAdapter
+    //locker와의 아이템 상태 공유를 위한 viewmodel선언
+    private lateinit var itemViewModel: ItemViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -38,6 +46,27 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //ViewModel 초기화
+        itemViewModel = ViewModelProvider(requireActivity()).get(ItemViewModel::class.java)
+
+        //RecyclerView 어뎁터 설정
+        val recyclerView = view.findViewById<RecyclerView>(R.id.home_item_rv)
+        homeItemRVAdapter = HomeItemRVAdapter()
+        recyclerView.adapter = homeItemRVAdapter
+
+        //ViewModel 감지해 RecyclerView 갱신
+        itemViewModel.homeItemList.observe(viewLifecycleOwner) { newList ->
+            homeItemRVAdapter.setData(newList)
+        }
+    }
+
+
+
+
 
     companion object {
         /**

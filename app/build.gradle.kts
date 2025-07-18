@@ -85,5 +85,4 @@ dependencies {
 
     //원형 그래프(PieChart)
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-
 }
