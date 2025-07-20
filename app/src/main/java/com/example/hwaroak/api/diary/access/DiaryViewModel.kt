@@ -25,10 +25,18 @@ class DiaryViewModel(private val repository: DiaryRepository) : ViewModel() {
     val writeResult: StateFlow<Result<DiaryWriteResponse>?> = _writeResult
 
     //ViewModel에서 호출 -> repository에서 호출 -> network에서 호출
-    fun writeDiary(token: String, req: DiaryWriteRequest) {
+    fun writeDiary(token: String, recordDate: String,
+                   content: String, emotionList: List<String>){
         viewModelScope.launch {
-            _writeResult.value = repository.writeDiary(token, req)
+            //1. request 생성
+            val req = DiaryWriteRequest(recordDate, content, emotionList)
+            //2. repository 호출
+            val result: Result<DiaryWriteResponse> = repository.writeDiary(token, req)
+            //3. 결과값 저장
+            _writeResult.value = result
+
         }
     }
+
 
 }

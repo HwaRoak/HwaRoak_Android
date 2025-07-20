@@ -23,22 +23,39 @@ import retrofit2.HttpException
 class DiaryRepository(private val service: DiaryService) {
 
     //1. 일기 작성
-    suspend fun writeDiary(token: String, req: DiaryWriteRequest): Result<DiaryWriteResponse> {
-        return try{
+    suspend fun writeDiary(
+        accessToken: String, req: DiaryWriteRequest
+    ) : Result<DiaryWriteResponse> =
+        try{
+            val token = if (accessToken.startsWith("Bearer ")) accessToken else "Bearer $accessToken"
             val response = service.writeDiary(token, req)
+            //성공 리턴
             if(response.isSuccessful){
-                //OK 그대로 전달
-                Result.success(response.body()!!)
-            }
-            else{
-                val error = response.errorBody()?.string().orEmpty()
-                Result.failure(IOException(error))
-            }
+                val body = response.body()
+                //Response body가 없을 때
+                if(body == null){
+                    Result.failure(RuntimeException("Response body is null"))
+                }
+                //data 값이 없을 때
+                else if(body.data == null){
+                    Result.failure(RuntimeException("Response OK but Data is null"))
+                }
+                else{
+                    Result.success(body.data)
+                }
 
+            }
+            //잘못된 리턴(200X 오류 등)
+            else{
+                val errMsg = response.errorBody()?.string() ?: response.message()
+                Result.failure(RuntimeException("HTTP ${response.code()}: $errMsg"))
+            }
         } catch (e: Exception){
+            //오류
             Result.failure(e)
         }
-    }
+
+    //2.
 
 
 }

@@ -12,11 +12,18 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.DiaryEmotionAdaptor
+import com.example.hwaroak.api.HwaRoakClient
+import com.example.hwaroak.api.diary.access.DiaryViewModel
+import com.example.hwaroak.api.diary.access.DiaryViewModelFactory
+import com.example.hwaroak.api.diary.repository.DiaryRepository
+import com.example.hwaroak.api.login.repository.LoginRepository
 import com.example.hwaroak.data.DiaryContent
 import com.example.hwaroak.data.DiaryEmotion
 import com.example.hwaroak.databinding.FragmentDiaryWriteBinding
@@ -56,6 +63,16 @@ class DiaryWriteFragment : Fragment() {
     //유저 정보를 담을 sharedPreference
     private lateinit var pref: SharedPreferences
     private lateinit var accessToken: String
+
+    //viewModel 정의
+    // 1) Retrofit 서비스로 Repository 인스턴스 생성
+    private val diaryRepository by lazy {
+        DiaryRepository(HwaRoakClient.diaryService)
+    }
+    // 2) Activity 스코프로 ViewModel 생성 (Factory 주입)
+    private val diaryViewModel: DiaryViewModel by activityViewModels{
+        DiaryViewModelFactory(diaryRepository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,15 +145,51 @@ class DiaryWriteFragment : Fragment() {
 
         //작성 버튼 클릭 리스너 설정
         binding.diaryFinishBtn.setOnClickListener {
+            //수정 모드 or 새로 쓰기 모드
+            if(isEditMode){
 
-            Log.d("log_diary", calendar.time.toString())
-            Log.d("log_diary", selectedEmotions.toString())
-            Log.d("log_diary", binding.diaryDiarycontentEdt.text.toString())
+            }
+            else {
+                writeDiaryWithAPI()
+            }
 
             (parentFragment as DiaryFragment)
                 .binding
                 .diaryViewpager
                 .currentItem = 1
+        }
+
+    }
+
+    //diaryWriteAPI 호출
+    private fun writeDiaryWithAPI(){
+        //일단 날짜랑 컨텐츠, 감정을 변수로
+        val recordDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            .format(calendar.time)
+        val content: String = binding.diaryDiarycontentEdt.text.toString().trim()
+        val emotionList: List<String> = selectedEmotions.map { it.name }
+
+        Log.d("log_diary", recordDate)
+        Log.d("log_diary", content)
+        Log.d("log_diary", emotionList.toString())
+
+        val tmpRecord : String = "2025-06-06"
+
+        diaryViewModel.writeDiary(accessToken, tmpRecord, content, emotionList)
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            diaryViewModel.writeResult.collect { result ->
+                result?.onSuccess { resp ->
+                    // 성공 시
+                    Log.d("log_diary", "SUCCESS! new diary id=${resp.id}")
+
+                }?.onFailure { err ->
+                    // 실패 시
+                    Log.d("log_diary",  err.toString())
+                    Log.d("log_diary", err.message.toString())
+
+                }
+            }
         }
 
     }
