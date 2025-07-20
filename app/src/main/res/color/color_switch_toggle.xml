@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Checked 상태일 때 Track 색 -->
+    <item android:color="@color/colorPrimary" android:state_checked="true"/>
+    <!-- Unchecked 상태일 때 Track 색 -->
+    <item android:color="@color/colorGrayIcon" android:state_checked="false"/>
+</selector>

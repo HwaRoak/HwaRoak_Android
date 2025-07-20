@@ -17,6 +17,7 @@ import com.example.hwaroak.ui.diary.DiaryFragment
 import com.example.hwaroak.ui.friend.FriendFragment
 import com.example.hwaroak.ui.locker.LockerFragment
 import com.example.hwaroak.ui.mypage.MypageFragment
+import com.example.hwaroak.ui.mypage.SettingFragment
 import com.example.hwaroak.ui.notification.NoticeFragment
 import com.kakao.sdk.common.util.Utility
 
