@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    tools:context=".ui.main.MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rounded_container"
+        android:layout_width="376dp"
+        android:layout_height="505dp"
+        android:background="@drawable/bg_home_rounded_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3">
+
+        <FrameLayout
+            android:id="@+id/friend_bubble_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/iv_friend_character"
+            app:layout_constraintStart_toStartOf="@id/iv_friend_character"
+            app:layout_constraintEnd_toEndOf="@id/iv_friend_character">
+
+            <!-- 말풍선 배경 -->
+            <ImageView
+                android:id="@+id/friend_visit_bubble_ic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bg_home_speech_bubble" />
+
+            <!-- 말풍선 텍스트 -->
+            <TextView
+                style="@style/freesentation4_16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:padding="12dp"
+                android:text="화록이 불타올라요!"
+                android:textAlignment="center" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/iv_friend_character"
+            android:layout_width="167dp"
+            android:layout_height="250dp"
+            android:src="@drawable/img_home_hwaroaki"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <ImageView
+            android:id="@+id/friend_fire1_imv"
+            android:visibility="invisible"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_diary_fire"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_friend_character"
+            app:layout_constraintTop_toTopOf="@id/iv_friend_character"
+            app:layout_constraintBottom_toBottomOf="@id/iv_friend_character"
+            />
+
+        <ImageView
+            android:id="@+id/friend_fire2_imv"
+            android:visibility="invisible"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_diary_fire"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-40dp"
+            android:translationX="-10dp"
+            app:layout_constraintStart_toEndOf="@id/iv_friend_character"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_friend_character"
+            app:layout_constraintBottom_toBottomOf="@id/iv_friend_character"
+            />
+
+        <ImageView
+            android:id="@+id/friend_fire3_imv"
+            android:visibility="invisible"
+            android:layout_width="56dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="16dp"
+            android:backgroundTint="@color/transparent"
+            android:src="@drawable/ic_diary_fire"
+            android:translationX="-10dp"
+            android:translationY="-40dp"
+            app:layout_constraintStart_toEndOf="@id/iv_friend_character"
+            app:layout_constraintTop_toTopOf="@id/iv_friend_character" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!-- 게이지바 -->
+
+
+    <!-- 불 배경 네모 -->
+
+
+    <!-- 가운데 불 -->
+
+
+    <ImageView
+        android:id="@+id/progress_emotion_gauge"
+        android:layout_width="298dp"
+        android:layout_height="44dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/img_home_emotion_gauge_default"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rounded_container" />
+
+    <ImageView
+        android:id="@+id/friend_fire_rec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="156dp"
+        android:src="@drawable/ic_friend_fire_rectangle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/friend_fire_rec_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foregroundGravity="center"
+        android:src="@drawable/ic_fire_friend_bar"
+        app:layout_constraintStart_toStartOf="@id/friend_fire_rec"
+        app:layout_constraintEnd_toEndOf="@id/friend_fire_rec"
+        app:layout_constraintTop_toTopOf="@id/friend_fire_rec"
+        app:layout_constraintBottom_toBottomOf="@id/friend_fire_rec" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/friend_fireup_btn"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="328dp"
+        android:layout_height="61dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/bg_diary_write_btn"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:backgroundTint="@null"
+        app:iconGravity="textStart"
+        app:iconTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.92" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="불키우기"
+        style="@style/freesentation7_22sp_title"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@id/friend_fireup_btn"
+        app:layout_constraintEnd_toEndOf="@id/friend_fireup_btn"
+        app:layout_constraintTop_toTopOf="@id/friend_fireup_btn"
+        app:layout_constraintBottom_toBottomOf="@id/friend_fireup_btn"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
