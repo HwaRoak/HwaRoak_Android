@@ -2,7 +2,8 @@ package com.example.hwaroak.api.diary.access
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hwaroak.api.diary.model.DiaryRequest
+import com.example.hwaroak.api.diary.model.DiaryWriteRequest
+import com.example.hwaroak.api.diary.model.DiaryWriteResponse
 import com.example.hwaroak.api.diary.repository.DiaryRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,13 +20,14 @@ import kotlinx.coroutines.launch
 
 class DiaryViewModel(private val repository: DiaryRepository) : ViewModel() {
 
-    private val _result = MutableStateFlow<Result<String>?>(null)
-    val result: StateFlow<Result<String>?> = _result
+    //일기 작성 결과 담기
+    private val _writeResult = MutableStateFlow<Result<DiaryWriteResponse>?>(null)
+    val writeResult: StateFlow<Result<DiaryWriteResponse>?> = _writeResult
 
     //ViewModel에서 호출 -> repository에서 호출 -> network에서 호출
-    fun writeDiary(token: String, req: DiaryRequest) {
+    fun writeDiary(token: String, req: DiaryWriteRequest) {
         viewModelScope.launch {
-            _result.value = repository.writeDiary(token, req)
+            _writeResult.value = repository.writeDiary(token, req)
         }
     }
 

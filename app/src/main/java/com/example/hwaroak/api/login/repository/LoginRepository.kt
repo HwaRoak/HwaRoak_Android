@@ -19,7 +19,7 @@ class LoginRepository(private val service: LoginService,
             //if(response.isSuccessful && response.body()?.code == "SUCCESS"){
             if(response.isSuccessful){
                 //인자로 받은 sharedPref를 IN
-                response.body()!!.let { memberData ->
+                response.body()!!.data!!.let { memberData ->
                     pref.edit{
                         putInt("memberId", memberData.memberId)
                         putString("nickname", memberData.nickname)
@@ -44,7 +44,7 @@ class LoginRepository(private val service: LoginService,
         try {
             val response = service.requestToken(TokenGetRequest(accessToken, refreshToken))
             if(response.isSuccessful){
-                response.body()!!.let { tokenData ->
+                response.body()!!.data!!.let { tokenData ->
                     pref.edit{
                         putString("accessToken", tokenData.accessToken)
                         putString("refreshToken", tokenData.refreshToken)

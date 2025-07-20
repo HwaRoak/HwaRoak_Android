@@ -120,14 +120,6 @@ class LoginKakaoActivity : AppCompatActivity() {
         kakao_login_button.setOnClickListener {
             val activityContext = this@LoginKakaoActivity
 
-            val scopes = listOf(
-                "profile_nickname",
-                "profile_image",
-                // 이메일이 필요하면 비즈앱 전환 후에만 사용 가능
-                // "account_email"
-            )
-
-
             if(UserApiClient.instance.isKakaoTalkLoginAvailable(activityContext)){
                 UserApiClient.instance.loginWithKakaoTalk(
                     activityContext,

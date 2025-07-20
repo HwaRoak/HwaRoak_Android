@@ -1,6 +1,7 @@
 package com.example.hwaroak.api.diary.repository
 
-import com.example.hwaroak.api.diary.model.DiaryRequest
+import com.example.hwaroak.api.diary.model.DiaryWriteRequest
+import com.example.hwaroak.api.diary.model.DiaryWriteResponse
 import com.example.hwaroak.api.diary.network.DiaryService
 import java.io.IOException
 import retrofit2.HttpException
@@ -22,19 +23,18 @@ import retrofit2.HttpException
 class DiaryRepository(private val service: DiaryService) {
 
     //1. 일기 작성
-    suspend fun writeDiary(token: String, req: DiaryRequest): Result<String> {
-        return try {
-            //response는 DiaryResponse형 객체로 API 호출 결과를 받는다. (API 명세서 참고)
-            val response = service.writeDiary("Bearer $token", req)
-            //유효성 검사
-            if(response.isSuccessful && response.body()?.code == "SUCCESS"){
-                Result.success(response.body()!!.data ?: "성공")
+    suspend fun writeDiary(token: String, req: DiaryWriteRequest): Result<DiaryWriteResponse> {
+        return try{
+            val response = service.writeDiary(token, req)
+            if(response.isSuccessful){
+                //OK 그대로 전달
+                Result.success(response.body()!!)
             }
             else{
-                Result.failure(
-                    Exception(response.body()?.message ?: "실패")
-                )
+                val error = response.errorBody()?.string().orEmpty()
+                Result.failure(IOException(error))
             }
+
         } catch (e: Exception){
             Result.failure(e)
         }

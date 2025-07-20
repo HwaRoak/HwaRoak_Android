@@ -1,7 +1,9 @@
 package com.example.hwaroak.ui.diary
 
 import android.app.DatePickerDialog
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -50,6 +52,11 @@ class DiaryWriteFragment : Fragment() {
     private var isEditMode = false
     private lateinit var diaryContent : DiaryContent
 
+    //엑세스 토큰
+    //유저 정보를 담을 sharedPreference
+    private lateinit var pref: SharedPreferences
+    private lateinit var accessToken: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //fragment 인자로 받았는지 확인
@@ -70,6 +77,8 @@ class DiaryWriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
+        accessToken = pref.getString("accessToken", "").toString()
 
         //맨 처음 날짜 표시
         updateDateText()

@@ -1,11 +1,19 @@
 package com.example.hwaroak.api.diary.network
 
-import com.example.hwaroak.api.diary.model.DiaryRequest
-import com.example.hwaroak.api.diary.model.DiaryResponse
+import com.example.hwaroak.api.diary.model.DiaryEditRequest
+import com.example.hwaroak.api.diary.model.DiaryEditResponse
+import com.example.hwaroak.api.diary.model.DiaryLookResponse
+import com.example.hwaroak.api.diary.model.DiaryMonthResponse
+import com.example.hwaroak.api.diary.model.DiaryWriteRequest
+import com.example.hwaroak.api.diary.model.DiaryWriteResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 /**
@@ -17,10 +25,39 @@ import retrofit2.http.POST
 
 interface DiaryService {
 
+    //1. 일기 조회 API
+    @GET("api/v1/diary")
+    suspend fun getDiary(
+        @Header("Authorization") token: String,
+        @Query("date") date: String
+    ): Response<DiaryLookResponse>
 
+    //2. 일기 작성 API
     @POST("api/v1/diary")
     suspend fun writeDiary(
         @Header("Authorization") token: String,
-        @Body req: DiaryRequest
-    ) : Response<DiaryResponse>
+        @Body req: DiaryWriteRequest
+    ) : Response<DiaryWriteResponse>
+
+    //3. 일기 수정 API
+    @PATCH("api/v1/diary/{diaryId}")
+    suspend fun editDiary(
+        @Header("Authorization") token: String,
+        @Path("diaryId") diaryId: Int,
+        @Body req: DiaryEditRequest
+    ) : Response<DiaryEditResponse>
+
+    //4. 일기 삭제 API
+    @PATCH("api/v1/diary/trash/{diaryId}")
+    suspend fun deleteDiary(
+        @Header("Authorization") token: String,
+        @Path("diaryId") diaryId: Int
+    ) : Response<Unit>
+
+    //5. 월별 일기 조회 API
+    @GET("api/v1/diary/monthly")
+    suspend fun getMonthDiary(
+        @Header("Authorization") token: String,
+        @Query("month") month: Int
+    ) : Response<List<DiaryMonthResponse>>
 }
