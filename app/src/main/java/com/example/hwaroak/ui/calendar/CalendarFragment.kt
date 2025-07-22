@@ -180,6 +180,10 @@ class CalendarFragment : Fragment() {
                 //각 달에 대한 정보 넣고 달력 refresh
                 monthDec.updateDates(diaryMap.keys)
                 binding.calendarCalendarView.invalidateDecorators()
+                //변경 후 getDataFromData 따단
+                if (diaryMap.containsKey(selectedDate)) {
+                    getDataFromDate(selectedDate)
+                }
 
             }.onFailure { error ->
                 Toast.makeText(requireContext(), "달력 로드 실패: ${error.message}", Toast.LENGTH_SHORT).show()
@@ -333,7 +337,7 @@ class CalendarFragment : Fragment() {
         //3. 오늘 날짜 get 및 상세 페이지에 넣기
         selectedDate = CalendarDay.today()
         calendarViewModel.getMonthDiary(accessToken, selectedDate.year, selectedDate.month)
-        getDataFromDate(selectedDate)
+        //getDataFromDate(selectedDate)
 
     }
 
