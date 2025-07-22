@@ -40,14 +40,24 @@ class FriendListFragment : Fragment() {
         // 친구 추가 버튼용 아이템 추가
         friendList.add(FriendData("", "", "", isAddButton = true))
 
-        adapter = FriendAdapter(friendList) {
-
-            // 친구 추가 버튼 클릭 시 AddFriendFragment로 전환
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, AddFriendFragment())
-                .addToBackStack(null)
-                .commit()
-        }
+        adapter = FriendAdapter(
+            friendList,
+            isManageMode = false,
+            onAddFriendClicked = {
+                // 친구 추가 Fragment 전환
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_fragmentContainer, AddFriendFragment())
+                    .addToBackStack(null)
+                    .commit()
+            },
+            onVisitClicked = { friendData ->
+                // 방문하기 버튼 클릭 → FriendVisitFragment 전환
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_fragmentContainer, FriendVisitFragment())
+                    .addToBackStack(null)
+                    .commit()
+            }
+        )
 
         // recyclerview 세팅
         binding.friendRecyclerview.layoutManager = LinearLayoutManager(requireContext())
