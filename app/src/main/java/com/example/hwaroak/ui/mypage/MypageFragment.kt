@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat.animate
 import com.example.hwaroak.R
+import com.example.hwaroak.databinding.FragmentAnnouncementBinding
 import com.example.hwaroak.databinding.FragmentMypageBinding
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.PieData
@@ -15,14 +17,16 @@ import com.github.mikephil.charting.data.PieEntry
 
 class MypageFragment : Fragment() {
 
-    lateinit var binding: FragmentMypageBinding
+    private var _binding: FragmentMypageBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMypageBinding.inflate(inflater, container, false)
+        _binding = FragmentMypageBinding.inflate(inflater, container, false)
 
+        // 원형 그래프 함수 호출
         initPieChart()
 
         binding.btnMyinfo.setOnClickListener {
@@ -49,7 +53,9 @@ class MypageFragment : Fragment() {
         return binding.root
     }
 
+    // 원형 그래프 함수
     private fun initPieChart() {
+        // 그래프 데이터 비율
         val emotionRatio = listOf(
             PieEntry(25f),
             PieEntry(75f),
@@ -57,6 +63,7 @@ class MypageFragment : Fragment() {
             PieEntry(0f)
         )
 
+        // 그래프 데이터별 색상 지정
         val pieColors = listOf(
             ContextCompat.getColor(requireContext(), R.color.comfy),
             ContextCompat.getColor(requireContext(), R.color.happy),
@@ -64,6 +71,7 @@ class MypageFragment : Fragment() {
             ContextCompat.getColor(requireContext(), R.color.angry)
         )
 
+        // 데이터별
         val dataSet = PieDataSet(emotionRatio, "")
 
         dataSet.colors = pieColors
