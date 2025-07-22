@@ -14,7 +14,7 @@ import com.example.hwaroak.R
 import com.example.hwaroak.databinding.ItemFriendBinding
 import com.google.android.material.button.MaterialButton
 
-class FriendAdapter(private val friendList: MutableList<FriendData>, var isManageMode: Boolean = false,private val onAddFriendClicked: () -> Unit) :
+class FriendAdapter(private val friendList: MutableList<FriendData>, var isManageMode: Boolean = false,private val onAddFriendClicked: () -> Unit,  private val onVisitClicked: (FriendData) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         const val VIEW_TYPE_FRIEND = 0 // 일반 친구
@@ -27,6 +27,11 @@ class FriendAdapter(private val friendList: MutableList<FriendData>, var isManag
         fun bind(friend: FriendData) {
             binding.friendTvName.text = friend.name
             binding.friendTvStatus.text = friend.status
+
+            // 방문하기 버튼 클릭 → 콜백 전달
+            binding.friendVisitTv.setOnClickListener {
+                onVisitClicked(friend)
+            }
 
             //방문하기 버튼은 일반 모드에서만 보여주기
             binding.friendVisitBtn.visibility = if (isManageMode) View.GONE else View.VISIBLE
