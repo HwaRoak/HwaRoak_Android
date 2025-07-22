@@ -154,18 +154,6 @@
                     app:layout_constraintBottom_toBottomOf="@id/diaryFinish_getReward_btn"
                     />
 
-                <ImageView
-                    android:id="@+id/diaryFinish_rew2_imv"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_diary_rew2"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginTop="3dp"
-                    app:layout_constraintStart_toStartOf="@id/diaryFinish_rew1_imv"
-                    app:layout_constraintEnd_toEndOf="@id/diaryFinish_rew1_imv"
-                    app:layout_constraintTop_toTopOf="@id/diaryFinish_rew1_imv"
-                    app:layout_constraintBottom_toBottomOf="@id/diaryFinish_rew1_imv"
-                    />
 
                 <TextView
                     android:id="@+id/diaryFinish_reward_tv"

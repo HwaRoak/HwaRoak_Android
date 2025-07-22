@@ -1,5 +1,7 @@
 package com.example.hwaroak.api.diary.repository
 
+import com.example.hwaroak.api.diary.model.DiaryEditRequest
+import com.example.hwaroak.api.diary.model.DiaryEditResponse
 import com.example.hwaroak.api.diary.model.DiaryWriteRequest
 import com.example.hwaroak.api.diary.model.DiaryWriteResponse
 import com.example.hwaroak.api.diary.network.DiaryService
@@ -55,7 +57,34 @@ class DiaryRepository(private val service: DiaryService) {
             Result.failure(e)
         }
 
-    //2.
+    //2. 일기 수정
+    suspend fun editDiary(accessToken: String, diaryID: Int, req: DiaryEditRequest)
+    :Result<DiaryEditResponse> = try{
+        val token = if (accessToken.startsWith("Bearer ")) accessToken else "Bearer $accessToken"
+        val response = service.editDiary(token, diaryID, req)
+        if(response.isSuccessful){
+            val body = response.body()
+            //Response body가 없을 때
+            if(body == null){
+                Result.failure(RuntimeException("Response body is null"))
+            }
+            //data 값이 없을 때
+            else if(body.data == null){
+                Result.failure(RuntimeException("Response OK but Data is null"))
+            }
+            else{
+                Result.success(body.data)
+            }
+        }
+        else{
+            val errMsg = response.errorBody()?.string() ?: response.message()
+            Result.failure(RuntimeException("HTTP ${response.code()}: $errMsg"))
+        }
+
+    } catch (e: Exception){
+        //오류
+        Result.failure(e)
+    }
 
 
 }

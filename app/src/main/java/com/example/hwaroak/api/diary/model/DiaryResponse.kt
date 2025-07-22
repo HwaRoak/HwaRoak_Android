@@ -35,7 +35,7 @@ data class DiaryWriteResponse(
     val emotionList: List<String>,
     val feedback: String,
     val reward: Int,
-    val item: String
+    val memberItemId: Int
 )
 
 //3. 일기 상세 조회 API 데이터 클래스(parameter만)
@@ -44,7 +44,7 @@ data class DiaryDetailResponse(
     val emotionList: List<String>,
     val feedback: String,
     val reward: Int,
-    val item: String
+    val memberItemId: Int
 )
 
 //4. 일기 삭제 API 데이터 클래스(없음)
@@ -60,7 +60,7 @@ data class DiaryEditResponse(
     val emotionList: List<String>,
     val feedback: String,
     val reward: Int,
-    val item: String
+    val memberItemId: Int
 )
 
 
@@ -70,5 +70,5 @@ data class DiaryMonthResponse(
     val emotionList: List<String>,
     val feedback: String,
     val reward: Int,
-    val item: String
+    val memberItemId: Int
 )
