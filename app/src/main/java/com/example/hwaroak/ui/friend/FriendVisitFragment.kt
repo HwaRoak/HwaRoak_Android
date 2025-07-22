@@ -1,5 +1,8 @@
 package com.example.hwaroak.ui.friend
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,12 +41,12 @@ class FriendVisitFragment : Fragment() {
             // 캐릭터 & 게이지 불 커짐 효과
             animateCharacterAndGaugeFire()
 
-            // API는 아직 연동 X, 단 첫 클릭 시 호출했었다고 표시
+            // API는 아직 연동 X
             if (!hasSentFireOnce) {
                 hasSentFireOnce = true
                 // sendFireApi()
             }
-            //처음 알림에는 안 나오게 할지 수정 예정..
+            //api 연동후 수정예정.. 서버에서 남은 시간 받아야 함
             Toast.makeText(requireContext(), "다음 알림은 59분 후에 전송돼요!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -58,9 +61,16 @@ class FriendVisitFragment : Fragment() {
             it.scaleY = 0f
         }
 
+        //api 연동후 수정..
+        binding.friendVisitBubbleTv.text = "뽀동이님의 화록이 불타올라요!"
+        binding.friendVisitBubbleTv.postDelayed({
+            binding.friendVisitBubbleTv.text = "뽀둥이님은 오늘 즐거워요"
+        }, 900L)
+
         // 각 불 애니메이션
         val duration = 300L
         val delay = 150L
+
 
         fires[0].post {
             fires[0].animate()
@@ -101,21 +111,45 @@ class FriendVisitFragment : Fragment() {
             binding.ivFriendCharacter.setImageResource(R.drawable.img_home_hwaroaki)
         }, 900)
 
-        // 2. 게이지 옆 불: 기울이고 커졌다가 복귀 (전체 0.9초)
         val fireRec = binding.friendFireRecIn
+
+        // 1. 먼저 확대 (확대한 상태 유지)
         fireRec.animate()
-            .rotation(15f)
-            .scaleX(1.4f).scaleY(1.4f)
-            .setDuration(450)
+            .scaleX(1.3f).scaleY(1.3f)
+            .setDuration(300)
+            .setInterpolator(OvershootInterpolator())
             .withEndAction {
-                fireRec.animate()
-                    .rotation(0f)
-                    .scaleX(1f).scaleY(1f)
-                    .setDuration(450)
-                    .start()
+                // 2. 확대된 상태에서 바로 흔들림 시작
+                startFireShakeAnimation(fireRec) {
+                    // 3. 흔들림 종료 후 원래 크기로 복귀
+                    fireRec.animate()
+                        .scaleX(1f).scaleY(1f)
+                        .setDuration(300)
+                        .start()
+                }
             }
             .start()
     }
+
+    private fun startFireShakeAnimation(view: View, onEnd: () -> Unit) {
+        val animator = ObjectAnimator.ofFloat(
+            view,
+            "rotation",
+            -12f, 12f, -10f, 10f, -6f, 6f, 0f
+        )
+        animator.duration = 1400L  // 느리게
+        animator.interpolator = OvershootInterpolator()
+        animator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                onEnd()
+            }
+        })
+        animator.start()
+    }
+
+
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
