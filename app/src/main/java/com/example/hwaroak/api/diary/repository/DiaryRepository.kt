@@ -2,6 +2,7 @@ package com.example.hwaroak.api.diary.repository
 
 import com.example.hwaroak.api.diary.model.DiaryEditRequest
 import com.example.hwaroak.api.diary.model.DiaryEditResponse
+import com.example.hwaroak.api.diary.model.DiaryMonthResponse
 import com.example.hwaroak.api.diary.model.DiaryWriteRequest
 import com.example.hwaroak.api.diary.model.DiaryWriteResponse
 import com.example.hwaroak.api.diary.network.DiaryService
@@ -86,5 +87,49 @@ class DiaryRepository(private val service: DiaryService) {
         Result.failure(e)
     }
 
+    //3. 일기 삭제
+    suspend fun deleteDiary(accessToken: String, diaryID: Int) : Result<Unit> = try{
+        val token = if (accessToken.startsWith("Bearer ")) accessToken else "Bearer $accessToken"
+        val response = service.deleteDiary(token, diaryID)
+        if(response.isSuccessful){
+            Result.success(Unit)
+        }
+        else{
+            val errMsg = response.errorBody()?.string() ?: response.message()
+            Result.failure(RuntimeException("HTTP ${response.code()}: $errMsg"))
+        }
+    } catch (e: Exception){
+        //오류
+        Result.failure(e)
+    }
+
+    //4. 월별 일기 조회
+    suspend fun getMonthDiary(accessToken: String, year: Int, month: Int)
+    : Result<List<DiaryMonthResponse>> = try{
+        val token = if (accessToken.startsWith("Bearer ")) accessToken else "Bearer $accessToken"
+        val response = service.getMonthDiary(token, year, month)
+        if(response.isSuccessful){
+            val body = response.body()
+            //body가 null일 때
+            if(body == null){
+                Result.failure(RuntimeException("Response body is null"))
+            }
+            //data 값이 없을 때
+            else if(body.data == null){
+                Result.failure(RuntimeException("Response OK but Data is null"))
+            }
+            else {
+                Result.success(body.data)
+            }
+        }
+        else{
+            val errMsg = response.errorBody()?.string() ?: response.message()
+            Result.failure(RuntimeException("HTTP ${response.code()}: $errMsg"))
+        }
+
+    }   catch (e: Exception){
+        //오류
+        Result.failure(e)
+    }
 
 }

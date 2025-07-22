@@ -14,14 +14,14 @@ data class DiaryResponseBody<T>(
     val data: T? = null
 )
 
-//1. 일기 조회 API 데이터 클래스(parameter만)
+//1. 일기 조회 API 데이터 클래스(parameter만) - 일기 피드백 정보를 반환
 //requestbody는 X
 data class DiaryLookResponse(
     val id: Int,
     val emotionList: List<String>,
     val feedback: String,
     val reward: Int,
-    val item: String
+    val memberItemId: Int
 )
 
 //2. 일기 작성 API 데이터 클래스
@@ -38,13 +38,12 @@ data class DiaryWriteResponse(
     val memberItemId: Int
 )
 
-//3. 일기 상세 조회 API 데이터 클래스(parameter만)
+//3. 일기 상세 조회 API 데이터 클래스(parameter만) - 내 일기 내용을 반환
 data class DiaryDetailResponse(
     val id: Int,
+    val recordDate: String,
     val emotionList: List<String>,
-    val feedback: String,
-    val reward: Int,
-    val memberItemId: Int
+    val context: String
 )
 
 //4. 일기 삭제 API 데이터 클래스(없음)

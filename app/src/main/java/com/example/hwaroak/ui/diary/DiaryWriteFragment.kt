@@ -259,7 +259,7 @@ class DiaryWriteFragment : Fragment() {
                 val content: String = binding.diaryDiarycontentEdt.text.toString().trim()
                 val emotionList: List<String> = selectedEmotions.map { it.name }
                 val diaryId = diaryViewModel.lastDiaryId
-
+                Log.d("log_diary","일기 수정 날짜: {$recordDate}")
                 diaryViewModel.editDiary(accessToken, diaryId, recordDate, content, emotionList)
 
 
@@ -283,10 +283,7 @@ class DiaryWriteFragment : Fragment() {
             val content: String = binding.diaryDiarycontentEdt.text.toString().trim()
             val emotionList: List<String> = selectedEmotions.map { it.name }
 
-            //Log.d("log_diary", recordDate)
-            //Log.d("log_diary", content)
-            //Log.d("log_diary", emotionList.toString())
-
+            Log.d("log_diary","일기 작성 날짜: {$recordDate}")
             diaryViewModel.writeDiary(accessToken, recordDate, content, emotionList)
 
         }

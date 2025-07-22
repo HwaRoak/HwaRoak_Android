@@ -1,5 +1,7 @@
 package com.example.hwaroak.ui.calendar
 
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.text.SpannableString
@@ -12,8 +14,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import com.example.hwaroak.R
+import com.example.hwaroak.api.HwaRoakClient
+import com.example.hwaroak.api.diary.access.CalendarViewModel
+import com.example.hwaroak.api.diary.access.CalendarViewModelFactory
+import com.example.hwaroak.api.diary.access.DiaryViewModelFactory
+import com.example.hwaroak.api.diary.model.DiaryMonthResponse
+import com.example.hwaroak.api.diary.repository.DiaryRepository
 import com.example.hwaroak.data.DiaryContent
 import com.example.hwaroak.data.DiaryEmotion
 import com.example.hwaroak.databinding.FragmentCalendarBinding
@@ -39,12 +49,6 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 
-//임시 클래스(여기는 달력의 결과만이 담긴다)
-data class EmotionResult(
-    var conversation: String,
-    var emotion: MutableSet<DiaryEmotion>
-)
-
 
 class CalendarFragment : Fragment() {
     // TODO: Rename and change types of parameters
@@ -56,6 +60,7 @@ class CalendarFragment : Fragment() {
     //일단 임시 data (선택한 날짜 및 정보)
     private lateinit var selectedDate: CalendarDay
     private lateinit var todayDate : LocalDate
+ /*
     private var tmpData: MutableMap<CalendarDay, EmotionResult> =
         mutableMapOf(
             CalendarDay.today() to EmotionResult(
@@ -85,15 +90,22 @@ class CalendarFragment : Fragment() {
             )
         )
     )
-    
-    //얘는 달력에 있는 감정들이라고 생각
-    private var selectedEmotions: MutableSet<DiaryEmotion> =
-        mutableSetOf(
-            DiaryEmotion("차분한", R.drawable.ic_emotion1),
-            DiaryEmotion("뿌듯한", R.drawable.ic_emotion2),
-            DiaryEmotion("행복한", R.drawable.ic_emotion3)
-        )
+*/
 
+    //캘린터 viewModel 정의
+    private val diaryRepository by lazy {
+        DiaryRepository(HwaRoakClient.diaryService)
+    }
+    private val calendarViewModel: CalendarViewModel by viewModels(
+        factoryProducer = { CalendarViewModelFactory(diaryRepository)}
+    )
+
+    //token 받기
+    private lateinit var pref: SharedPreferences
+    private lateinit var accessToken: String
+
+    //API로 받은 것을 바탕으로 설정한 map
+    private val diaryMap = mutableMapOf<CalendarDay, DiaryMonthResponse>()
 
 
     //각 달력의 데코레이터
@@ -123,18 +135,23 @@ class CalendarFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
+        accessToken = pref.getString("accessToken", "").toString()
 
         //초기화
         todayDec    = TodayDecorator(requireContext())
         selectedDec = SelectedDecorator(requireContext())
         sundayDec   = SundayDecorator(requireContext())
-        /**이 부분은 최초에 AP에서 값들들 가져왔을 때의 경우**/
-        monthDec = MonthDecorator(requireContext(), tmpData.keys)
+        /**이 부분은 최초에 AP에서 값들들 가져왔을 때의 경우 -> 처음은 emptyset observer에서 휘치**/
+        monthDec = MonthDecorator(requireContext(), emptySet())
 
-        //달력 초기화 및 리스너 달기
+        //0. 옵저버 설정 및 위의 값 설정
+        observeMonthData()
+
+        //1. 달력 초기화 및 리스너 달기
         initCalendar()
 
-        //상세보기(수정하기 페이지 이동)
+        //2. 상세보기(수정하기 페이지 이동)
         goEditFragment()
 
         //삭제하기
@@ -145,20 +162,46 @@ class CalendarFragment : Fragment() {
 
     }
 
-    //상세 보기 페이지로 이동(여부 판단)
+
+    //옵저버 설정(딱 1번)
+    //viewModel의 List<> -> Map<>로 바꿔서 저장
+    private fun observeMonthData(){
+        calendarViewModel.monthDiaryResult.observe(viewLifecycleOwner){result ->
+            //resp = list<diaryMonthResponse>
+            result.onSuccess { resp->
+                //일단 초기화
+                diaryMap.clear()
+                //diary = diaryMontheResponse
+                resp.forEach { diary->
+                    val localDate = LocalDate.parse("2025-07-21")
+                    val day = CalendarDay.from(localDate)
+                    diaryMap[day] = diary
+                }
+                //각 달에 대한 정보 넣고 달력 refresh
+                monthDec.updateDates(diaryMap.keys)
+                binding.calendarCalendarView.invalidateDecorators()
+
+            }.onFailure { error ->
+                Toast.makeText(requireContext(), "달력 로드 실패: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+    //상세 보기 페이지로 이동(여부 판단) --> 여기는 일기 상세 페이지 갖고 와서 돌리는 걸로
     private fun goEditFragment(){
         //일단 그날에 대한 일기 정보(날짜, 일기 내용, 감정)
-
+/*
         binding.calendarGodetailBtn.setOnClickListener {
             //1. 번들에 담기 전에 일기 작성 기록이 있는지 체크
-            val nowDiary = tmpData[selectedDate] ?: EmotionResult("",
-                mutableSetOf<DiaryEmotion>())
+            val nowDiary = diaryMap[selectedDate] ?: DiaryMonthResponse(-1, emptyList(),
+                "아직 일기를 기록하지 않았어요", 0, -1)
 
 
             val diaryContent = DiaryContent(
                 date = selectedDate,
                 content = "이게 일기의 내용이래요!!!",
-                emotions = nowDiary.emotion
+                emotions = nowDiary.emotionList
             )
             val bundle = Bundle().apply {
                 putParcelable("KEY_RESULT", diaryContent)
@@ -168,6 +211,7 @@ class CalendarFragment : Fragment() {
             (requireActivity() as MainActivity).navigateToDiaryWith(bundle)
 
         }
+        */
     }
 
     //삭제 다이얼로그 띄우기
@@ -192,8 +236,17 @@ class CalendarFragment : Fragment() {
                 dialog.dismiss()
             }
             view.findViewById<MaterialButton>(R.id.dialog_delete_btn).setOnClickListener {
-                tmpData.remove(selectedDate)
-                getDataFromDate(selectedDate)
+                //id가 유효한 경우에만 수행
+                diaryMap[selectedDate]?.id?.let{
+                    calendarViewModel.deleteDiary(accessToken, diaryMap[selectedDate]!!.id)
+                    //낙관적 업데이트
+                    diaryMap.remove(selectedDate)
+                    monthDec.updateDates(diaryMap.keys)
+                    //달력에 알림
+                    binding.calendarCalendarView.invalidateDecorators()
+                    //데이터 업데이트(상세페이지 업데이트)
+                    getDataFromDate(selectedDate)
+                }
                 dialog.dismiss()
 
             }
@@ -209,6 +262,7 @@ class CalendarFragment : Fragment() {
 
         //1. 달력 초기화
         val cal = binding.calendarCalendarView
+
 
         //일요일 시작(오늘 이후 터치 불가)
         cal.state().edit()
@@ -264,22 +318,21 @@ class CalendarFragment : Fragment() {
                     //3. 로그 출력
                     Log.d("log_calendar", date.toString())
                     //4. 선택한 날짜 저장 및 상세 페이지 넣기
-                    getDataFromDate(selectedDate!!)
+                    getDataFromDate(date)
                 }
             }
 
             //이번에는 월이 바뀌었을 때 반응
             setOnMonthChangedListener { _, date ->
-                //1. 데코레이터에 새 월 값을 보내고
-                monthDec.updateDates(tmpData.keys)
-                //2. 달력 리프레시
-                invalidateDecorators()
+                //api 호출
+                calendarViewModel.getMonthDiary(accessToken, date.year, date.month)
                 
             }
         }
         
         //3. 오늘 날짜 get 및 상세 페이지에 넣기
         selectedDate = CalendarDay.today()
+        calendarViewModel.getMonthDiary(accessToken, selectedDate.year, selectedDate.month)
         getDataFromDate(selectedDate)
 
     }
@@ -312,8 +365,8 @@ class CalendarFragment : Fragment() {
         )
 
         //일기 기록이 없는 경우
-        val entry = tmpData[date] ?: EmotionResult("아직 일기를 기록하지\n않았어요",
-            mutableSetOf<DiaryEmotion>())
+        val entry = diaryMap[date] ?: DiaryMonthResponse(-1, emptyList(),
+            "아직 일기를 기록하지 않았어요", 0, -1)
         selectedDate = date
 
         // 1) “2025-07-04” 형태
@@ -327,26 +380,26 @@ class CalendarFragment : Fragment() {
         Log.d("log_calendar", dayFormat2)
 
         //감정들 string만 뽑아서
-        var emotionString = entry.emotion.joinToString(" ") { it.name }
-        if(emotionString.equals("")){emotionString = "기록 없음"}
+        var emotionString = if(entry.emotionList.isEmpty()){"기록 없음"}
+        else{entry.emotionList.joinToString(" ")}
         //화록의 한마디
-        binding.calendarTodayHwaroakTalkTv.text = entry.conversation
+        binding.calendarTodayHwaroakTalkTv.text = entry.feedback
         //오늘의 날짜
         binding.calendarTodayTv.text = dayFormat2
         //감정 출력
         binding.calendarFeelingTv.text = emotionString
         //감정 이모티콘
-        if(entry.emotion.size > 1){
+        if(entry.emotionList.size > 1){
             binding.calendarEmotionCharacterImv.setImageResource(R.drawable.ic_calendar_asura)
         }
         else{
             var tmpIconId : Int
             if(emotionString.equals("기록 없음")){tmpIconId = R.drawable.ic_calendar_mupyojeong}
-            else{tmpIconId = emotionIcon[emotionString] ?: R.drawable.ic_calendar_mupyojeong}
+            else{tmpIconId = emotionIcon[entry.emotionList.get(0)] ?: R.drawable.ic_calendar_mupyojeong}
             binding.calendarEmotionCharacterImv.setImageResource(tmpIconId)
         }
         //삭제 버튼 활성화 여부
-        if(entry.emotion.size > 0){
+        if(entry.emotionList.size > 0){
             binding.calendarDeleteBtn.isEnabled = true
             binding.calendarDeleteBtn.setBackgroundResource(R.drawable.bg_diary_write_btn)
         }
