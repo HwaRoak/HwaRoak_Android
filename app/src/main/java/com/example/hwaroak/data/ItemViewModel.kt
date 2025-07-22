@@ -13,7 +13,7 @@ class ItemViewModel : ViewModel() {
     init {
         val initalItem = LockerItem(
             id = 0,
-            name = "자물쇠",
+            name = "default",
             imageRes = R.drawable.img_item_lock
         )
         _homeItemList.value = listOf(initalItem)
