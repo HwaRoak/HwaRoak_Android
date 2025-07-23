@@ -175,6 +175,7 @@ class DiaryFinishFragment : Fragment() {
 
         //리워드 남을 날짜, 아이템 ID, 다이어리 ID, 해당 다이어리의 감정 바 타입
         diaryPref.edit{
+            putBoolean("isWrite", true)
             putInt("reward", reward)
             putInt("itemId", itemId)
             putInt("diaryId", dirayId)

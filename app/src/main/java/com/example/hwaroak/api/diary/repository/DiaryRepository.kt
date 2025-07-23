@@ -1,7 +1,9 @@
 package com.example.hwaroak.api.diary.repository
 
+import com.example.hwaroak.api.diary.model.DiaryDetailResponse
 import com.example.hwaroak.api.diary.model.DiaryEditRequest
 import com.example.hwaroak.api.diary.model.DiaryEditResponse
+import com.example.hwaroak.api.diary.model.DiaryLookResponse
 import com.example.hwaroak.api.diary.model.DiaryMonthResponse
 import com.example.hwaroak.api.diary.model.DiaryWriteRequest
 import com.example.hwaroak.api.diary.model.DiaryWriteResponse
@@ -129,6 +131,58 @@ class DiaryRepository(private val service: DiaryService) {
 
     }   catch (e: Exception){
         //오류
+        Result.failure(e)
+    }
+
+    //5. 날짜별 일기 조회(피드백)
+    suspend fun getDiary(accessToken: String, date: String)
+    : Result<DiaryLookResponse> = try{
+        val token = if (accessToken.startsWith("Bearer ")) accessToken else "Bearer $accessToken"
+        val response = service.getDiary(token, date)
+        if(response.isSuccessful){
+            val body = response.body()
+            if(body == null){
+                Result.failure(RuntimeException("Response body is null"))
+            }
+            else if(body.data == null){
+                Result.failure(RuntimeException("Response OK but Data is null"))
+            }
+            else{
+                Result.success(body.data)
+            }
+        }
+        else{
+            val errMsg = response.errorBody()?.string() ?: response.message()
+            Result.failure(RuntimeException("HTTP ${response.code()}: $errMsg"))
+        }
+    } catch (e: Exception){
+        //오류 리턴
+        Result.failure(e)
+    }
+
+    //6. 일기 상세 조회(일기
+    suspend fun getDetailDiary(accessToken: String, diaryID: Int)
+    :Result<DiaryDetailResponse> = try{
+        val token = if (accessToken.startsWith("Bearer ")) accessToken else "Bearer $accessToken"
+        val response = service.getDetailDiary(token, diaryID)
+        if(response.isSuccessful){
+            val body = response.body()
+            if(body == null){
+                Result.failure(RuntimeException("Response body is null"))
+            }
+            else if(body.data == null){
+                Result.failure(RuntimeException("Response OK but Data is null"))
+            }
+            else{
+                Result.success(body.data)
+            }
+        }
+        else{
+            val errMsg = response.errorBody()?.string() ?: response.message()
+            Result.failure(RuntimeException("HTTP ${response.code()}: $errMsg"))
+        }
+    } catch (e: Exception){
+        //오류 리턴
         Result.failure(e)
     }
 

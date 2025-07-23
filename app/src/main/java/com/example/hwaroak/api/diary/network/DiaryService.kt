@@ -48,7 +48,6 @@ interface DiaryService {
     suspend fun getDetailDiary(
         @Header("Authorization") token: String,
         @Path("diaryId") diaryId: Int,
-        @Body req: DiaryEditRequest
     ) : Response<DiaryResponseBody<DiaryDetailResponse>>
 
     //4. 일기 삭제 API

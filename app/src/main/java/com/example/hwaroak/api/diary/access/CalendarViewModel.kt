@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hwaroak.api.diary.model.DiaryDetailResponse
 import com.example.hwaroak.api.diary.model.DiaryMonthResponse
 import com.example.hwaroak.api.diary.model.DiaryWriteResponse
 import com.example.hwaroak.api.diary.repository.DiaryRepository
@@ -17,6 +18,9 @@ class CalendarViewModel(private val repository: DiaryRepository) : ViewModel()  
     private val _monthDiaryResult = MutableLiveData<Result<List<DiaryMonthResponse>>>()
     val monthDiaryResult: LiveData<Result<List<DiaryMonthResponse>>> = _monthDiaryResult
 
+    //선택한 일기의 상세 내용
+    private val _detailDiaryResult = MutableLiveData<Result<DiaryDetailResponse>>()
+    val detailDiaryResult: LiveData<Result<DiaryDetailResponse>> = _detailDiaryResult
 
 
     //월별 일기 조회
@@ -31,9 +35,18 @@ class CalendarViewModel(private val repository: DiaryRepository) : ViewModel()  
     fun deleteDiary(accessToken: String, diaryID: Int) {
         viewModelScope.launch {
             repository.deleteDiary(accessToken, diaryID)
-
         }
 
+    }
+
+    //일기 날짜별 조회 -> 근데 사실상 월별 조회에서 커버 가능
+
+
+    //일기 상세 데이터 조회(내가 쓴 내용 조회)
+    fun getDetailDiary(accessToken: String, diaryID: Int) {
+        viewModelScope.launch{
+            val res = repository.getDetailDiary(accessToken, diaryID)
+        }
     }
 
 }

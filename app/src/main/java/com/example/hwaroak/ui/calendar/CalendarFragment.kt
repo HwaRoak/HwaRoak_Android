@@ -337,7 +337,7 @@ class CalendarFragment : Fragment() {
         //3. 오늘 날짜 get 및 상세 페이지에 넣기
         selectedDate = CalendarDay.today()
         calendarViewModel.getMonthDiary(accessToken, selectedDate.year, selectedDate.month)
-        //getDataFromDate(selectedDate)
+        getDataFromDate(selectedDate)
 
     }
 
