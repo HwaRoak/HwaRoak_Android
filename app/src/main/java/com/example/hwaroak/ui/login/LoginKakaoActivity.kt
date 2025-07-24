@@ -6,6 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.edit
+import androidx.lifecycle.lifecycleScope
+import com.example.hwaroak.api.HwaRoakClient
+import com.example.hwaroak.api.login.repository.LoginRepository
 import com.example.hwaroak.databinding.ActivityLoginKakaoBinding
 import com.example.hwaroak.ui.main.MainActivity
 import com.kakao.sdk.auth.TokenManagerProvider
@@ -14,14 +18,35 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class LoginKakaoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginKakaoBinding
+
+    //유저 정보를 담을 sharedPreference
+    private lateinit var pref: SharedPreferences
+    private lateinit var diaryPref: SharedPreferences
+    //로그인 API 일루와잇
+    private lateinit var loginRepository: LoginRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginKakaoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //sharedPreference 정의(user) 및 repo 정의
+        pref = getSharedPreferences("user", MODE_PRIVATE)
+        loginRepository = LoginRepository(HwaRoakClient.loginService, pref)
+
+        //일기 정보 체크
+        diaryPref = getSharedPreferences("diary", MODE_PRIVATE)
 
         //kakaoLogout()
 
@@ -46,20 +71,12 @@ class LoginKakaoActivity : AppCompatActivity() {
                 Log.i("KakaoLogin", "실제 AccessToken: $token")
 
 
-                Toast.makeText(this, "토큰 정보 보기 성공", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "토큰 정보 보기 성공", Toast.LENGTH_SHORT).show()
 
-                //약관 동의를 했으면 
-                if(checkAgree) {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-                    finish()
-                }
-                //약관 동의를 안했으면
-                else{
-                    val intent = Intent(this, AgreeActivity::class.java)
-                    startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-                    finish()
-                }
+                /**API 불러오기**/
+                getAccessTokenWithLogin(token!!, checkAgree)
+
+
             }
         }
 
@@ -103,9 +120,7 @@ class LoginKakaoActivity : AppCompatActivity() {
                 //
                 Log.i("KakaoLogin", "로그인 성공: ${token.accessToken}")
                 //
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-                finish()
+                getAccessTokenWithLogin(token.accessToken, checkAgree)
             }
         }
 
@@ -113,14 +128,6 @@ class LoginKakaoActivity : AppCompatActivity() {
 
         kakao_login_button.setOnClickListener {
             val activityContext = this@LoginKakaoActivity
-
-            val scopes = listOf(
-                "profile_nickname",
-                "profile_image",
-                // 이메일이 필요하면 비즈앱 전환 후에만 사용 가능
-                // "account_email"
-            )
-
 
             if(UserApiClient.instance.isKakaoTalkLoginAvailable(activityContext)){
                 UserApiClient.instance.loginWithKakaoTalk(
@@ -135,7 +142,64 @@ class LoginKakaoActivity : AppCompatActivity() {
             }
 
         }
+
+
+        //일기 정보 체크(만약 오늘과 다르면 false)
+        val recordDate = diaryPref.getString("recordDate", "") ?: ""
+        if(!isEquailToday(recordDate)){
+            diaryPref.edit{
+                putBoolean("isWrite", false)
+                putInt("reward", 0)
+                putString("memberItemName", "")
+                putInt("diaryId", 0)
+                putInt("barType", 0)
+                putString("recordDate", "")
+                apply()
+            }
+        }
+
     }
+
+    private fun getAccessTokenWithLogin(token: String, checkAgree: Boolean){
+        //API는 무조건 lifeScope로 돌리기
+        lifecycleScope.launch {
+            val ok = loginRepository.KakaoLogin(token)
+            withContext(Dispatchers.Main){
+                //엑세스 토큰 발급 받은 경우
+                //성공적!
+                if(ok){
+                    Toast.makeText(this@LoginKakaoActivity, "API 받아오기 성공!", Toast.LENGTH_SHORT).show()
+                    Log.d("kakaoLogin", "엑세스 토큰: " + pref.getString("accessToken", "").toString())
+                    Log.d("kakaoLogin", "리프레시 토큰: " + pref.getString("refreshToken", "").toString())
+                    Log.d("kakaoLogin", "닉네임: " + pref.getString("nickname", "").toString())
+                    Log.d("kakaoLogin", "유저 아이디: " + pref.getInt("memberId", 0).toString())
+                    /**실험**/
+                    //val ok2 = loginRepository.requestToken(pref.getString("accessToken", "").toString(),
+                    //    pref.getString("refreshToken", "").toString())
+                    //Log.d("kakaoLogin", "재발금 후 엑세스 토큰: " + pref.getString("accessToken", "").toString())
+                    //Log.d("kakaoLogin", "재발금 후 리프레시 토큰: " + pref.getString("refreshToken", "").toString())
+
+                    //약관 동의를 했으면
+                    if(checkAgree) {
+                        val intent = Intent(this@LoginKakaoActivity, MainActivity::class.java)
+                        startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                        finish()
+                    }
+                    //약관 동의를 안했으면
+                    else{
+                        val intent = Intent(this@LoginKakaoActivity, AgreeActivity::class.java)
+                        startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                        finish()
+                    }
+                }
+                //실패적!
+                else{
+                    Toast.makeText(this@LoginKakaoActivity, "API 받아오기 실패!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } //lifescope 끝
+    }
+
 
     private fun kakaoLogout() {
         // 1) 카카오 서버에 로그아웃 요청
@@ -152,5 +216,19 @@ class LoginKakaoActivity : AppCompatActivity() {
                 .clear()
         }
     }
+
+    //오늘 날짜랑 비교 준비(sharedPref 초기화 용도)
+    fun isEquailToday(dateString: String): Boolean {
+        // 1) 포맷터 준비 (Asia/Seoul)
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA).apply {
+            timeZone = TimeZone.getTimeZone("Asia/Seoul")
+        }
+
+        val todayString = sdf.format(Date())
+
+        // 2) 비교
+        return dateString == todayString
+    }
+
 
 }

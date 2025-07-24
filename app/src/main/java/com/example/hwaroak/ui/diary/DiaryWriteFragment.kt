@@ -1,7 +1,9 @@
 package com.example.hwaroak.ui.diary
 
 import android.app.DatePickerDialog
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,19 +11,34 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.DiaryEmotionAdaptor
+import com.example.hwaroak.api.HwaRoakClient
+import com.example.hwaroak.api.diary.access.DiaryViewModel
+import com.example.hwaroak.api.diary.access.DiaryViewModelFactory
+import com.example.hwaroak.api.diary.model.DiaryDetailResponse
+import com.example.hwaroak.api.diary.model.DiaryResponseBody
+import com.example.hwaroak.api.diary.model.DiaryWriteResponse
+import com.example.hwaroak.api.diary.repository.DiaryRepository
+import com.example.hwaroak.api.login.repository.LoginRepository
 import com.example.hwaroak.data.DiaryContent
 import com.example.hwaroak.data.DiaryEmotion
 import com.example.hwaroak.databinding.FragmentDiaryWriteBinding
+import org.json.JSONObject
 import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.Calendar
 import java.util.Locale
+import java.util.TimeZone
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,6 +55,24 @@ class DiaryWriteFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    val emotionMap = mapOf(
+        "차분한" to R.drawable.ic_emotion1,
+        "뿌듯한" to R.drawable.ic_emotion2,
+        "행복한" to R.drawable.ic_emotion3,
+        "기대됨" to R.drawable.ic_emotion4,
+        "설렘"   to R.drawable.ic_emotion5,
+        "감사함" to R.drawable.ic_emotion6,
+        "신나는" to R.drawable.ic_emotion7,
+        "슬픈"   to R.drawable.ic_emotion8,
+        "화나는" to R.drawable.ic_emotion9,
+        "무료함" to R.drawable.ic_emotion10,
+        "피곤함" to R.drawable.ic_emotion11,
+        "짜증남" to R.drawable.ic_emotion12,
+        "외로움" to R.drawable.ic_emotion13,
+        "우울함" to R.drawable.ic_emotion14,
+        "스트레스" to R.drawable.ic_emotion15
+    )
+
     private lateinit var binding: FragmentDiaryWriteBinding
 
     //선택된 item view들의 집합
@@ -48,14 +83,30 @@ class DiaryWriteFragment : Fragment() {
 
     //수정 모드인지 아니면 새로 쓰는지 확인
     private var isEditMode = false
-    private lateinit var diaryContent : DiaryContent
+    private lateinit var existDiary: DiaryDetailResponse
+
+    //엑세스 토큰
+    //유저 정보를 담을 sharedPreference
+    private lateinit var pref: SharedPreferences
+    private lateinit var accessToken: String
+
+    //viewModel 정의
+    // 1) Retrofit 서비스로 Repository 인스턴스 생성
+    private val diaryRepository by lazy {
+        DiaryRepository(HwaRoakClient.diaryService)
+    }
+    // 2) Activity 스코프로 ViewModel 생성 (Factory 주입)
+    private val diaryViewModel: DiaryViewModel by viewModels(
+        ownerProducer = { requireParentFragment() },
+        factoryProducer = { DiaryViewModelFactory(diaryRepository) }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //fragment 인자로 받았는지 확인
-        arguments?.getParcelable<DiaryContent>("KEY_RESULT")?.let {
+        arguments?.getParcelable<DiaryDetailResponse>("KEY_RESULT")?.let {
             isEditMode = true
-            diaryContent = it
+            existDiary = it
         }
     }
 
@@ -70,6 +121,8 @@ class DiaryWriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
+        accessToken = pref.getString("accessToken", "").toString()
 
         //맨 처음 날짜 표시
         updateDateText()
@@ -77,12 +130,31 @@ class DiaryWriteFragment : Fragment() {
         //만약 bundle로 가져올 경우
         //1. 일단 calender에서 온 것이니 날짜 최신화 체크
         //2. 만약 emotion이 1개 이상이면 기존 꺼 수정이니 수정 check
+        /**
+         * 로직이 꼬이는 문제가 발생
+         * 달력에서 새로 입력하는 과정에서 UI문제 및 로드 문제가 발생
+         * -> 이를 위해 달력에서 오더라도 새로 입력하는 경우는 강제로 분기를 일기쓰기 -> 새로 쓰기로 변경함
+         * -> 감정이 없다 = 이전에 쓴 경험이 없다!
+         * **/
+
         if(isEditMode){
             Log.d("log_diary", "Edit Mode IN")
             settingUIFromData()
-            if(diaryContent.emotions.size>0){
+            if(existDiary.emotionList.size>0){
                 binding.diaryFinishOrEditTv.text = "수정하기"
+                diaryViewModel.setEditMode() // isWrite = 2
+                diaryViewModel.isEditCalendar = true
             }
+            else{
+                diaryViewModel.setWriteMode() // // isWrite = 1
+                diaryViewModel.isEditCalendar = false
+                isEditMode = false
+            }
+
+        }
+        else{
+            diaryViewModel.setWriteMode() // // isWrite = 1
+            diaryViewModel.isEditCalendar = false
         }
 
         //recyclerviwe 연결 + 일기 작성 버튼 핸들링
@@ -119,35 +191,162 @@ class DiaryWriteFragment : Fragment() {
 
         //작성 버튼 클릭 리스너 설정
         binding.diaryFinishBtn.setOnClickListener {
+            //수정 모드 -> 근데 달력에서 온 걸 수도 있다!
+            /**
+             * 
+             * 여기서 사실상 isEditMode = 달력에서 온 것 + 이전에 작성한 이력이 있는 것으로 판단
+             * 
+             * **/
+            if(isEditMode){
+                editDiaryWithAPI()
+                
+            }
+            //새로 쓰기 모드
+            else {
+                if(diaryViewModel.isWrite.value == 1){
+                    writeDiaryWithAPI()
+                }
+                else{
+                    editDiaryWithAPI()
+                }
 
-            Log.d("log_diary", calendar.time.toString())
-            Log.d("log_diary", selectedEmotions.toString())
-            Log.d("log_diary", binding.diaryDiarycontentEdt.text.toString())
+            }
 
-            (parentFragment as DiaryFragment)
-                .binding
-                .diaryViewpager
-                .currentItem = 1
+
         }
+
+        /**옵저버**/
+        //1. 일기 수정
+        diaryViewModel.editResult.observe(viewLifecycleOwner) { result ->
+                result.onSuccess { resp ->
+                    // 성공 시
+                    Log.d("log_diary", "일기 수정 SUCCESS!")
+                    Log.d("log_diary", "id=${resp.id} / response=${resp.feedback}")
+                    Log.d("log_diary", "${resp.emotionList}")
+                    diaryViewModel.lastDiaryId = resp.id
+
+                    (parentFragment as DiaryFragment)
+                        .binding
+                        .diaryViewpager
+                        .currentItem = 1
+
+                }.onFailure { err ->
+                    // 실패 시
+                    Toast.makeText(
+                        requireContext(),
+                        "수정 중 오류 발생: {$err}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+        }
+
+        //2. 일기 작성
+        diaryViewModel.writeResult.observe(viewLifecycleOwner) { result ->
+                result.onSuccess { resp ->
+                    // 성공 시
+                    Log.d("log_diary", "일기 작성 SUCCESS!")
+                    Log.d("log_diary", "id=${resp.id} / response=${resp.feedback}")
+                    Log.d("log_diary", "${resp.emotionList}")
+                    diaryViewModel.lastDiaryId = resp.id
+
+                    (parentFragment as DiaryFragment)
+                        .binding
+                        .diaryViewpager
+                        .currentItem = 1
+                }.onFailure { err ->
+                    // 실패 시
+                    Log.d("log_diary", err.message.toString())
+
+                    //여기서 이미 일기를 작성한 에러인 경우 따로 처리
+                    val raw = err.message ?: ""
+                    // "HTTP 400: " 뒤의 순수 JSON 문자열만 추출
+                    val jsonPart = raw.substringAfter(":").trim()
+                    try {
+                        val obj = JSONObject(jsonPart)
+                        val code = obj.optString("code")
+                        val message = obj.optString("message")
+                        if (code == "DE4001") {
+                            Toast.makeText(
+                                requireContext(),
+                                "오늘은 이미 일기를 작성하셨습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                    } catch (e: Exception) {
+                        // JSON 파싱 실패 시 기본 에러 토스트
+                        Toast.makeText(
+                            requireContext(),
+                            "일기 저장 중 오류가 발생했습니다: ${err.localizedMessage}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+        }
+
+        //
 
     }
 
+    //diaryEditAPI 호출
+    private fun editDiaryWithAPI(){
+        //일단 현재에서 수정해야 하는 경우
+        if(diaryViewModel.isEditCalendar == false) {
+
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                val recordDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    .format(calendar.time)
+                val content: String = binding.diaryDiarycontentEdt.text.toString().trim()
+                val emotionList: List<String> = selectedEmotions.map { it.name }
+                val diaryId = diaryViewModel.lastDiaryId
+                Log.d("log_diary","일기 수정 날짜: {$recordDate}")
+                diaryViewModel.editDiary(accessToken, diaryId, recordDate, content, emotionList)
+
+            }
+
+        }
+            //달력에서 수정하는 경우(bundle에서 가져온 거 활용)
+            else{
+                viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                    val recordDate = existDiary.recordDate
+                    val content: String = binding.diaryDiarycontentEdt.text.toString().trim()
+                    val emotionList: List<String> = selectedEmotions.map { it.name }
+                    val diaryId = existDiary.id
+                    diaryViewModel.editDiary(accessToken, diaryId, recordDate, content, emotionList)
+                }
+            }
+
+
+    }
+
+    //diaryWriteAPI 호출
+    private fun writeDiaryWithAPI() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            //일단 날짜랑 컨텐츠, 감정을 변수로
+            //val recordDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            //    .format(calendar.time)
+            val tvWeek = binding.diaryNowdayTv.text.toString()
+            val recordDate = formatWeekDayToIso(tvWeek)
+            val content: String = binding.diaryDiarycontentEdt.text.toString().trim()
+            val emotionList: List<String> = selectedEmotions.map { it.name }
+
+            Log.d("log_diary","일기 작성 날짜: {$recordDate}")
+            diaryViewModel.writeDiary(accessToken, recordDate, content, emotionList)
+
+        }
+    }
+
+
     //bundle에 값 있을 경우 이걸로 하기
     private fun settingUIFromData(){
-        var today = diaryContent.date
-        var content = diaryContent.content
-        var emotions = diaryContent.emotions
+        var today = existDiary.recordDate
+        var content = existDiary.content
+        var emotionList = existDiary.emotionList
+        var emotions = stringToDiaryEmotions(emotionList)
         
-        //1. 날짜 string
-        val dfm = DateTimeFormatter.ofPattern("MM월 dd일 E요일", Locale.KOREAN)
-        val dayFormat = today.date.format(dfm)
-        Log.d("log_diary", dayFormat)
+        //1. 날짜 string 바꾸기 (2025-07-24 -> 2025년 07월 24일 목요일)
+        val dayFormat = formatIsoToKoreanWithWeekday(today)
 
-        val cal = Calendar.getInstance().apply {
-            set(Calendar.YEAR,  today.year)
-            set(Calendar.MONTH, today.month - 1)
-            set(Calendar.DAY_OF_MONTH, today.day)
-        }
         binding.diaryNowdayTv.text = dayFormat
 
         //2. 내용
@@ -159,10 +358,20 @@ class DiaryWriteFragment : Fragment() {
 
     }
 
+    //String -> DiaryEmotion
+    fun stringToDiaryEmotions(emotionNames: List<String>): Collection<DiaryEmotion> {
+        return emotionNames.mapNotNull { name ->
+            emotionMap[name]?.let { resId ->
+                DiaryEmotion(name, resId)
+            }
+        }
+    }
+
+
     //현재 날짜에 따라 텍스트 변경
     private fun updateDateText(){
         //"yyyy년 MM월 dd일 E요일"
-        val format = SimpleDateFormat("MM월 dd일 E요일", Locale.KOREAN)
+        val format = SimpleDateFormat("yyyy년 MM월 dd일 E요일", Locale.KOREAN)
         val dateString = format.format(calendar.time)
         binding.diaryNowdayTv.text = dateString
     }
@@ -235,22 +444,45 @@ class DiaryWriteFragment : Fragment() {
         }
     }
 
-    //달력 다이얼로그를 열어서 날짜 선택
-    private fun pickDayFromCalendar(){
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        //기존 지원 달력 다이얼로그 활용
-        //콜백 함수를 통해 선택한 y,m,d를 get해서 calendar 객체에 적용
-        DatePickerDialog(requireContext(), { _, y, m, d ->
-            calendar.set(Calendar.YEAR, y)
-            calendar.set(Calendar.MONTH, m)
-            calendar.set(Calendar.DAY_OF_MONTH, d)
-            updateDateText()
-        }, year, month, day).show()
+    //ISO format을 바꿔주기 (2025-07-24 -> 2025년 07월 24일 목요일)
+    private fun formatIsoToKoreanWithWeekday(iso: String): String {
+        // 1) "yyyy-MM-dd" 분리
+        val parts = iso.split("-")
+        if (parts.size != 3) return iso
+
+        val year  = parts[0].toIntOrNull() ?: return iso
+        val month = parts[1].toIntOrNull() ?: return iso
+        val day   = parts[2].toIntOrNull() ?: return iso
+
+        // 2) 캘린더에 세팅 (Asia/Seoul 기준)
+        val cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA).apply {
+            // month 는 0~11 이므로 -1
+            set(year, month - 1, day)
+        }
+
+        // 3) 요일명 매핑
+        val weekdayNames = arrayOf(
+            "일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"
+        )
+        // Calendar.DAY_OF_WEEK: 1=일요일, 2=월요일, …, 7=토요일
+        val weekday = weekdayNames[cal.get(Calendar.DAY_OF_WEEK) - 1]
+
+        // 4) 문자열 포맷팅 (두 자리 맞춤)
+        val mm = month.toString().padStart(2, '0')
+        val dd = day.toString().padStart(2, '0')
+        return "${year}년 ${mm}월 ${dd}일 $weekday"
     }
+    
+    //WeekDay를 바꿔주기
+    private fun formatWeekDayToIso(input: String): String {
+        val regex = """(\d{4})년\s*(\d{2})월\s*(\d{2})일""".toRegex()
+        val match = regex.find(input) ?: return input
 
+        // ② 그룹에서 year, month, day 꺼내서 재조합
+        val (year, month, day) = match.destructured
+        return "$year-$month-$day"
+    }
 
     companion object {
         /**
@@ -263,7 +495,7 @@ class DiaryWriteFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(content: DiaryContent) =
+        fun newInstance(content: DiaryDetailResponse) =
             DiaryWriteFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable("KEY_RESULT", content)
