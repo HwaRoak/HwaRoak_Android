@@ -46,6 +46,7 @@ class CalendarViewModel(private val repository: DiaryRepository) : ViewModel()  
     fun getDetailDiary(accessToken: String, diaryID: Int) {
         viewModelScope.launch{
             val res = repository.getDetailDiary(accessToken, diaryID)
+            _detailDiaryResult.postValue(res)
         }
     }
 

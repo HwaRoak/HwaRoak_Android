@@ -22,6 +22,7 @@ import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.diary.access.CalendarViewModel
 import com.example.hwaroak.api.diary.access.CalendarViewModelFactory
 import com.example.hwaroak.api.diary.access.DiaryViewModelFactory
+import com.example.hwaroak.api.diary.model.DiaryDetailResponse
 import com.example.hwaroak.api.diary.model.DiaryMonthResponse
 import com.example.hwaroak.api.diary.repository.DiaryRepository
 import com.example.hwaroak.data.DiaryContent
@@ -145,6 +146,8 @@ class CalendarFragment : Fragment() {
         /**이 부분은 최초에 AP에서 값들들 가져왔을 때의 경우 -> 처음은 emptyset observer에서 휘치**/
         monthDec = MonthDecorator(requireContext(), emptySet())
 
+        binding.calendarHwaroakTalkScrollScv.isNestedScrollingEnabled = false
+
         //0. 옵저버 설정 및 위의 값 설정
         observeMonthData()
 
@@ -173,7 +176,7 @@ class CalendarFragment : Fragment() {
                 diaryMap.clear()
                 //diary = diaryMontheResponse
                 resp.forEach { diary->
-                    val localDate = LocalDate.parse("2025-07-21")
+                    val localDate = LocalDate.parse(diary.recordDate)
                     val day = CalendarDay.from(localDate)
                     diaryMap[day] = diary
                 }
@@ -195,27 +198,46 @@ class CalendarFragment : Fragment() {
     //상세 보기 페이지로 이동(여부 판단) --> 여기는 일기 상세 페이지 갖고 와서 돌리는 걸로
     private fun goEditFragment(){
         //일단 그날에 대한 일기 정보(날짜, 일기 내용, 감정)
-/*
+
         binding.calendarGodetailBtn.setOnClickListener {
             //1. 번들에 담기 전에 일기 작성 기록이 있는지 체크
-            val nowDiary = diaryMap[selectedDate] ?: DiaryMonthResponse(-1, emptyList(),
-                "아직 일기를 기록하지 않았어요", 0, -1)
 
 
-            val diaryContent = DiaryContent(
-                date = selectedDate,
-                content = "이게 일기의 내용이래요!!!",
-                emotions = nowDiary.emotionList
-            )
-            val bundle = Bundle().apply {
-                putParcelable("KEY_RESULT", diaryContent)
+            val ISO_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            var dayFormat = selectedDate.date.format(ISO_FMT)
+
+            val nowDiary = diaryMap[selectedDate] ?: DiaryMonthResponse(-1, dayFormat, emptyList(),
+                "아직 일기를 기록하지 않았어요")
+
+            //유효 일기(기존에 일기가 있는 경우)
+            if(nowDiary.id != -1){
+                calendarViewModel.getDetailDiary(accessToken, nowDiary.id)
+                //그 후, detailDiary의 변화를 추적하는 걸로 가자 (어차피 1번만 하니까 여기에 정의하는 걸로 하자)
+                calendarViewModel.detailDiaryResult.observe(viewLifecycleOwner){ result ->
+                    result.onSuccess { resp->
+                        val bundle = Bundle().apply {
+                            putParcelable("KEY_RESULT", resp)
+                            Log.d("log_diary", "---보내기---\n선택한 ID: " + nowDiary.id.toString())
+                            Log.d("log_diary", resp.content)
+                        }
+                        (requireActivity() as MainActivity).navigateToDiaryWith(bundle)
+                    }.onFailure { error ->
+                        Toast.makeText(requireContext(), "상세 정보 로드 실패: ${error.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
-            Log.d("log_diary", "CalendarFragment에서 오늘 선택한 날짜의 일기 정보 bundle에 넣어 보내기")
-            //2. 이동
-            (requireActivity() as MainActivity).navigateToDiaryWith(bundle)
-
+            //일기가 없어요)
+            else{
+                val tmpResp = DiaryDetailResponse(
+                    -1, dayFormat, emptyList(), ""
+                )
+                val bundle = Bundle().apply {
+                    putParcelable("KEY_RESULT", tmpResp)
+                }
+                (requireActivity() as MainActivity).navigateToDiaryWith(bundle)
+            }
         }
-        */
+
     }
 
     //삭제 다이얼로그 띄우기
@@ -369,8 +391,9 @@ class CalendarFragment : Fragment() {
         )
 
         //일기 기록이 없는 경우
-        val entry = diaryMap[date] ?: DiaryMonthResponse(-1, emptyList(),
-            "아직 일기를 기록하지 않았어요", 0, -1)
+        val entry = diaryMap[date] ?: DiaryMonthResponse(-1,
+            "1999-01-01", emptyList(),
+            "아직 일기를 기록하지 않았어요")
         selectedDate = date
 
         // 1) “2025-07-04” 형태

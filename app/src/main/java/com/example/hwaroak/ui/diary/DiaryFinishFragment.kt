@@ -22,6 +22,10 @@ import com.example.hwaroak.api.diary.repository.DiaryRepository
 import com.example.hwaroak.databinding.FragmentDiaryFinishBinding
 import com.example.hwaroak.ui.main.MainActivity
 import com.kakao.sdk.common.util.SharedPrefsWrapper
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import kotlin.getValue
 
 // TODO: Rename parameter arguments, choose names that match
@@ -100,10 +104,19 @@ class DiaryFinishFragment : Fragment() {
         diaryViewModel.writeResult.observe(viewLifecycleOwner) { result ->
             // isWrite 가 1(쓰기) 일 때만 처리
             if (diaryViewModel.isWrite.value == 1) {
-                Log.d("log_diary", "------\n쓰기 옵저버 통과")
+                Log.d("log_diary", "------Finish------\n쓰기 옵저버 통과")
                 result.onSuccess { resp ->
-                    settingDiaryResult(resp.reward, resp.memberItemId, resp.id, resp.emotionList)
-                    applyUi(resp.feedback, resp.reward, resp.memberItemId, resp.id)
+                    //날짜가 같아야지 오늘 일기 정보를 저장
+                    if(isEquailToday(resp.recordDate)) {
+                            settingDiaryResult(
+                                resp.reward,
+                                resp.recordDate,
+                                resp.memberItemName,
+                                resp.id,
+                                resp.emotionList
+                            )
+                        }
+                    applyUi(resp.feedback, resp.reward, resp.memberItemName, resp.id)
                 }
                 // onFailure 도 여기서 Toast 등으로 처리 가능
             }
@@ -112,10 +125,18 @@ class DiaryFinishFragment : Fragment() {
         // “수정” 모드 결과를 받으면 UI 갱신
         diaryViewModel.editResult.observe(viewLifecycleOwner) { result ->
             if (diaryViewModel.isWrite.value == 2) {
-                Log.d("log_diary", "------\n수정 옵저버 통과")
+                Log.d("log_diary", "------Finish------\n수정 옵저버 통과")
                 result.onSuccess { resp ->
-                    settingDiaryResult(resp.reward, resp.memberItemId, resp.id, resp.emotionList)
-                    applyUi(resp.feedback, resp.reward, resp.memberItemId, resp.id)
+                    if(isEquailToday(resp.recordDate)) {
+                        settingDiaryResult(
+                            resp.reward,
+                            resp.recordDate,
+                            resp.memberItemName,
+                            resp.id,
+                            resp.emotionList
+                        )
+                    }
+                    applyUi(resp.feedback, resp.reward, resp.memberItemName, resp.id)
                 }
             }
         }
@@ -149,8 +170,9 @@ class DiaryFinishFragment : Fragment() {
 
     }
 
-    //sharedPref에 일기 결과를 임시 저장하는 곳(감정 및 간단 정보(리워드 등))
-    private fun settingDiaryResult(reward: Int, itemId: Int, dirayId: Int, emotionList: List<String>){
+    //sharedPref에 일기 결과를 임시 저장하는 곳(감정 및 간단 정보(리워드 등)) - 단! 오늘인 경우만!
+    private fun settingDiaryResult(reward: Int, recordDate: String,
+                                   itemName: String, dirayId: Int, emotionList: List<String>){
 
         //일단 감정 처리(0-5) [기본, 초긍정, 긍긍부, 부부긍, 초부정]
         var barType : Int = 0
@@ -168,8 +190,8 @@ class DiaryFinishFragment : Fragment() {
         else if(emotionList.size == 3){
             val tmp = emotionMap.get(emotionList.get(0))!! + emotionMap.get(emotionList.get(1))!! + emotionMap.get(emotionList.get(2))!!
             if(tmp == 3){barType = 1}
-            else if(tmp == 1){barType = 3}
-            else if(tmp == -1){barType = 4}
+            else if(tmp == 1){barType = 4}
+            else if(tmp == -1){barType = 3}
             else{barType = 5}
         }
 
@@ -177,28 +199,57 @@ class DiaryFinishFragment : Fragment() {
         diaryPref.edit{
             putBoolean("isWrite", true)
             putInt("reward", reward)
-            putInt("itemId", itemId)
+            putString("memberItemName", itemName)
             putInt("diaryId", dirayId)
             putInt("barType", barType)
                 .apply()
         }
         Log.d("log_diary", "barType = $barType")
-        Log.d("log_diary", "itemId = $itemId")
+        Log.d("log_diary", "memberItemName = $itemName")
         Log.d("log_diary", "diaryId = $dirayId")
         Log.d("log_diary", "reward = $reward")
+        Log.d("log_diary", "오늘 작성 날짜 = $recordDate")
     }
 
-    private fun applyUi(feedback: String, reward: Int, itemId: Int, dirayId: Int) {
+    //UI 작업을 수행
+    private fun applyUi(feedback: String, reward: Int, itemId: String, dirayId: Int) {
         binding.diaryFinishHwatextTv.text    = feedback
         binding.diaryFinishRewardTv.text     = "리워드까지 ${reward}일!"
         binding.diaryFinishRew1Imv.setImageResource(
             when (itemId) {
-                1 -> R.drawable.img_item_tissue
+                "cup" -> R.drawable.img_item_cup
                 // …다른 아이템 매핑
+                "cheeze" -> R.drawable.img_item_cheeze
+                "chicken" -> R.drawable.img_item_chicken
+                "chopstick" -> R.drawable.img_item_chopstick
+                "coal" -> R.drawable.img_item_coal
+                "egg" -> R.drawable.img_item_egg
+                "mashmellow" -> R.drawable.img_item_mashmellow
+                "meat" -> R.drawable.img_item_meat
+                "paper" -> R.drawable.img_item_paper
+                "potato" -> R.drawable.img_item_potato
+                "ruby" -> R.drawable.img_item_ruby
+                "soup" -> R.drawable.img_item_soup
+                "tire" -> R.drawable.img_item_tire
+                "tissue" -> R.drawable.img_item_tissue
+                "trash" -> R.drawable.img_item_trash
                 else -> R.drawable.img_item_tissue
             }
         )
         diaryViewModel.lastDiaryId = dirayId
+    }
+
+
+    fun isEquailToday(dateString: String): Boolean {
+        // 1) 포맷터 준비 (Asia/Seoul)
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA).apply {
+            timeZone = TimeZone.getTimeZone("Asia/Seoul")
+        }
+
+        val todayString = sdf.format(Date())
+
+        // 2) 비교
+        return dateString == todayString
     }
 
 
@@ -236,6 +287,7 @@ class DiaryFinishFragment : Fragment() {
         }
 
     }
+
 
     private fun setFireAnimate(){
         val fire1 = binding.diaryFinishFire1Imv

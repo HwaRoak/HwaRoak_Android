@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.login.repository.LoginRepository
@@ -20,6 +21,10 @@ import com.kakao.sdk.user.UserApiClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class LoginKakaoActivity : AppCompatActivity() {
 
@@ -27,6 +32,7 @@ class LoginKakaoActivity : AppCompatActivity() {
 
     //유저 정보를 담을 sharedPreference
     private lateinit var pref: SharedPreferences
+    private lateinit var diaryPref: SharedPreferences
     //로그인 API 일루와잇
     private lateinit var loginRepository: LoginRepository
 
@@ -38,6 +44,9 @@ class LoginKakaoActivity : AppCompatActivity() {
         //sharedPreference 정의(user) 및 repo 정의
         pref = getSharedPreferences("user", MODE_PRIVATE)
         loginRepository = LoginRepository(HwaRoakClient.loginService, pref)
+
+        //일기 정보 체크
+        diaryPref = getSharedPreferences("diary", MODE_PRIVATE)
 
         //kakaoLogout()
 
@@ -133,6 +142,22 @@ class LoginKakaoActivity : AppCompatActivity() {
             }
 
         }
+
+
+        //일기 정보 체크(만약 오늘과 다르면 false)
+        val recordDate = diaryPref.getString("recordDate", "") ?: ""
+        if(!isEquailToday(recordDate)){
+            diaryPref.edit{
+                putBoolean("isWrite", false)
+                putInt("reward", 0)
+                putString("memberItemName", "")
+                putInt("diaryId", 0)
+                putInt("barType", 0)
+                putString("recordDate", "")
+                apply()
+            }
+        }
+
     }
 
     private fun getAccessTokenWithLogin(token: String, checkAgree: Boolean){
@@ -147,7 +172,7 @@ class LoginKakaoActivity : AppCompatActivity() {
                     Log.d("kakaoLogin", "엑세스 토큰: " + pref.getString("accessToken", "").toString())
                     Log.d("kakaoLogin", "리프레시 토큰: " + pref.getString("refreshToken", "").toString())
                     Log.d("kakaoLogin", "닉네임: " + pref.getString("nickname", "").toString())
-
+                    Log.d("kakaoLogin", "유저 아이디: " + pref.getInt("memberId", 0).toString())
                     /**실험**/
                     //val ok2 = loginRepository.requestToken(pref.getString("accessToken", "").toString(),
                     //    pref.getString("refreshToken", "").toString())
@@ -191,5 +216,19 @@ class LoginKakaoActivity : AppCompatActivity() {
                 .clear()
         }
     }
+
+    //오늘 날짜랑 비교 준비(sharedPref 초기화 용도)
+    fun isEquailToday(dateString: String): Boolean {
+        // 1) 포맷터 준비 (Asia/Seoul)
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA).apply {
+            timeZone = TimeZone.getTimeZone("Asia/Seoul")
+        }
+
+        val todayString = sdf.format(Date())
+
+        // 2) 비교
+        return dateString == todayString
+    }
+
 
 }

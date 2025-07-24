@@ -1,5 +1,6 @@
 package com.example.hwaroak.api.diary.model
-
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 /**
  * model
  * API 통수신을 위한 Request/Response 데이터 클래스를 정의하는 곳
@@ -18,10 +19,9 @@ data class DiaryResponseBody<T>(
 //requestbody는 X
 data class DiaryLookResponse(
     val id: Int,
+    val recordDate: String,
     val emotionList: List<String>,
     val feedback: String,
-    val reward: Int,
-    val memberItemId: Int
 )
 
 //2. 일기 작성 API 데이터 클래스
@@ -32,19 +32,21 @@ data class DiaryWriteRequest(
 )
 data class DiaryWriteResponse(
     val id: Int,
+    val recordDate: String,
     val emotionList: List<String>,
     val feedback: String,
     val reward: Int,
-    val memberItemId: Int
+    val memberItemName: String
 )
 
 //3. 일기 상세 조회 API 데이터 클래스(parameter만) - 내 일기 내용을 반환
+@Parcelize
 data class DiaryDetailResponse(
     val id: Int,
     val recordDate: String,
     val emotionList: List<String>,
-    val context: String
-)
+    val content: String
+) : Parcelable
 
 //4. 일기 삭제 API 데이터 클래스(없음)
 
@@ -56,18 +58,18 @@ data class DiaryEditRequest(
 )
 data class DiaryEditResponse(
     val id: Int,
+    val recordDate: String,
     val emotionList: List<String>,
     val feedback: String,
     val reward: Int,
-    val memberItemId: Int
+    val memberItemName: String
 )
 
 
 //6. 월별 일기 조회 API 데이터 클래스
 data class DiaryMonthResponse(
     val id: Int,
+    val recordDate: String,
     val emotionList: List<String>,
     val feedback: String,
-    val reward: Int,
-    val memberItemId: Int
 )
