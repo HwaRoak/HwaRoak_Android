@@ -2,13 +2,14 @@ package com.example.hwaroak.adaptor
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.hwaroak.api.diary.model.DiaryDetailResponse
 import com.example.hwaroak.data.DiaryContent
 import com.example.hwaroak.ui.diary.DiaryFinishFragment
 import com.example.hwaroak.ui.diary.DiaryWriteFragment
 
 
 class DiaryViewPagerAdaptor(fragment: Fragment,
-    private var diaryContent: DiaryContent?): FragmentStateAdapter(fragment) {
+    private var diaryContent: DiaryDetailResponse?): FragmentStateAdapter(fragment) {
 
 
     override fun createFragment(position: Int): Fragment {

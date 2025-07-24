@@ -18,6 +18,7 @@ interface LoginService {
         @Body req: LoginRequest
     ) : Response<LoginResponse<MemberData>>
 
+
     //토큰 재요청
     @POST("api/v1/auth/reissue")
     suspend fun requestToken(

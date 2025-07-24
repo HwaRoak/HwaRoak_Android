@@ -16,6 +16,7 @@ import androidx.transition.TransitionManager
 import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.DiaryEmotionAdaptor
 import com.example.hwaroak.adaptor.DiaryViewPagerAdaptor
+import com.example.hwaroak.api.diary.model.DiaryDetailResponse
 import com.example.hwaroak.data.DiaryContent
 import com.example.hwaroak.data.DiaryEmotion
 import com.example.hwaroak.databinding.FragmentDiaryBinding
@@ -40,11 +41,11 @@ class DiaryFragment : Fragment() {
     lateinit var binding: FragmentDiaryBinding
 
     //받았는지 check
-    private var diaryContent : DiaryContent? = null
+    private var diaryContent : DiaryDetailResponse? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.getParcelable<DiaryContent>("KEY_RESULT")?.let {
+        arguments?.getParcelable<DiaryDetailResponse>("KEY_RESULT")?.let {
             diaryContent = it
             Log.d("log_diary", "DiartFragment는 받음")
         }
