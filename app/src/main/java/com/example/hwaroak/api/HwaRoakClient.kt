@@ -1,6 +1,7 @@
 package com.example.hwaroak.api
 
 import com.example.hwaroak.api.diary.network.DiaryService
+import com.example.hwaroak.api.login.network.LoginService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -10,7 +11,7 @@ import java.util.concurrent.TimeUnit
 object HwaRoakClient {
 
     //Swagger에서 가져오는 주소
-    private const val BASE_URL = ""
+    private const val BASE_URL = "http://52.78.74.252/"
 
     //일단 호출을 로그로 추적하게
     private val logging = HttpLoggingInterceptor().apply {
@@ -33,7 +34,10 @@ object HwaRoakClient {
 
 
     //각자 API service(network)를 구현하고 밑에 추가함으로써 유지보수 용이
-
+    //로그인 관련
+    val loginService: LoginService = retrofit.create(LoginService::class.java)
+    //일기 관련
     val diaryService: DiaryService = retrofit.create(DiaryService::class.java)
+
 
 }
