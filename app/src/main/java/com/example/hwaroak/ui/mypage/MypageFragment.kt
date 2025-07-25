@@ -60,6 +60,20 @@ class MypageFragment : Fragment() {
                 .commit()
         }
 
+        binding.terms.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragmentContainer, TermsFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.logout.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragmentContainer, TermsFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
         return binding.root
     }
 
@@ -114,5 +128,4 @@ class MypageFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
 }
