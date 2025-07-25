@@ -341,7 +341,7 @@
                         app:layout_constraintLeft_toLeftOf="parent"/>
 
                     <ImageView
-                        android:id="@+id/fire_picture1"
+                        android:id="@+id/fire_picture"
                         android:layout_width="61dp"
                         android:layout_height="61dp"
                         android:src="@drawable/fire_picture"
@@ -360,10 +360,10 @@
                         android:textColor="#4C4C4C"
                         android:textSize="32sp"
                         android:gravity="end"
-                        app:layout_constraintStart_toEndOf="@id/fire_picture1"
+                        app:layout_constraintStart_toEndOf="@id/fire_picture"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/fire_picture1"
-                        app:layout_constraintBottom_toBottomOf="@id/fire_picture1"/>
+                        app:layout_constraintTop_toTopOf="@id/fire_picture"
+                        app:layout_constraintBottom_toBottomOf="@id/fire_picture"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -385,15 +385,24 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"/>
 
-                    <ImageView
-                        android:id="@+id/fire_picture2"
+                    <FrameLayout
+                        android:id="@+id/next_item_area"
                         android:layout_width="61dp"
                         android:layout_height="61dp"
-                        android:src="@drawable/fire_picture"
+                        android:background="@drawable/bg_locker_item_slot"
                         android:layout_marginLeft="16dp"
                         android:layout_marginBottom="14dp"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <ImageView
+                            android:id="@+id/iv_item_image"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:scaleType="fitCenter" />
+
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/count_dday"
@@ -405,10 +414,10 @@
                         android:textSize="32sp"
                         android:textColor="#4C4C4C"
                         android:gravity="end"
-                        app:layout_constraintStart_toEndOf="@id/fire_picture2"
+                        app:layout_constraintStart_toEndOf="@id/next_item_area"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/fire_picture2"
-                        app:layout_constraintBottom_toBottomOf="@id/fire_picture2"/>
+                        app:layout_constraintTop_toTopOf="@id/next_item_area"
+                        app:layout_constraintBottom_toBottomOf="@id/next_item_area"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -426,15 +435,6 @@
                 android:paddingRight="30dp"
                 android:paddingTop="27dp"
                 android:paddingBottom="27dp">
-                
-                <TextView
-                    android:id="@+id/announcement"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="공지사항"
-                    style="@style/freesentation5_16sp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent" />
 
                 <TextView
                     android:id="@+id/search_user"
@@ -442,23 +442,33 @@
                     android:layout_height="wrap_content"
                     android:text="유저 검색"
                     style="@style/freesentation5_16sp"
-                    android:layout_marginTop="18dp"
-                    app:layout_constraintTop_toBottomOf="@id/announcement"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
                 <TextView
                     android:id="@+id/notification_setting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="알림 설정"
+                    android:text="알림설정"
                     style="@style/freesentation5_16sp"
                     android:layout_marginTop="18dp"
                     app:layout_constraintTop_toBottomOf="@id/search_user"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
+                <TextView
+                    android:id="@+id/announcement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="공지사항"
+                    style="@style/freesentation5_16sp"
+                    android:layout_marginTop="18dp"
+                    app:layout_constraintTop_toBottomOf="@id/notification_setting"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
+                android:id="@+id/terms"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="약관 및 정책"
@@ -468,6 +478,7 @@
                 android:layout_gravity="center" />
 
             <TextView
+                android:id="@+id/logout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="로그아웃하기"

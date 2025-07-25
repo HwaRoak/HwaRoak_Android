@@ -11,17 +11,14 @@ import com.example.hwaroak.databinding.FragmentAnnouncementBinding
 
 class AnalysisFragment : Fragment() {
 
-    lateinit var binding: FragmentAnalysisBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private var _binding: FragmentAnalysisBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentAnalysisBinding.inflate(inflater, container, false)
+        _binding = FragmentAnalysisBinding.inflate(inflater, container, false)
 
         return binding.root
     }
