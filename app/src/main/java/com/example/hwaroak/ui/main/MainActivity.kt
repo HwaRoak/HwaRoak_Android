@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity() {
             // BottomNavigationView는 보이게 설정
             binding.mainBnv.visibility = View.VISIBLE
         }
-        //알림창(추후 구현)
+        //알림창
         binding.mainBellBtn.setOnClickListener {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragmentContainer, NoticeFragment())

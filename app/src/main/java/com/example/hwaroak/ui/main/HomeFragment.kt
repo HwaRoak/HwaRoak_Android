@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -55,6 +56,43 @@ class HomeFragment : Fragment() {
 
         // 아이템에 따른 캐릭터 멘트 변경 위해 tv_speech_bubble 참조 가져오기
         val speechBubbleTV = view.findViewById<TextView>(R.id.tv_speech_bubble)
+
+        //참조 가져오기
+        val rewardContainer = view.findViewById<LinearLayout>(R.id.reward_container)
+        val rewardItemsRV = view.findViewById<RecyclerView>(R.id.rv_reward_items)
+        val btnClaimReward = view.findViewById<MaterialButton>(R.id.btn_claim_reward)
+
+        val rewardItemRVAdapter = HomeItemRVAdapter()
+        rewardItemsRV.adapter = rewardItemRVAdapter
+
+        //보상할 아이템이 있을 때만 reward영역 보여주기
+        itemViewModel.rewardItemList.observe(viewLifecycleOwner) { rewardList ->
+            if (rewardList.isNotEmpty()) {
+                rewardContainer.visibility = View.GONE
+            } else {
+                rewardContainer.visibility = View.VISIBLE
+                rewardItemRVAdapter.setData(rewardList)
+            }
+        }
+
+        btnClaimReward.setOnClickListener {
+            // 홈 아이템 보상 아이템으로 세팅
+            itemViewModel.setHomeItem(itemViewModel.rewardItemList.value!!.first())
+
+            // 보상 UI 숨기고 보상완료 UI표시
+            rewardContainer.visibility = View.GONE
+            val rewardCompletionContainer = view.findViewById<LinearLayout>(R.id.reward_completion_container)
+            rewardCompletionContainer.visibility = View.VISIBLE
+
+            //캐릭터 말풍선 변경
+            speechBubbleTV.text ="보상이야!(추후매핑)"
+
+            // 2초 후 다시 기본 홈 상태로 되돌리기
+            view.postDelayed({
+                rewardCompletionContainer.visibility = View.GONE
+            }, 2000)
+
+        }
 
         // 감정 버튼 참조 가져오기
         val btnSad = view.findViewById<MaterialButton>(R.id.btn_sad)
@@ -113,7 +151,6 @@ class HomeFragment : Fragment() {
             "excited" to listOf("마음이 두근거리는 하루였구나!", "나도 너무 궁금해!", "나도 더 타오를 수 있을까?"),
             "happy" to listOf("이 순간이 오래 기억되면 좋겠어.", "이러다가 내가 다 타버리겠어!!")
         )
-
 
         //ViewModel 감지해 RecyclerView 갱신
         itemViewModel.homeItemList.observe(viewLifecycleOwner) { newList ->

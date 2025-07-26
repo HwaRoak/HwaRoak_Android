@@ -22,4 +22,12 @@ class ItemViewModel : ViewModel() {
     fun setHomeItem(item: LockerItem) {
         _homeItemList.value = listOf(item)
     }
+    // 홈 보상 받기
+    private val _rewardItemList = MutableLiveData<List<LockerItem>>()
+    val rewardItemList: LiveData<List<LockerItem>> = _rewardItemList
+
+    fun setRewardItems(items: List<LockerItem>) {
+        _rewardItemList.value = items
+    }
 }
+
