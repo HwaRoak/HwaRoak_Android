@@ -28,6 +28,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/dialog_main2_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(아이템이 회수될 수 있어요!)"
+            android:layout_marginTop="1dp"
+            android:textColor="@color/red"
+            style="@style/freesentation4_16sp_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dialog_main_tv" />
+
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/dialog_guideline"
             android:layout_width="wrap_content"
@@ -53,7 +66,7 @@
             android:layout_marginEnd="5dp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             app:layout_constraintEnd_toEndOf="@id/dialog_guideline"
-            app:layout_constraintTop_toBottomOf="@id/dialog_main_tv"
+            app:layout_constraintTop_toBottomOf="@id/dialog_main2_tv"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
@@ -86,7 +99,7 @@
             android:layout_marginStart="5dp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             app:layout_constraintStart_toEndOf="@id/dialog_guideline"
-            app:layout_constraintTop_toBottomOf="@id/dialog_main_tv"
+            app:layout_constraintTop_toBottomOf="@id/dialog_main2_tv"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView

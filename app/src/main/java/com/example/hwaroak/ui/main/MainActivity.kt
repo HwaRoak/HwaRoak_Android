@@ -1,5 +1,7 @@
 package com.example.hwaroak.ui.main
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.ActivityMainBinding
+import com.example.hwaroak.message.SSEClient
 import com.example.hwaroak.ui.calendar.CalendarFragment
 import com.example.hwaroak.ui.diary.DiaryFragment
 import com.example.hwaroak.ui.friend.FriendFragment
@@ -34,6 +37,10 @@ class MainActivity : AppCompatActivity() {
 
         //splash 화면 테마 되돌리기
         setTheme(R.style.Theme_HwaRoak)
+
+        //테스트
+        val sseClient = SSEClient(this)
+        sseClient.showNotification("끼아악")
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
@@ -126,7 +133,6 @@ class MainActivity : AppCompatActivity() {
 
         //뒤로 가기 시 일단 HomeFragment 이동 후 종료
         handleBack()
-
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

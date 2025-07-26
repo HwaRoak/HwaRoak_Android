@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!-- 인터넷 사용 권한 설정 -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--푸시 알림 사용 권한 설정-->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:name=".ui.login.GlobalApplication"
@@ -16,6 +18,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HwaRoak"
         tools:targetApi="31">
+
+        <!--FCM을 위한 service 등록 : service = 자동으로 백그라운드에서 특정 action 시 실행-->
+        <service
+            android:name=".message.PushMessage"
+            android:exported="false">
+            <intent-filter>
+                <!-- 푸시 메시지 도착 시 시스템이 이 서비스로 Intent를 보냅니다 -->
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".ui.login.AgreeActivity"
             android:exported="false" />
