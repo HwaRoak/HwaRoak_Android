@@ -70,7 +70,7 @@
 
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/dialog_delete_btn"
+            android:id="@+id/dialog_logout_btn"
             android:layout_width="105dp"
             android:layout_height="40dp"
             android:background="@drawable/bg_diary_write_btn"
@@ -89,16 +89,16 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
-            android:id="@+id/dialog_delete_tv"
+            android:id="@+id/dialog_logout_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="로그아웃"
             style="@style/freesentation5_16sp"
             android:textColor="@color/white"
-            app:layout_constraintStart_toStartOf="@id/dialog_delete_btn"
-            app:layout_constraintEnd_toEndOf="@id/dialog_delete_btn"
-            app:layout_constraintTop_toTopOf="@id/dialog_delete_btn"
-            app:layout_constraintBottom_toBottomOf="@id/dialog_delete_btn"/>
+            app:layout_constraintStart_toStartOf="@id/dialog_logout_btn"
+            app:layout_constraintEnd_toEndOf="@id/dialog_logout_btn"
+            app:layout_constraintTop_toTopOf="@id/dialog_logout_btn"
+            app:layout_constraintBottom_toBottomOf="@id/dialog_logout_btn"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
