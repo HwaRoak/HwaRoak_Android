@@ -79,7 +79,7 @@ class MypageFragment : Fragment() {
                 .commit()
         }
 
-        // 로그아웃 글자 클릭 시 다이얼로그 띄우게 구현 예정
+        // 로그아웃 글자 클릭 시 다이얼로그 띄우게 구현
         binding.logout.setOnClickListener {
             showLogoutDialog()
         }
