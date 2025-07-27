@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat.animate
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.DialogLogoutCheckBinding
-import com.example.hwaroak.databinding.FragmentAnnouncementBinding
 import com.example.hwaroak.databinding.FragmentMypageBinding
 import com.example.hwaroak.ui.friend.AddFriendFragment
 import com.github.mikephil.charting.animation.Easing
