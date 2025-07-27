@@ -168,6 +168,13 @@ class MainActivity : AppCompatActivity() {
                 // 현재 화면 확인
                 val current = supportFragmentManager
                     .findFragmentById(R.id.main_fragmentContainer)
+
+                // 1. 백스택에 프래그먼트가 존재하면 pop (예: MyPage → EditProfile → 뒤로 → MyPage)
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                    return
+                }
+
                 if (current !is HomeFragment) {
                     // 홈으로 돌아가기
                     binding.mainBnv.selectedItemId = R.id.homeFragment
