@@ -72,22 +72,23 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    />
 
                 <!-- 닉네임 입력란 -->
-                <EditText
-                    android:id="@+id/et_nickname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="포동이"
-                    style="@style/freesentation5_20sp"
-                    android:background="@null"
-                    android:inputType="textPersonName"
-                    android:visibility="gone"
-                    android:maxLength="10"
-                    app:layout_constraintStart_toStartOf="@+id/nickname"
-                    app:layout_constraintTop_toTopOf="@+id/nickname"
-                    app:layout_constraintBottom_toBottomOf="@+id/nickname" />
+<!--                <EditText-->
+<!--                    android:id="@+id/et_nickname"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="포동이"-->
+<!--                    style="@style/freesentation5_20sp"-->
+<!--                    android:background="@null"-->
+<!--                    android:inputType="textPersonName"-->
+<!--                    android:visibility="gone"-->
+<!--                    android:maxLength="10"-->
+<!--                    app:layout_constraintStart_toStartOf="@+id/nickname"-->
+<!--                    app:layout_constraintTop_toTopOf="@+id/nickname"-->
+<!--                    app:layout_constraintBottom_toBottomOf="@+id/nickname" />-->
 
                 <!-- 연필 버튼 -->
                 <ImageView
@@ -108,7 +109,7 @@
                 android:layout_width="331dp"
                 android:layout_height="45dp"
                 android:background="@drawable/bg_rounded_box_white"
-                android:layout_marginTop="44dp"
+                android:layout_marginTop="15dp"
                 app:layout_constraintTop_toBottomOf="@id/edit_nickname_area"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent">
@@ -132,6 +133,7 @@
                     android:text="a12345678987654321"
                     android:fontFamily="@font/freesentation_3light"
                     android:textSize="14sp"
+                    android:textColor="#000000"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/tv_user_id" />
@@ -171,9 +173,7 @@
                     android:textColorHint="#CECECE"
                     android:textSize="16sp"
                     android:textColor="@color/colorFont"
-                    tools:ignore="MissingConstraints,TouchTargetSizeCheck"
-                    tools:layout_editor_absoluteX="15dp"
-                    tools:layout_editor_absoluteY="14dp" />
+                    tools:ignore="MissingConstraints,TouchTargetSizeCheck" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.button.MaterialButton

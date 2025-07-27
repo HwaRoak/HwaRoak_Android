@@ -1,5 +1,6 @@
 package com.example.hwaroak.ui.mypage
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,8 +9,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat.animate
 import com.example.hwaroak.R
-import com.example.hwaroak.databinding.FragmentAnnouncementBinding
+import com.example.hwaroak.databinding.DialogLogoutCheckBinding
 import com.example.hwaroak.databinding.FragmentMypageBinding
+import com.example.hwaroak.ui.friend.AddFriendFragment
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -53,6 +55,7 @@ class MypageFragment : Fragment() {
                 .commit()
         }
 
+        // 알림설정 글자 클릭시 해당 프래그먼트로 전환
         binding.notificationSetting.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragmentContainer, SettingFragment())
@@ -60,6 +63,7 @@ class MypageFragment : Fragment() {
                 .commit()
         }
 
+        // 약관 및 정책 글자 클릭시 해당 프래그먼트로 전환
         binding.terms.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragmentContainer, TermsFragment())
@@ -67,11 +71,17 @@ class MypageFragment : Fragment() {
                 .commit()
         }
 
-        binding.logout.setOnClickListener {
+        // 유저 검색 글자 클릭시 해당 프래그먼트로 전환
+        binding.searchUser.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, TermsFragment())
+                .replace(R.id.main_fragmentContainer, AddFriendFragment())
                 .addToBackStack(null)
                 .commit()
+        }
+
+        // 로그아웃 글자 클릭 시 다이얼로그 띄우게 구현
+        binding.logout.setOnClickListener {
+            showLogoutDialog()
         }
 
         return binding.root
@@ -127,5 +137,30 @@ class MypageFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun showLogoutDialog() {
+        // 1. 다이얼로그 레이아웃으로 뷰 바인딩 객체 생성
+        val dialogBinding = DialogLogoutCheckBinding.inflate(LayoutInflater.from(requireContext()))
+
+        // 2. AlertDialog 생성
+        val dialog = AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog)
+            .setView(dialogBinding.root) // 뷰 바인딩의 root 뷰를 설정
+            .create()
+
+        // 3. 취소 버튼 리스너와 로그아웃 버튼 리스너
+        dialogBinding.dialogCancelBtn.setOnClickListener {
+            dialog.dismiss() // 다이얼로그 닫기
+        }
+
+        dialogBinding.dialogLogoutBtn.setOnClickListener {
+            // 여기에 로직 짜주시면 될 것 같습니다!!
+
+            // 로직 처리 후 다이얼로그 닫기
+            dialog.dismiss()
+        }
+
+        // 4. 다이얼로그 표시
+        dialog.show()
     }
 }

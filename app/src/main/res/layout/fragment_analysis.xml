@@ -63,7 +63,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/vertical_bar"
-                        android:layout_marginLeft="13dp"
+                        android:layout_marginLeft="14dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/monthly_number_diary_tv" />
@@ -74,6 +74,7 @@
                         android:layout_height="wrap_content"
                         android:text="00개"
                         android:layout_marginLeft="19dp"
+                        android:layout_marginRight="17dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/vertical_bar"

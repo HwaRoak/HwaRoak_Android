@@ -12,10 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.DialogChangeNicknameBinding
-import com.example.hwaroak.databinding.FragmentAnnouncementBinding
 import com.example.hwaroak.databinding.FragmentEditProfileBinding
-import com.example.hwaroak.databinding.FragmentMypageBinding
-import com.example.hwaroak.ui.main.MainActivity
 
 class EditProfileFragment : Fragment() {
 
