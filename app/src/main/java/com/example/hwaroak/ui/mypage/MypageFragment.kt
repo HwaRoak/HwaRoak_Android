@@ -1,7 +1,9 @@
 package com.example.hwaroak.ui.mypage
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +14,13 @@ import com.example.hwaroak.R
 import com.example.hwaroak.databinding.DialogLogoutCheckBinding
 import com.example.hwaroak.databinding.FragmentMypageBinding
 import com.example.hwaroak.ui.friend.AddFriendFragment
+import com.example.hwaroak.ui.login.LoginKakaoActivity
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.kakao.sdk.auth.TokenManagerProvider
+import com.kakao.sdk.user.UserApiClient
 
 class MypageFragment : Fragment() {
 
@@ -155,7 +160,7 @@ class MypageFragment : Fragment() {
 
         dialogBinding.dialogLogoutBtn.setOnClickListener {
             // 여기에 로직 짜주시면 될 것 같습니다!!
-
+            kakaoLogout()
             // 로직 처리 후 다이얼로그 닫기
             dialog.dismiss()
         }
@@ -163,4 +168,25 @@ class MypageFragment : Fragment() {
         // 4. 다이얼로그 표시
         dialog.show()
     }
+
+    private fun kakaoLogout() {
+        // 1) 카카오 서버에 로그아웃 요청
+        UserApiClient.instance.logout { error ->
+            if (error != null) {
+                Log.e("KakaoLogout", "로그아웃 실패", error)
+            } else {
+                Log.i("KakaoLogout", "로그아웃 성공")
+            }
+            // 2) 로컬에 저장된 토큰(액세스/리프레시) 완전 삭제
+            TokenManagerProvider
+                .instance
+                .manager
+                .clear()
+        }
+
+        val intent = Intent(requireActivity(), LoginKakaoActivity::class.java)
+        startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+
+    }
+
 }
