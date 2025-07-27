@@ -9,7 +9,7 @@ import com.example.hwaroak.R
 import com.example.hwaroak.data.LockerItem
 
 class HomeItemRVAdapter : RecyclerView.Adapter<HomeItemRVAdapter.ViewHolder>() {
-    private var items = listOf<LockerItem>()
+    private var items = listOf<LockerItem?>()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.iv_item_image)
@@ -22,12 +22,12 @@ class HomeItemRVAdapter : RecyclerView.Adapter<HomeItemRVAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.imageView.setImageResource(items[position].imageRes)
+        items[position]?.let { holder.imageView.setImageResource(it.imageRes) }
     }
 
     override fun getItemCount(): Int = items.size
 
-    fun setData(newItems: List<LockerItem>) {
+    fun setData(newItems: List<LockerItem?>) {
         items = newItems
         notifyDataSetChanged()
     }

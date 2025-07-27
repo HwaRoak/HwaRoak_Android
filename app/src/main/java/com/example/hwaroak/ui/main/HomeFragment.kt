@@ -1,3 +1,4 @@
+// HomeFragment.kt
 package com.example.hwaroak.ui.main
 
 import android.os.Bundle
@@ -13,6 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.HomeItemRVAdapter
 import com.example.hwaroak.data.ItemViewModel
+// 다음 import 문들을 추가하거나 확인하세요.
+import com.example.hwaroak.api.home.repository.ItemRepository // ItemRepository 임포트
+import com.example.hwaroak.api.HwaRoakClient
+import com.example.hwaroak.data.ItemViewModelFactory // ItemViewModelFactory 임포트
 import com.google.android.material.button.MaterialButton
 
 private const val ARG_PARAM1 = "param1"
@@ -46,8 +51,15 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //ViewModel 초기화
-        itemViewModel = ViewModelProvider(requireActivity()).get(ItemViewModel::class.java)
+        // ItemService 인스턴스를 NetworkModule에서 가져옵니다.
+        val itemService = HwaRoakClient.itemApiService // NetworkModule.kt에 정의된 itemApiService 사용
+
+        // ItemRepository 인스턴스를 ItemService와 함께 생성합니다.
+        val itemRepository = ItemRepository(itemService) // ItemRepository 생성자에 itemService 전달
+
+        // ViewModel 초기화: ItemViewModelFactory를 사용하여 ItemRepository를 주입합니다.
+        itemViewModel = ViewModelProvider(requireActivity(), ItemViewModelFactory(itemRepository)).get(ItemViewModel::class.java) //
+
 
         //RecyclerView 어뎁터 설정
         val recyclerView = view.findViewById<RecyclerView>(R.id.home_item_rv)
@@ -67,17 +79,24 @@ class HomeFragment : Fragment() {
 
         //보상할 아이템이 있을 때만 reward영역 보여주기
         itemViewModel.rewardItemList.observe(viewLifecycleOwner) { rewardList ->
-            if (rewardList.isNotEmpty()) {
-                rewardContainer.visibility = View.GONE
+            if (rewardList.isNotEmpty()) { // 보상 리스트가 비어있지 않으면
+                rewardContainer.visibility = View.VISIBLE // 보상 컨테이너 표시
+                rewardItemRVAdapter.setData(rewardList) // 어댑터 데이터 업데이트
             } else {
-                rewardContainer.visibility = View.VISIBLE
-                rewardItemRVAdapter.setData(rewardList)
+                rewardContainer.visibility = View.GONE // 보상 컨테이너 숨김
             }
         }
 
+
         btnClaimReward.setOnClickListener {
             // 홈 아이템 보상 아이템으로 세팅
-            itemViewModel.setHomeItem(itemViewModel.rewardItemList.value!!.first())
+            itemViewModel.rewardItemList.value?.firstOrNull()?.let { firstItem ->
+                itemViewModel.setHomeItem(firstItem)
+            } ?: run {
+                // rewardList가 비어있거나 null인 경우 처리 (예: 토스트 메시지 표시)
+                // Log.w("HomeFragment", "Reward list is empty or null when claiming reward.")
+            }
+
 
             // 보상 UI 숨기고 보상완료 UI표시
             rewardContainer.visibility = View.GONE
