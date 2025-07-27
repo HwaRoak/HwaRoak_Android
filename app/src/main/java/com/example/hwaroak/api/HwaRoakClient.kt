@@ -1,6 +1,7 @@
 package com.example.hwaroak.api
 
 import com.example.hwaroak.api.diary.network.DiaryService
+import com.example.hwaroak.api.home.network.ItemService
 import com.example.hwaroak.api.login.network.LoginService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -38,6 +39,9 @@ object HwaRoakClient {
     val loginService: LoginService = retrofit.create(LoginService::class.java)
     //일기 관련
     val diaryService: DiaryService = retrofit.create(DiaryService::class.java)
+    //아이템 관련
+    val itemService: ItemService = retrofit.create(ItemService::class.java)
+
 
 
 }
