@@ -10,7 +10,7 @@ import com.example.hwaroak.data.LockerItem
 
 // 아이템이 없을 수도 있으므로 List<Item?> 타입으로 받기
 class LockerItemRVAdaptor(
-    private val itemList: List<LockerItem?>,
+    private var itemList: List<LockerItem?>,
     private val onShowConfirmDialog: (LockerItem?) -> Unit
 ) : RecyclerView.Adapter<LockerItemRVAdaptor.ViewHolder>() {
 
@@ -49,5 +49,10 @@ class LockerItemRVAdaptor(
     // 전체 아이템 개수를 반환
     override fun getItemCount(): Int {
         return itemList.size
+    }
+
+    fun updateData(newList: List<LockerItem?>) {
+        itemList = newList
+        notifyDataSetChanged()
     }
 }
