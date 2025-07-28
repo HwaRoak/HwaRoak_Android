@@ -2,6 +2,8 @@ package com.example.hwaroak.ui.login
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.login.repository.LoginRepository
 import com.example.hwaroak.databinding.ActivityLoginKakaoBinding
+import com.example.hwaroak.message.PushMessage
 import com.example.hwaroak.ui.main.MainActivity
+import com.google.firebase.messaging.FirebaseMessaging
 import com.kakao.sdk.auth.TokenManagerProvider
 //import com.kakao.sdk.auth.LoginClient
 import com.kakao.sdk.auth.model.OAuthToken
@@ -41,6 +45,15 @@ class LoginKakaoActivity : AppCompatActivity() {
         binding = ActivityLoginKakaoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //Android의 버전이 높은 경우 알림 권한 요청
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1001)
+            }
+        }
+
+
+
         //sharedPreference 정의(user) 및 repo 정의
         pref = getSharedPreferences("user", MODE_PRIVATE)
         loginRepository = LoginRepository(HwaRoakClient.loginService, pref)
@@ -49,6 +62,8 @@ class LoginKakaoActivity : AppCompatActivity() {
         diaryPref = getSharedPreferences("diary", MODE_PRIVATE)
 
         //kakaoLogout()
+        //FCM 토큰 get
+        getFCMToken()
 
         //sharedPrefence
         val agreePref = getSharedPreferences("agree", MODE_PRIVATE)
@@ -160,6 +175,7 @@ class LoginKakaoActivity : AppCompatActivity() {
 
     }
 
+    //카카오 토큰을 이용해 API 호출 
     private fun getAccessTokenWithLogin(token: String, checkAgree: Boolean){
         //API는 무조건 lifeScope로 돌리기
         lifecycleScope.launch {
@@ -230,5 +246,22 @@ class LoginKakaoActivity : AppCompatActivity() {
         return dateString == todayString
     }
 
+    //Firebase를 이용해 FCM 토큰을 받아오기
+    private fun getFCMToken(){
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task ->  
+                //토큰 get 실패 시
+                if(!task.isSuccessful){
+                    Log.d("log_fcm", "FCM 토큰 얻기에 실패했습니다.")
+                    return@addOnCompleteListener
+                }
+                val token = task.result!!
+                Log.d("log_fcm", "FCM 토큰: $token")
+                
+                /**차후 API로 토큰을 보내주기**/
+                
+            }
+
+    }
 
 }

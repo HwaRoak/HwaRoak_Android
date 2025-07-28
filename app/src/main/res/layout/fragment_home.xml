@@ -181,8 +181,94 @@
             app:spanCount="1"
             tools:listitem="@layout/item_locker_item" />
 
+        <!-- 보상 UI (기본 GONE) -->
+        <LinearLayout
+            android:id="@+id/reward_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_reward_items"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_locker_item"
+                android:overScrollMode="never"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Lv 1. 두루마리 휴지"
+                style="@style/freesentation5_16sp"
+                android:layout_gravity="center_vertical"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_claim_reward"
+                android:layout_width="102dp"
+                android:layout_height="wrap_content"
+                android:text="보상받기"
+                app:backgroundTint="@color/colorPrimary"
+                android:textColor="#FFFFFF"
+                style="@style/freesentation6_16sp_title"
+                app:cornerRadius="24dp"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_gravity="center_vertical"
+                />
+        </LinearLayout>
+
+        <!--보상완료 UI (기본 GONE)-->
+        <LinearLayout
+            android:id="@+id/reward_completion_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:gravity="center_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="20dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_claim_reward_complete"
+                android:layout_width="102dp"
+                android:layout_height="wrap_content"
+                android:text="보상완료"
+                app:backgroundTint="#F2F2F2"
+                android:textColor="@color/black"
+                style="@style/freesentation6_16sp_title"
+                app:cornerRadius="24dp"
+                android:layout_marginBottom="8dp"
+                />
+
+            <TextView
+                android:id="@+id/tv_claim_reward_complete_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="다음 보상까지 1주일 남았어요!"
+                android:textColor="#BCBCBC"/>
+        </LinearLayout>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     <ImageView
         android:id="@+id/progress_emotion_gauge"

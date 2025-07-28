@@ -12,7 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.LockerItemRVAdaptor
+import com.example.hwaroak.api.HwaRoakClient
+import com.example.hwaroak.api.home.repository.ItemRepository
 import com.example.hwaroak.data.ItemViewModel
+import com.example.hwaroak.data.ItemViewModelFactory
 import com.example.hwaroak.data.LockerItem
 import com.example.hwaroak.data.NoticeItem
 import com.example.hwaroak.databinding.FragmentLockerBinding
@@ -37,53 +40,34 @@ class LockerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //아이템 더미데이터
-        val dummyItems = listOf(
-            LockerItem(1, "tissue", R.drawable.img_item_tissue),
-            LockerItem(2, "cup", R.drawable.img_item_cup),
-            LockerItem(3, "paper", R.drawable.img_item_paper),
-            LockerItem(4, "egg",R.drawable.img_item_egg),
-            LockerItem(5, "mashmellow",R.drawable.img_item_mashmellow),
-            LockerItem(6, "meat",R.drawable.img_item_meat),
-            LockerItem(7, "coal",R.drawable.img_item_coal),
-            LockerItem(8, "tire",R.drawable.img_item_tire),
-            LockerItem(9, "trash",R.drawable.img_item_trash),
-            LockerItem(10, "chicken",R.drawable.img_item_chicken),
-            LockerItem(11, "soup",R.drawable.img_item_soup),
-            LockerItem(12, "ruby",R.drawable.img_item_ruby),
-            LockerItem(13, "chopstick",R.drawable.img_item_chopstick),
-            LockerItem(14, "potato",R.drawable.img_item_potato),
-            LockerItem(15, "cheeze",R.drawable.img_item_cheeze)
-        )
-        //viewmodel
-        itemViewModel = ViewModelProvider(requireActivity())[ItemViewModel::class.java]
+        // ItemService 인스턴스를 HwaRoakClient에서 가져옵니다. (NetworkModule 대신 HwaRoakClient 사용)
+        val itemService = HwaRoakClient.itemApiService // HwaRoakClient.kt에 정의된 itemApiService 사용
+
+        // ItemRepository 인스턴스를 ItemService와 함께 생성합니다.
+        val itemRepository = ItemRepository(itemService)
+
+        // ViewModel 초기화: ItemViewModelFactory를 사용하여 ItemRepository를 주입합니다.
+        itemViewModel = ViewModelProvider(requireActivity(), ItemViewModelFactory(itemRepository))[ItemViewModel::class.java]
 
         // RecyclerView 불러오기
-        val LockerRecyclerView: RecyclerView = binding.lockerItemRv
+        val lockerRecyclerView: RecyclerView = binding.lockerItemRv
 
-        //샘플 데이터(추후 서버나 데이터베이스 아이템 목록을 가져오기)
-        val items = mutableListOf<LockerItem?>()
-        // 획득한 아이템 1개 추가
-        items.addAll(dummyItems) //dummyitems안의 모든 아이템 추가
-
-        // 특정 총 개수(예: 20개)를 유지하고, 나머지 null로
-        val totalLockerSlots = 20
-        val itemsToAddNull = totalLockerSlots - items.size // 20 - 15 = 5개의 null 추가
-
-        for (i in 0 until itemsToAddNull) {
-            items.add(null) // 빈칸(null)으로 채우기
-        } // 이 시점에서 'items' 리스트는 15개의 dummyItems + 5개의 null = 총 20개의 요소
-
-        // 어댑터를 생성하고 RecyclerView에 연결
-        val adapter = LockerItemRVAdaptor(items) { selectedItem ->
+        val adapter = LockerItemRVAdaptor(emptyList()) { selectedItem ->
             if (selectedItem != null) {
-//                itemViewModel.setHomeItem(selectedItem)
-//                (activity as? MainActivity)?.selectTab(R.id.homeFragment)
                 showConfirmDialog(selectedItem)
             }
         }
+        lockerRecyclerView.adapter = adapter
 
-        LockerRecyclerView.adapter = adapter
+        // 보유 아이템 리스트 불러오기
+        itemViewModel.loadUserItems() // <- 이 함수가 ViewModel에 구현돼 있어야 함
+
+        // LiveData observe
+        itemViewModel.rewardItemList.observe(viewLifecycleOwner) { items ->
+            val filledItems = items.toMutableList()
+            repeat(20 - filledItems.size) { filledItems.add(null) } // 빈칸 추가
+            adapter.updateData(filledItems)
+        }
 
         binding.lockerCloseBtn.setOnClickListener {
             // 1. 현재 프래그먼트를 호스팅하는 액티비티를 가져오고
