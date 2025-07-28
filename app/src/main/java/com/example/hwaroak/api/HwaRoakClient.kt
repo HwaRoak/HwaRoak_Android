@@ -1,6 +1,7 @@
 package com.example.hwaroak.api
 
 import com.example.hwaroak.api.diary.network.DiaryService
+import com.example.hwaroak.api.friend.network.FriendService
 import com.example.hwaroak.api.home.network.ItemApiService
 import com.example.hwaroak.api.login.network.LoginService
 import okhttp3.Interceptor
@@ -66,6 +67,8 @@ object HwaRoakClient {
     val itemApiService: ItemApiService by lazy { // ItemApiService를 사용하도록 변경
         retrofit.create(ItemApiService::class.java)
     }
+    //친구 관련
+    val friendService: FriendService = retrofit.create(FriendService::class.java)
 
 
 
