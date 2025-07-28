@@ -48,7 +48,15 @@ class FriendFragment : Fragment() {
 
         // 관리 버튼 클릭 시 현재 화면이 친구 목록일 때만 동작
         binding.friendManage.setOnClickListener {
-            currentChild?.toggleManageMode()
+            currentChild?.let { fragment ->
+                if (fragment.isManageMode) {
+                    //현재 관리 모드면 -> 완료 누른 것 → 실제 삭제 요청
+                    fragment.onDeleteConfirmClicked()
+                } else {
+                    //일반 모드면 -> 관리 모드 진입
+                    fragment.toggleManageMode()
+                }
+            }
         }
     }
 
@@ -60,6 +68,17 @@ class FriendFragment : Fragment() {
             .replace(R.id.friend_content_container, fragment)
             .commit()
     }
+
+//    private fun showFriendListFragment() {
+//        childFragmentManager.beginTransaction()
+//            .replace(R.id.friend_content_container, FriendListFragment())
+//            .commit()
+//
+//        // 트랜잭션 이후에 findFragmentById로 정확한 인스턴스 찾기 (비동기 해결)
+//        childFragmentManager.executePendingTransactions() // 즉시 적용
+//
+//        currentChild = childFragmentManager.findFragmentById(R.id.friend_content_container) as? FriendListFragment
+//    }
 
     // 친구 요청 프래그먼트를 표시
     private fun showRequestFragment() {
@@ -94,8 +113,7 @@ class FriendFragment : Fragment() {
     }
 
     //AddFriendFragment가 FriendListFragment에 새 친구 추가 로직
-    //더미데이터라 구현은 안 보임
-    fun addFriendToList(friend: FriendData) {
+    fun addFriend(friend: FriendData) {
         currentChild?.addFriend(friend)
     }
 
