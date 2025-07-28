@@ -74,20 +74,20 @@ class FriendRequestFragment : Fragment() {
             }
 
             result.onFailure {
-                Toast.makeText(requireContext(), "수락 실패: ${it.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "${it.message}", Toast.LENGTH_SHORT).show()
             }
         }
 
         //친구 요청 거절 observe
         viewModel.rejectResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess { id ->
-                Toast.makeText(requireContext(), "요청을 거절했습니다", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireContext(), , Toast.LENGTH_SHORT).show()
                 requestList.removeAll { it.userId == id }
                 adapter.notifyDataSetChanged()
             }
 
             result.onFailure {
-                Toast.makeText(requireContext(), "거절 실패: ${it.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "${it.message}", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -111,7 +111,7 @@ class FriendRequestFragment : Fragment() {
                 //거절 시 특별한 동작 X = 데이터만 삭제
                 // toast는 생략
                 val rejectedFriend = requestList[position]
-                viewModel.acceptFriend("Bearer $token", rejectedFriend.userId)
+                viewModel.rejectFriend("Bearer $token", rejectedFriend.userId)
             }
         )
         //리스트 비었는지 자동 체크
