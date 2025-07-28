@@ -218,6 +218,10 @@ class DiaryWriteFragment : Fragment() {
         /**옵저버**/
         //1. 일기 수정
         diaryViewModel.editResult.observe(viewLifecycleOwner) { result ->
+                binding.diaryLoadingProgressbar.visibility = View.GONE
+                binding.diaryLoadingTv.visibility = View.GONE
+                binding.diaryFinishBtn.setBackgroundResource(R.drawable.bg_diary_write_btn)
+                binding.diaryFinishBtn.isEnabled = true
                 result.onSuccess { resp ->
                     // 성공 시
                     Log.d("log_diary", "일기 수정 SUCCESS!")
@@ -242,6 +246,10 @@ class DiaryWriteFragment : Fragment() {
 
         //2. 일기 작성
         diaryViewModel.writeResult.observe(viewLifecycleOwner) { result ->
+                binding.diaryLoadingProgressbar.visibility = View.GONE
+                binding.diaryLoadingTv.visibility = View.GONE
+                binding.diaryFinishBtn.setBackgroundResource(R.drawable.bg_diary_write_btn)
+                binding.diaryFinishBtn.isEnabled = true
                 result.onSuccess { resp ->
                     // 성공 시
                     Log.d("log_diary", "일기 작성 SUCCESS!")
@@ -291,6 +299,10 @@ class DiaryWriteFragment : Fragment() {
     //diaryEditAPI 호출
     private fun editDiaryWithAPI(){
         //일단 현재에서 수정해야 하는 경우
+        binding.diaryFinishBtn.isEnabled = false
+        binding.diaryFinishBtn.setBackgroundResource(R.drawable.bg_diary_write_no_btn)
+        binding.diaryLoadingProgressbar.visibility = View.VISIBLE
+        binding.diaryLoadingTv.visibility = View.VISIBLE
         if(diaryViewModel.isEditCalendar == false) {
 
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -321,6 +333,10 @@ class DiaryWriteFragment : Fragment() {
 
     //diaryWriteAPI 호출
     private fun writeDiaryWithAPI() {
+        binding.diaryFinishBtn.isEnabled = false
+        binding.diaryFinishBtn.setBackgroundResource(R.drawable.bg_diary_write_no_btn)
+        binding.diaryLoadingProgressbar.visibility = View.VISIBLE
+        binding.diaryLoadingTv.visibility = View.VISIBLE
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             //일단 날짜랑 컨텐츠, 감정을 변수로
             //val recordDate: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
