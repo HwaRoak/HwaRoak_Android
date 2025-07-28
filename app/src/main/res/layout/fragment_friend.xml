@@ -20,7 +20,6 @@
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="81dp"
         android:layout_height="32dp"
-        android:layout_margin="0dp"
         android:background="@drawable/bg_friend_list_btn"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -29,13 +28,12 @@
         app:backgroundTint="@null"
         app:iconGravity="textStart"
         app:iconTint="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/friend_guideline"
-        app:layout_constraintHorizontal_bias="0.2"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.057" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp" />
 
+    <!-- 친구목록 텍스트 -->
     <TextView
         android:id="@+id/friend_list_tv"
         android:layout_width="wrap_content"
@@ -43,10 +41,10 @@
         android:text="친구목록"
         style="@style/freesentation4_16sp"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@id/friend_list_btn"
-        app:layout_constraintEnd_toEndOf="@id/friend_list_btn"
         app:layout_constraintTop_toTopOf="@id/friend_list_btn"
-        app:layout_constraintBottom_toBottomOf="@id/friend_list_btn"/>
+        app:layout_constraintBottom_toBottomOf="@id/friend_list_btn"
+        app:layout_constraintStart_toStartOf="@id/friend_list_btn"
+        app:layout_constraintEnd_toEndOf="@id/friend_list_btn"/>
 
     <!--요청확인 버튼-->
     <com.google.android.material.button.MaterialButton

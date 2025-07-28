@@ -3,30 +3,29 @@ package com.example.hwaroak.adaptor
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.hwaroak.api.friend.model.ReceivedFriendData
 import com.example.hwaroak.databinding.ItemFriendRequestBinding
 import com.example.hwaroak.ui.friend.FriendData
 
 class FriendRequestAdapter(
-    private val requestList: MutableList<FriendData>,
-    private val onAccept: (FriendData) -> Unit, //친구 수락 시 실행할 콜백
+    private val requestList: MutableList<ReceivedFriendData>,
+    private val onAccept: (ReceivedFriendData) -> Unit, //친구 수락 시 실행할 콜백
     private val onReject: (Int) -> Unit //친구 거절 시 실행할 콜백
 ) : RecyclerView.Adapter<FriendRequestAdapter.RequestViewHolder>() {
 
     //친구 요청 아이템 바인딩
     inner class RequestViewHolder(private val binding: ItemFriendRequestBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: FriendData) {
-            binding.friendRequestName.text = data.name
-            binding.friendRequestStatus.text = data.status
+        fun bind(data: ReceivedFriendData) {
+            binding.friendRequestName.text = data.nickname
+            binding.friendRequestStatus.text = data.introduction
 
             //수락 버튼 클릭 시 콜백 호출 후 목록에서 제거
             binding.friendRequestAccept.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val acceptedFriend = requestList[position]
-                    onAccept(acceptedFriend)  // 친구 데이터를 넘김
-                    requestList.removeAt(position)
-                    notifyItemRemoved(position)
+                    onAccept(acceptedFriend)  //콜백에서 API 처리하고, 성공 시 removeAt 해줄 것
                 }
             }
 
@@ -34,9 +33,8 @@ class FriendRequestAdapter(
             binding.friendRequestReject.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    onReject(position)
-                    requestList.removeAt(position)
-                    notifyItemRemoved(position)
+                    val rejectedFriend = requestList[position]
+                    onReject(position) //콜백에서 API 처리 후 removeAt
                 }
             }
         }
