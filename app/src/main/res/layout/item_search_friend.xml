@@ -70,7 +70,7 @@
             <ImageView
                 android:id="@+id/friend_add_small_ic"
                 android:layout_width="32dp"
-                android:layout_height="30dp"
+                android:layout_height="32dp"
                 android:layout_marginEnd="12dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_friend_add_small"
