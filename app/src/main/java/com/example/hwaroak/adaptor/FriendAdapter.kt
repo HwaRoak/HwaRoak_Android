@@ -14,7 +14,7 @@ import com.example.hwaroak.R
 import com.example.hwaroak.databinding.ItemFriendBinding
 import com.google.android.material.button.MaterialButton
 
-class FriendAdapter(private val friendList: MutableList<FriendData>, var isManageMode: Boolean = false,private val onAddFriendClicked: () -> Unit,  private val onVisitClicked: (FriendData) -> Unit) :
+class FriendAdapter(private var friendList: MutableList<FriendData>, var isManageMode: Boolean = false,private val onAddFriendClicked: () -> Unit, private val onMarkForDelete: (FriendData) -> Unit,  private val onVisitClicked: (FriendData) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         const val VIEW_TYPE_FRIEND = 0 // 일반 친구
@@ -68,9 +68,13 @@ class FriendAdapter(private val friendList: MutableList<FriendData>, var isManag
         // 5. 삭제 버튼 클릭 시 해당 아이템 삭제 및 다이얼로그 종료
         view.findViewById<MaterialButton>(R.id.friend_delete_btn).setOnClickListener {
             if (position != RecyclerView.NO_POSITION) {
-                friendList.removeAt(position) //리스트에서 아이템 제거
-                notifyItemRemoved(position) //리사이클러 갱신
-                dialog.dismiss() // 다이얼로그 닫기
+                val friend = friendList[position]
+                onMarkForDelete(friend) // ✅ 삭제 예정 리스트에 넣기 위해 콜백 호출
+
+                friendList.removeAt(position) // UI에서만 제거
+                notifyItemRemoved(position)
+
+                dialog.dismiss()
             }
         }
         // 6. 다이얼로그 화면에 표시
@@ -133,4 +137,5 @@ class FriendAdapter(private val friendList: MutableList<FriendData>, var isManag
     }
 
     override fun getItemCount(): Int = friendList.size
+
 }

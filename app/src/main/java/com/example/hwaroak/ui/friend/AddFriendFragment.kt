@@ -1,19 +1,27 @@
 package com.example.hwaroak.ui.friend
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hwaroak.adaptor.FriendSearchAdapter
+import com.example.hwaroak.api.HwaRoakClient
+import com.example.hwaroak.api.friend.access.FriendViewModel
+import com.example.hwaroak.api.friend.access.FriendViewModelFactory
+import com.example.hwaroak.api.friend.repository.FriendRepository
 import com.example.hwaroak.databinding.FragmentAddFriendBinding
 
 class AddFriendFragment : Fragment() {
 
+    private lateinit var viewModel: FriendViewModel // 친구 요청 보내기 viewmodel
     private var _binding: FragmentAddFriendBinding? = null
     private val binding get() = _binding!!
 
@@ -32,15 +40,25 @@ class AddFriendFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initDummyData()  // 더미 데이터 초기화
+        val repository = FriendRepository(HwaRoakClient.friendService)
+        val factory = FriendViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, factory)[FriendViewModel::class.java]
 
         //어댑터 초기화, 요청 버튼 클릭 시 로직 처리
         adapter = FriendSearchAdapter(searchResult,
             onRequestClick = { friend ->
+                val prefs = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE)
+                val token = prefs.getString("accessToken", null) ?: return@FriendSearchAdapter
+
+                Log.d("AddFriendFragment", "요청 전송: token = Bearer $token")
+                Log.d("AddFriendFragment", "요청 전송: receiverId = ${friend.id}")
+
+
+                viewModel.sendFriendRequest("Bearer $token", friend.id)
                 friend.isRequested = true
                 adapter.notifyDataSetChanged()
 
-                Toast.makeText(requireContext(), "요청을 보냈습니다", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireContext(), "요청을 보냈습니다", Toast.LENGTH_SHORT).show()
             })
 
         // RecyclerView 초기 설정
@@ -48,6 +66,19 @@ class AddFriendFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@AddFriendFragment.adapter
         }
+
+        //observe
+        viewModel.searchedFriend.observe(viewLifecycleOwner) { friend ->
+            searchResult.clear()
+            if (friend != null) {
+                searchResult.add(friend)
+                updateViewState(binding.friendSearchEditText.text.toString(), true)
+            } else {
+                updateViewState(binding.friendSearchEditText.text.toString(), false)
+            }
+            adapter.notifyDataSetChanged()
+        }
+
         // 텍스트 입력 이벤트 처리
         binding.friendSearchEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -60,14 +91,10 @@ class AddFriendFragment : Fragment() {
                     return
                 }
 
-                val matched = allUsers.filter {
-                    //이름, id가 포함된 항목 필터링
-                    it.name.contains(query, ignoreCase = true)
-                    it.id.contains(query, ignoreCase = true)
-                }
-                searchResult.addAll(matched)
-                adapter.notifyDataSetChanged()
-                updateViewState(query, searchResult.isNotEmpty())
+                //viewmodel에서 api 호출
+                val prefs = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE)
+                val token = prefs.getString("accessToken", null) ?: return
+                viewModel.searchFriend("Bearer $token", query)
 
             }
 
@@ -77,6 +104,23 @@ class AddFriendFragment : Fragment() {
 
         // 초기 상태를 info view로 설정
         updateViewState("", false)
+
+        viewModel.friendRequestResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                Toast.makeText(requireContext(), "친구 요청 성공!", Toast.LENGTH_SHORT).show()
+            }
+            result.onFailure { throwable ->
+                Log.e("FriendRequest", "친구 요청 실패 전체 로그", throwable)
+
+                val errorMessage = throwable.message ?: ""
+                if (errorMessage.contains("FRIEND4004")) {
+                    Toast.makeText(requireContext(), "이미 요청을 보냈거나 친구 상태입니다.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "요청 실패: $errorMessage", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        }
 
     }
 
@@ -102,13 +146,6 @@ class AddFriendFragment : Fragment() {
         }
     }
 
-    //더미데이터 유저 검색 시 사용 + 유저 이름, 아이디 검색 둘 다 됨 후에 수정할수도 포
-    private fun initDummyData() {
-        allUsers.add(FriendData(name = "포둥이", id = "A3329-22"))
-        allUsers.add(FriendData(name = "뽀둥이", id = "B5593-57"))
-        allUsers.add(FriendData(name = "유저3", id = "C9102-48"))
-        allUsers.add(FriendData(name = "유저4", id = "D2830-00"))
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

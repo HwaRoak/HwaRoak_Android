@@ -3,6 +3,7 @@ package com.example.hwaroak.api.login.repository
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.core.content.edit
+import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.login.model.LoginRequest
 import com.example.hwaroak.api.login.model.TokenGetRequest
 import com.example.hwaroak.api.login.network.LoginService
@@ -20,6 +21,9 @@ class LoginRepository(private val service: LoginService,
             if(response.isSuccessful){
                 //인자로 받은 sharedPref를 IN
                 response.body()!!.data!!.let { memberData ->
+                    //liam
+                    HwaRoakClient.currentAccessToken = memberData.accessToken
+                    //
                     pref.edit{
                         putInt("memberId", memberData.memberId)
                         putString("nickname", memberData.nickname)

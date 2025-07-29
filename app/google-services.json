@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "990478788276",
+    "project_id": "hwaroak",
+    "storage_bucket": "hwaroak.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990478788276:android:632f03d85a2f3f968119e1",
+        "android_client_info": {
+          "package_name": "com.example.hwaroak"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDN0sK6O_9ncpJ_nnV4WQmlMKmYp7jIE8A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

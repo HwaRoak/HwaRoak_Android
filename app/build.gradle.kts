@@ -2,7 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     //fragment에 직렬화를 위해
-    id("kotlin-parcelize") 
+    id("kotlin-parcelize")
+    //구글 서비스 플러그인 적용
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -86,4 +88,20 @@ dependencies {
 
     //원형 그래프(PieChart)
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    // Firebase Analytics
+    implementation("com.google.firebase:firebase-analytics-ktx:22.5.0")
+
+    // Cloud Firestore
+    implementation("com.google.firebase:firebase-firestore-ktx:25.1.4")
+
+    // Firebase Cloud Messaging
+    implementation("com.google.firebase:firebase-messaging-ktx:24.1.2")
+
+    //Http-SSE 통신
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:okhttp-sse:4.12.0")
+
+    // …기존 의존성들…
+
 }

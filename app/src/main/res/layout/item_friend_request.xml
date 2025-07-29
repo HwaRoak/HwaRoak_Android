@@ -35,20 +35,35 @@
             android:layout_marginStart="8dp"
             android:text="뽀둥이" />
 
+
+        <View
+            android:id="@+id/friend_divider"
+            android:layout_width="1dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="#ECECEC"
+            app:layout_constraintBottom_toBottomOf="@id/friend_request_name"
+            app:layout_constraintStart_toEndOf="@id/friend_request_name"
+            app:layout_constraintTop_toTopOf="@id/friend_request_name" />
+
         <!-- 상태 메시지 -->
+
+        <!-- 수락 버튼 -->
+
         <TextView
             android:id="@+id/friend_request_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:text="(자기소개)"
+            android:textColor="#888888"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@id/friend_request_name"
             app:layout_constraintStart_toEndOf="@id/friend_request_name"
             app:layout_constraintTop_toTopOf="@id/friend_request_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="(자기소개)"
-            android:textColor="#888888"
-            android:textSize="12sp" />
+            app:layout_constraintVertical_bias="0.454" />
 
-        <!-- 수락 버튼 -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/friend_request_accept"
             style="@style/Widget.MaterialComponents.Button.TextButton"
