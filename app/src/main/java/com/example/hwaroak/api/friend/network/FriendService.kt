@@ -18,20 +18,22 @@ import retrofit2.http.Query
 interface FriendService {
     //친구 목록 조회
     @GET("/api/v1/friends")
-    suspend fun getFriendList(@Header("Authorization") token: String): Response<ApiResponse<List<FriendResponse>>>
+    suspend fun getFriendList(
+        @Header("Authorization") token: String
+    ): Response<ApiResponse<List<FriendResponse>>>
 
     //친구 검색
-    @GET("/api/v1/friends/search")
+    @GET("/api/v1/friends/search/{userId}")
     suspend fun searchFriend(
         @Header("Authorization") token: String,
-        @Query("userId") userId: String
+        @Path("userId") userId: String
     ): Response<ApiResponse<FriendSearchResponse>>
 
     //친구 요청 보내기
-    @POST("/api/v1/friends/request")
+    @POST("/api/v1/friends/request/{userId}")
     suspend fun sendFriendRequest(
         @Header("Authorization") token: String,
-        @Query("userId") userId: String
+        @Path("userId") userId: String
     ): Response<FriendRequestResponse>
 
     //친구 요청 목록

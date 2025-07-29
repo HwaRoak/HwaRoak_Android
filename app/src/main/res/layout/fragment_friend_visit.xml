@@ -84,7 +84,7 @@
             app:layout_constraintTop_toTopOf="@id/iv_friend_character"
             app:layout_constraintBottom_toBottomOf="@id/iv_friend_character" />
 
-        <!-- 오른쪽 불1 -->
+        <!-- 불2 -->
         <ImageView
             android:id="@+id/friend_fire2_imv"
             android:layout_width="50dp"
@@ -99,7 +99,7 @@
             app:layout_constraintTop_toTopOf="@id/iv_friend_character"
             app:layout_constraintBottom_toBottomOf="@id/iv_friend_character" />
 
-        <!-- 오른쪽 불2 -->
+        <!-- 불3 -->
         <ImageView
             android:id="@+id/friend_fire3_imv"
             android:layout_width="56dp"
@@ -112,37 +112,40 @@
             android:visibility="invisible"
             app:layout_constraintStart_toEndOf="@id/iv_friend_character"
             app:layout_constraintTop_toTopOf="@id/iv_friend_character" />
+
         <!-- 감정 게이지와 하단 배경을 수평으로 배치 -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/iv_friend_character"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:layout_marginTop="24dp"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp">
 
-            <!-- 왼쪽: 배경 -->
+            <!-- 배경 -->
             <ImageView
                 android:id="@+id/friend_fire_rec"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
                 android:src="@drawable/ic_friend_fire_rectangle"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- 겹치는 내부 바 -->
+            <!-- 게이지 바 옆 불 -->
             <ImageView
                 android:id="@+id/friend_fire_rec_in"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_fire_friend_bar"
-                app:layout_constraintTop_toTopOf="@id/friend_fire_rec"
-                app:layout_constraintBottom_toBottomOf="@id/friend_fire_rec"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/friend_fire_rec"
                 app:layout_constraintEnd_toEndOf="@id/friend_fire_rec" />
 
-            <!-- 오른쪽: 감정 게이지 -->
+            <!-- 감정 게이지 -->
             <ImageView
                 android:id="@+id/progress_emotion_gauge"
                 android:layout_width="0dp"
