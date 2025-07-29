@@ -4,7 +4,11 @@ import com.example.hwaroak.api.diary.network.DiaryService
 import com.example.hwaroak.api.friend.network.FriendService
 import com.example.hwaroak.api.home.network.ItemApiService
 import com.example.hwaroak.api.login.network.LoginService
+
+import com.example.hwaroak.api.notice.network.NoticeService
+
 import com.example.hwaroak.api.mypage.network.MemberService
+
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -70,8 +74,13 @@ object HwaRoakClient {
     }
     //친구 관련
     val friendService: FriendService = retrofit.create(FriendService::class.java)
+
+    //알람 관련
+    val noticeService: NoticeService = retrofit.create(NoticeService::class.java)
+    
     //마이페이지 관련
     val memberService: MemberService = retrofit.create(MemberService::class.java)
+
 
 
 }

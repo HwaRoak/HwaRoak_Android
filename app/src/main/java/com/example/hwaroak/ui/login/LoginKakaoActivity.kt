@@ -196,7 +196,8 @@ class LoginKakaoActivity : AppCompatActivity() {
                     //Log.d("kakaoLogin", "재발금 후 리프레시 토큰: " + pref.getString("refreshToken", "").toString())
 
                     //약관 동의를 했으면
-                    if(checkAgree) {
+                    /**checkAgree*************************************************************************************************************/
+                    if(false) {
                         val intent = Intent(this@LoginKakaoActivity, MainActivity::class.java)
                         startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
                         finish()

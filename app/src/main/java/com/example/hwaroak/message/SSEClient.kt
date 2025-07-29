@@ -3,9 +3,12 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.hwaroak.R
+import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -13,13 +16,34 @@ import okhttp3.sse.EventSource
 import okhttp3.sse.EventSourceListener
 import okhttp3.sse.EventSources
 
+//알람 파싱 데이터 클래스
+data class AlarmEvent(
+    val id: Int,
+    val receiverId: Int,
+    val title: String,
+    val alarmType: String,
+    val message: String,
+    val createdAt: String
+)
+
+
 class SSEClient(private val context: Context) {
 
-    private val client = OkHttpClient()
+    //유저 설정(무한 대기)
+    private val client =  OkHttpClient.Builder()
+        .readTimeout(0, java.util.concurrent.TimeUnit.MILLISECONDS) // 무한 대기
+        .build()
 
+
+    val prefs = context.getSharedPreferences("user", Context.MODE_PRIVATE)
+    val accessToken = prefs.getString("accessToken", "") ?: ""
+    val token = if (accessToken.startsWith("Bearer ")) accessToken else "Bearer $accessToken"
+
+    //연결 로직
     fun connectToSSE(){
         val request = Request.Builder()
-            .url("http://....")
+            .url("http://52.78.74.252/api/v1/sse/connect")
+            .addHeader("Authorization", token)
             .build()
 
         val listener = object : EventSourceListener() {
@@ -38,7 +62,24 @@ class SSEClient(private val context: Context) {
             ) {
                 super.onEvent(eventSource, id, type, data)
                 /**처리하기**/
-                showNotification(data)
+                Log.d("log_SSE", "도착: $data")
+                if(data.toString() != "subscribe") {
+                    try {
+                        val alarmEvent = Gson().fromJson(data, AlarmEvent::class.java)
+
+                        // createdAt → "2025-07-29T20:35:51.652606127" → "20:35" 추출
+                        val time = alarmEvent.createdAt.substringAfter("T").substring(0, 5)
+
+                        val title = "${alarmEvent.title} (${time})"
+                        val message = alarmEvent.message
+
+                        //showNotification(title, message)
+
+                    } catch (e: Exception) {
+                        Log.e("log_SSE", "파싱 실패: $e")
+                    }
+                }
+
             }
 
             override fun onClosed(eventSource: EventSource) {
@@ -49,6 +90,12 @@ class SSEClient(private val context: Context) {
             override fun onFailure(eventSource: EventSource, t: Throwable?, response: Response?) {
                 super.onFailure(eventSource, t, response)
                 Log.d("log_SSE", "SSE 연결 실패 : $t")
+
+                //재연결
+                Handler(Looper.getMainLooper()).postDelayed({
+                    connectToSSE()
+                }, 1000)
+
             }
         }
 
@@ -59,7 +106,8 @@ class SSEClient(private val context: Context) {
             .newEventSource(request, listener)
     }
 
-    fun showNotification(message: String){
+    //이를 바탕으로 팝업 띄우기
+    fun showNotification(title: String, message: String){
         //notification Manager 세팅
         val manager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -75,8 +123,8 @@ class SSEClient(private val context: Context) {
         //알람 세팅
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_emotion1)
-            .setContentTitle("테스트 알림입니다.")
-            .setContentText("테스트 내용입니다.")
+            .setContentTitle(title)
+            .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
 
