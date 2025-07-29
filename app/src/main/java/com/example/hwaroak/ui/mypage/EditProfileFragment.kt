@@ -12,10 +12,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.hwaroak.R
 import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.mypage.access.MemberViewModel
 import com.example.hwaroak.api.mypage.access.MemberViewModelFactory
+import com.example.hwaroak.api.mypage.model.EditProfileResponse
 import com.example.hwaroak.api.mypage.repository.MemberRepository
 import com.example.hwaroak.data.MypageData
 import com.example.hwaroak.databinding.DialogChangeNicknameBinding
@@ -70,6 +72,33 @@ class EditProfileFragment : Fragment() {
         // 저장 버튼 리스너
         binding.btnSave.setOnClickListener {
             parentFragmentManager.popBackStack()
+            val nickname = binding.nickname.text.toString().trim()
+            val introduction = binding.etIntroduce.text.toString().trim()
+            val profileImgUrl = "" // 추후 이미지 업로드 기능과 연결 가능
+
+
+
+            // 🔹 observer 정의
+            val resultObserver = object : Observer<Result<EditProfileResponse>> {
+                override fun onChanged(result: Result<EditProfileResponse>) {
+                    result.onSuccess {
+                        Toast.makeText(requireContext(), "프로필 수정 완료", Toast.LENGTH_SHORT).show()
+                    }
+
+                    result.onFailure {
+                        Toast.makeText(requireContext(), "프로필 수정 실패: ${it.message}", Toast.LENGTH_SHORT).show()
+                    }
+
+                    // 🔹 observe 해제
+                    memberViewModel.editProfileResult.removeObserver(this)
+                }
+            }
+
+            // 🔹 버튼 클릭 시에만 observe 시작
+            memberViewModel.editProfileResult.observe(viewLifecycleOwner, resultObserver)
+
+            // 🔹 수정 요청 실행
+            memberViewModel.editProfile(accessToken, nickname, profileImgUrl, introduction)
         }
 
         // 닉네임 변경 연필 버튼 리스너
