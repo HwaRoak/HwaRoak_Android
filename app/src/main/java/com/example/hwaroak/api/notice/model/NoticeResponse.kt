@@ -38,11 +38,14 @@ data class AlarmListResponse(
 //5. 공지 상세 조회(공지 id를 파라미터로 주면 조회)
 //alarmType = NOTIFICATION 인 공지의 상세 정보를 조회합니다.
 //알람 리스트에서 touch 시 자세한 정보 보여주기
-data class AlarmDetailResponse(
+data class NoticeDetailResponse(
     val id: Int,
     val title: String,
     val content: String,
     val alarmType: String,
     val createdAt: String
 )
+
+//6. 알람 설정 조회
+
 

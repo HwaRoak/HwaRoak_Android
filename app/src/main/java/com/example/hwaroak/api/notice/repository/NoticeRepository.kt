@@ -31,9 +31,12 @@ class NoticeRepository(private val service: NoticeService) {
             Result.failure(RuntimeException("HTTP ${response.code()}: $errMsg"))
         }
 
-
     } catch (e: Exception){
         //오류
         Result.failure(e)
     }
+
+
+
+
 }

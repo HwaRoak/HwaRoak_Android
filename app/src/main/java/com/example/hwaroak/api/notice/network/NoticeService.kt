@@ -1,7 +1,7 @@
 package com.example.hwaroak.api.notice.network
 
-import com.example.hwaroak.api.notice.model.AlarmDetailResponse
 import com.example.hwaroak.api.notice.model.AlarmListResponse
+import com.example.hwaroak.api.notice.model.NoticeDetailResponse
 import com.example.hwaroak.api.notice.model.NoticeListResponse
 import com.example.hwaroak.api.notice.model.NoticeRegisterRequest
 import com.example.hwaroak.api.notice.model.NoticeResponseBody
@@ -46,5 +46,5 @@ interface NoticeService {
     suspend fun getDetailAlarm(
         @Header("Authorization") token: String,
         @Path("id") id: Int
-    ) : Response<NoticeResponseBody<AlarmDetailResponse>>
+    ) : Response<NoticeResponseBody<NoticeDetailResponse>>
 }
