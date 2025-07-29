@@ -180,6 +180,7 @@
                         android:id="@+id/calendar_HwaroakTalkScroll_scv"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
+                        android:layout_marginTop="2dp"
                         app:layout_constraintTop_toBottomOf="@id/calendar_todayHwaroak_tv"
                         app:layout_constraintStart_toStartOf="@id/calendar_talkbackground_layout"
                         app:layout_constraintEnd_toEndOf="@id/calendar_talkbackground_layout"

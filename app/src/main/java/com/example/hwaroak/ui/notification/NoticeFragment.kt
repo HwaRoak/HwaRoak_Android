@@ -11,6 +11,7 @@ import com.example.hwaroak.adaptor.NoticeItemRVAdaptor
 import com.example.hwaroak.data.NoticeItem
 import com.example.hwaroak.databinding.FragmentNoticeBinding
 import com.example.hwaroak.ui.main.MainActivity
+import com.example.hwaroak.ui.mypage.SettingFragment
 
 class NoticeFragment : Fragment() {
 
@@ -52,6 +53,15 @@ class NoticeFragment : Fragment() {
             (activity as? MainActivity)?.selectTab(R.id.homeFragment)
         }
         // 추후 필요시 여기에 다른 로직 구현
+
+        //1. 알림 설정 누를 시 해당 화면으로 이동
+        binding.btnNoticeSetting.setOnClickListener {
+            // 알림 설정 화면으로 이동
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.main_fragmentContainer, SettingFragment())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     override fun onDestroyView() {

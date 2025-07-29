@@ -1,16 +1,24 @@
 package com.example.hwaroak.ui.mypage
 
 import android.app.AlertDialog
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat.animate
+import androidx.fragment.app.activityViewModels
 import com.example.hwaroak.R
+import com.example.hwaroak.api.HwaRoakClient
+import com.example.hwaroak.api.mypage.access.MemberViewModel
+import com.example.hwaroak.api.mypage.access.MemberViewModelFactory
+import com.example.hwaroak.api.mypage.repository.MemberRepository
 import com.example.hwaroak.databinding.DialogLogoutCheckBinding
 import com.example.hwaroak.databinding.FragmentMypageBinding
 import com.example.hwaroak.ui.friend.AddFriendFragment
@@ -26,6 +34,15 @@ class MypageFragment : Fragment() {
 
     private var _binding: FragmentMypageBinding? = null
     private val binding get() = _binding!!
+
+    private val memberViewModel: MemberViewModel by activityViewModels {
+        MemberViewModelFactory(MemberRepository(HwaRoakClient.memberService))
+    }
+    //엑세스 토큰
+    //유저 정보를 담을 sharedPreference
+    private lateinit var pref: SharedPreferences
+    private lateinit var accessToken: String
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,6 +107,27 @@ class MypageFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
+        accessToken = pref.getString("accessToken", "").toString()
+
+        // 1. 최초에 한 번 사용자 정보를 요청 (또는 화면에 보일 때마다)
+        memberViewModel.getMemberInfo(accessToken)
+
+        // 2. ViewModel의 사용자 정보를 관찰
+        memberViewModel.memberInfoResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { data ->
+                binding.profileNickname.text = data.nickname
+            }
+            result.onFailure {
+                Log.d("member", "불러오기 실패: ${it.message}")
+                Toast.makeText(requireContext(), "회원 정보 불러오기 실패", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     // 원형 그래프 함수

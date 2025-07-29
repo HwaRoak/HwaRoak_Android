@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
         //테스트
         val sseClient = SSEClient(this)
-        sseClient.showNotification("끼아악")
+        //sseClient.connectToSSE()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
