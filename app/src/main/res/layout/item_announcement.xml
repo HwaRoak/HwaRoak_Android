@@ -18,16 +18,31 @@
         <!-- 제목 -->
         <TextView
             android:id="@+id/announcement_title"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ver. 1.0"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:textColor="#222222"
             android:fontFamily="@font/freesentation_5medium"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_toggle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/announcement_detail" />
+
+        <!--NEW 표시 최초 1개-->
+        <TextView
+            android:id="@+id/announcement_newString"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NEW"
+            android:textSize="16sp"
+            android:textColor="@color/red"
+            android:layout_marginStart="20dp"
+            android:visibility="invisible"
+            android:fontFamily="@font/freesentation_5medium"
+            app:layout_constraintStart_toEndOf="@id/announcement_title"
+            app:layout_constraintTop_toTopOf="@id/announcement_title"
+            app:layout_constraintBottom_toBottomOf="@id/announcement_title" />
+
 
         <!-- 토글 버튼 -->
         <ImageView

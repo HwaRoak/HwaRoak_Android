@@ -30,7 +30,19 @@ class AnnouncementRVAdaptor(
         with(holder.binding) {
             // 제목과 상세 내용 설정
             announcementTitle.text = notice.title
-            announcementDetail.text = notice.detail
+            val date = notice.createdAt.replace("T", " | ").substringBefore(".")
+
+            val content = "${date} 작성\n\n${notice.detail}"
+
+            announcementDetail.text = content
+
+            //최신 1개는 첫 번째
+            if(position == 0){
+                announcementNewString.visibility = View.VISIBLE
+            }
+            else{
+                announcementNewString.visibility = View.INVISIBLE
+            }
 
             // 펼침/접힘 상태에 따른 visibility와 화살표 아이콘 변경
             announcementDetail.visibility = if (notice.isExpanded) View.VISIBLE else View.GONE

@@ -56,12 +56,23 @@ class AgreeSecondFragment : Fragment() {
         binding.agree2FinishBtn.isEnabled = false
         binding.agree2FinishBtn.setBackgroundResource(R.drawable.bg_diary_write_no_btn)
 
-        //스크롤 확인
+        //스크롤이 가능한 경우
         binding.agree2Scrollview.setOnScrollChangeListener { v, _, _, _, _ ->
             val atBottom = !v.canScrollVertically(1)
             if(!atBottom){scrollCheck = true}
 
             if(scrollCheck){
+                binding.agree2FinishBtn.isEnabled = true
+                binding.agree2FinishBtn.setBackgroundResource(R.drawable.bg_diary_write_btn)
+            }
+        }
+
+        //스크롤이 안될 경우(변화 감지)
+        binding.agree2Scrollview.post {
+            val canScrollDown = binding.agree2Scrollview.canScrollVertically(1)
+            val canScrollUp = binding.agree2Scrollview.canScrollVertically(-1)
+            val checkScroll = canScrollDown || canScrollUp
+            if (!checkScroll) {
                 binding.agree2FinishBtn.isEnabled = true
                 binding.agree2FinishBtn.setBackgroundResource(R.drawable.bg_diary_write_btn)
             }

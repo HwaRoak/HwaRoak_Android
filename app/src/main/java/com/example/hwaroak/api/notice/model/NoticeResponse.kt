@@ -11,12 +11,16 @@ data class NoticeResponseBody<T>(
 //alarmType = NOTIFICATION 인 공지를 최신순으로 조회합니다.
 data class NoticeListResponse(
     val id: Int,
+    val receiverId: Int,
     val title: String,
+    val alarmType: String,
     val createdAt: String
 )
 
 //2. 공지 등록(response는 data 부분이 null)
 data class NoticeRegisterRequest(
+    val receiverId: Int,
+    val senderId: Int,
     val title: String,
     val content: String,
     val message: String

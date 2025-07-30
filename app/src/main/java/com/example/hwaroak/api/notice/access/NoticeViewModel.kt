@@ -33,8 +33,24 @@ class NoticeViewModel(private val repository: NoticeRepository) : ViewModel() {
     //2. 알람 리스트 가져오기
     fun getAlarmList(token: String){
         viewModelScope.launch {
-            //val res = repository.
+            val res = repository.getAlarmList(token)
+            _alarmList.postValue(res)
         }
+    }
+
+    //5. 공지 상세 조회
+    fun getDetailNotice(token: String, noticeId: Int){
+        viewModelScope.launch {
+            val res = repository.getDetailNotice(token, noticeId)
+            _detailNotice.postValue(res)
+        }
+    }
+
+    //5.5 차라리 공지 값을 그대로 가져오기
+    suspend fun getDetailNoticeAsync(token: String, noticeId: Int)
+    : NoticeDetailResponse? {
+        //getOrNull() -> result에서 성공 시 값 실패 시 null
+        return repository.getDetailNotice(token, noticeId).getOrNull()
     }
 
 
