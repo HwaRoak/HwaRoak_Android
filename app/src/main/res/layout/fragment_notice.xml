@@ -5,6 +5,42 @@
     android:layout_height="match_parent"
     android:background="@color/colorBackground">
     <!--상단바-->
+
+    <ImageButton
+        android:id="@+id/notice_back_btn"
+        android:layout_width="12dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_arrow_back"
+        android:background="@color/transparent"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="25dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/notice_bell_btn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_bell"
+        android:background="@color/transparent"
+        android:layout_marginEnd="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/notice_back_btn"
+        app:layout_constraintBottom_toBottomOf="@id/notice_back_btn"/>
+
+    <TextView
+        android:id="@+id/notice_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="알림"
+        android:layout_marginStart="10dp"
+        style="@style/freesentation6_20sp_title"
+        app:layout_constraintStart_toEndOf="@id/notice_back_btn"
+        app:layout_constraintTop_toTopOf="@id/notice_back_btn"
+        app:layout_constraintBottom_toBottomOf="@id/notice_back_btn"/>
+
+    <!--
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -44,6 +80,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    -->
 
     <!--컨텐츠박스-->
     <!--버튼-->
@@ -53,8 +90,10 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorBackground"
         android:src="@drawable/btn_notice_mynotification"
-        app:layout_constraintBottom_toTopOf="@id/rv_notice_container"
-        app:layout_constraintStart_toStartOf="@id/rv_notice_container"/>
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notice_back_btn"/>
 
     <ImageButton
         android:id="@+id/btn_notice_setting"
@@ -63,23 +102,29 @@
         android:layout_marginBottom="12dp"
         android:src="@drawable/btn_notice_notification_setting"
         android:backgroundTint="@color/colorBackground"
-        app:layout_constraintBottom_toTopOf="@id/rv_notice_container"
-        app:layout_constraintEnd_toEndOf="@id/rv_notice_container"/>
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btn_my_notice"
+        app:layout_constraintBottom_toBottomOf="@id/btn_my_notice"
+        />
 
     <!--알림 컨테이너-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_notice_container"
-        android:layout_width="380dp"
-        android:layout_height="450dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="186dp"
-        android:layout_marginEnd="15dp"
-        android:padding="31dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="30dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp"
         android:clipToPadding="false"
         android:background="@drawable/bg_home_rounded_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_my_notice"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.3">
 
 

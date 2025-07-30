@@ -1,22 +1,47 @@
 package com.example.hwaroak.ui.notification
 
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.NoticeItemRVAdaptor
+import com.example.hwaroak.api.HwaRoakClient
+import com.example.hwaroak.api.notice.access.NoticeViewModel
+import com.example.hwaroak.api.notice.access.NoticeViewModelFactory
+import com.example.hwaroak.api.notice.repository.NoticeRepository
 import com.example.hwaroak.data.NoticeItem
 import com.example.hwaroak.databinding.FragmentNoticeBinding
 import com.example.hwaroak.ui.main.MainActivity
 import com.example.hwaroak.ui.mypage.SettingFragment
+import kotlin.getValue
 
 class NoticeFragment : Fragment() {
 
     private var _binding: FragmentNoticeBinding? = null
     private val binding get() = _binding!!
+
+    //엑세스 토큰 받기
+    private lateinit var pref: SharedPreferences
+    private lateinit var accessToken: String
+
+    //viewModel 및 repository 정의
+    //viewModel 정의
+    // 1) Retrofit 서비스로 Repository 인스턴스 생성
+    private val noticeRepository by lazy {
+        NoticeRepository(HwaRoakClient.noticeService)
+    }
+    // 2) Activity 스코프로 ViewModel 생성 (Factory 주입)
+    private val noticeViewModel: NoticeViewModel by viewModels{
+        NoticeViewModelFactory(noticeRepository)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,23 +53,34 @@ class NoticeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //알림 더미데이터
-        val dummyNotices = listOf(
-            NoticeItem("제목 1", "내용 1111111."),
-            NoticeItem("제목 2", "내용 2222222."),
-            NoticeItem("제목 3", "내용 3333333."),
-            NoticeItem("제목 4", "내용 4444444."),
-            NoticeItem("제목 5", "내용 5555555."),
-            NoticeItem("제목 6", "내용 6666666."),
-            NoticeItem("제목 7", "내용 7777777."),
-            NoticeItem("제목 8", "내용 8888888."),
-            NoticeItem("제목 9", "내용 9999999."),
-            NoticeItem("제목 10", "내용 10101010.")
-        )
-        //알림 recyclerveiw 어댑터 선언, 설정, inflate
-        val adapter = NoticeItemRVAdaptor(dummyNotices)
-        binding.rvNoticeContainer.adapter = adapter
-        binding.rvNoticeContainer.layoutManager = LinearLayoutManager(requireContext())
+        //초기 설정
+        pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
+        accessToken = pref.getString("accessToken", "").toString()
+        
+        /**알람함 observe**/
+        noticeViewModel.alarmList.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { resp ->
+                val noticeList = resp.map { item ->
+                    NoticeItem(item.id, item.title, item.content,
+                        item.alarmType, item.createdAt)
+                }
+
+                //알림 recyclerveiw 어댑터 선언, 설정, inflate
+                val adapter = NoticeItemRVAdaptor(noticeList)
+                binding.rvNoticeContainer.adapter = adapter
+                binding.rvNoticeContainer.layoutManager = LinearLayoutManager(requireContext())
+
+            }.onFailure { err ->
+                Toast.makeText(
+                    requireContext(),
+                    "알람 로드 중 오류 발생: {$err}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        //호출
+        noticeViewModel.getAlarmList(accessToken)
 
         binding.noticeBackBtn.setOnClickListener {
             // 뒤로가기 버튼 클릭 시 MainActivity의 상단 바를 다시 보이게 함
@@ -62,6 +98,11 @@ class NoticeFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.hideMainTopBar()
     }
 
     override fun onDestroyView() {

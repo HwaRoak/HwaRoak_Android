@@ -19,8 +19,10 @@ class NoticeItemRVAdaptor(private val noticeList: List<NoticeItem>) :
 
     override fun onBindViewHolder(holder: NoticeViewHolder, position: Int) {
         val notice = noticeList[position]
+
         holder.binding.tvNoticeTitle.text = notice.title
         holder.binding.tvNoticeContent.text = notice.content
+        holder.binding.tvNoticeDay.text = notice.createdAt
     }
 
     override fun getItemCount(): Int = noticeList.size
