@@ -73,7 +73,7 @@ class SSEClient(private val context: Context) {
                         val title = "${alarmEvent.title} (${time})"
                         val message = alarmEvent.message
 
-                        //showNotification(title, message)
+                        showNotification(title, message)
 
                     } catch (e: Exception) {
                         Log.e("log_SSE", "파싱 실패: $e")

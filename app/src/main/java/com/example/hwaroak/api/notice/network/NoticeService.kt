@@ -26,14 +26,14 @@ interface NoticeService {
     suspend fun registerNotice(
         @Header("Authorization") token: String,
         @Body req: NoticeRegisterRequest
-    ) : Response<NoticeResponseBody<Unit>>
+    ) : Response<NoticeResponseBody<Unit?>>
 
     //3. 알림 읽음 처리
     @PATCH("api/v1/alarms/{id}/read")
     suspend fun readNotice(
         @Header("Authorization") token: String,
         @Path("id") id: Int
-    ) : Response<NoticeResponseBody<Unit>>
+    ) : Response<NoticeResponseBody<Unit?>>
 
     //4. 알림함 전체 조회 (이 경우 전체 다 조회 -> 알람에서 Notification이 공지)
     @GET("api/v1/alarms")
@@ -43,7 +43,7 @@ interface NoticeService {
 
     //5. 공지 상세 조회(알람 중 Notification인 거 터치 시 상세 조회)
     @GET("api/v1/alarms/{id}")
-    suspend fun getDetailAlarm(
+    suspend fun getDetailNotice(
         @Header("Authorization") token: String,
         @Path("id") id: Int
     ) : Response<NoticeResponseBody<NoticeDetailResponse>>

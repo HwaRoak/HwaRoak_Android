@@ -77,7 +77,7 @@ object HwaRoakClient {
 
     //알람 관련
     val noticeService: NoticeService = retrofit.create(NoticeService::class.java)
-    
+
     //마이페이지 관련
     val memberService: MemberService = retrofit.create(MemberService::class.java)
 
