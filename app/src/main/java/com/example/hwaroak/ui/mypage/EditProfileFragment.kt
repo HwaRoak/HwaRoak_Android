@@ -1,6 +1,8 @@
 package com.example.hwaroak.ui.mypage
 
 import android.app.AlertDialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
@@ -72,6 +74,10 @@ class EditProfileFragment : Fragment() {
             }
         }
 
+        binding.btnCopyId.setOnClickListener {
+            val userId = binding.userId.text.toString()
+            copyUserIdToClipboard(userId)
+        }
 
         // 저장 버튼 리스너
         binding.btnSave.setOnClickListener {
@@ -112,6 +118,14 @@ class EditProfileFragment : Fragment() {
         binding.btnEditNickname.setOnClickListener {
             showChangeNicknameDialog() // 다이얼로그 표시 함수 호출
         }
+    }
+
+    private fun copyUserIdToClipboard(userId: String) {
+        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("userId", userId)
+        clipboard.setPrimaryClip(clip)
+
+        Toast.makeText(requireContext(), "아이디가 복사되었습니다.", Toast.LENGTH_SHORT).show()
     }
 
     private fun showChangeNicknameDialog() {
