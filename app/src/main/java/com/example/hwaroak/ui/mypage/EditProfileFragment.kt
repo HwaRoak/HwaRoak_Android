@@ -1,6 +1,7 @@
 package com.example.hwaroak.ui.mypage
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -59,6 +60,7 @@ class EditProfileFragment : Fragment() {
                 Log.d("member", "닉네임=${data.nickname}")
                 Log.d("member", "자기소개=${data.introduction}")
                 binding.nickname.setText(data.nickname)
+                binding.userId.setText(data.userId)
                 binding.etIntroduce.setText(data.introduction ?: "")
             }
 
@@ -76,9 +78,14 @@ class EditProfileFragment : Fragment() {
             val introduction = binding.etIntroduce.text.toString().trim()
             val profileImgUrl = "" // 추후 이미지 업로드 기능과 연결 가능
 
+            // 수정한 닉네임 캐시에 즉시 저장
+            val pref = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE)
+            pref.edit().putString("cachedNickname", nickname).apply()
 
+            // 수정 요청 실행
+            memberViewModel.editProfile(accessToken, nickname, profileImgUrl, introduction)
 
-            // 🔹 observer 정의
+            // observer 정의
             val resultObserver = object : Observer<Result<EditProfileResponse>> {
                 override fun onChanged(result: Result<EditProfileResponse>) {
                     result.onSuccess {
@@ -89,16 +96,14 @@ class EditProfileFragment : Fragment() {
                         Toast.makeText(requireContext(), "프로필 수정 실패: ${it.message}", Toast.LENGTH_SHORT).show()
                     }
 
-                    // 🔹 observe 해제
+                    // observe 해제
                     memberViewModel.editProfileResult.removeObserver(this)
                 }
             }
 
-            // 🔹 버튼 클릭 시에만 observe 시작
+            // 버튼 클릭 시에만 observe 시작
             memberViewModel.editProfileResult.observe(viewLifecycleOwner, resultObserver)
 
-            // 🔹 수정 요청 실행
-            memberViewModel.editProfile(accessToken, nickname, profileImgUrl, introduction)
         }
 
         // 닉네임 변경 연필 버튼 리스너

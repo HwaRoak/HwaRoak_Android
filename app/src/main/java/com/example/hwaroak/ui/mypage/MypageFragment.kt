@@ -115,6 +115,10 @@ class MypageFragment : Fragment() {
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
         accessToken = pref.getString("accessToken", "").toString()
 
+        // 캐시된 닉네임 먼저 표시
+        val cachedNickname = pref.getString("cachedNickname", null)
+        binding.profileNickname.text = cachedNickname ?: "닉네임 불러오는 중..."
+
         // 1. 최초에 한 번 사용자 정보를 요청 (또는 화면에 보일 때마다)
         memberViewModel.getMemberInfo(accessToken)
 
@@ -122,6 +126,8 @@ class MypageFragment : Fragment() {
         memberViewModel.memberInfoResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess { data ->
                 binding.profileNickname.text = data.nickname
+                // 닉네임을 SharedPreferences에 저장
+                pref.edit().putString("cachedNickname", data.nickname).apply()
             }
             result.onFailure {
                 Log.d("member", "불러오기 실패: ${it.message}")
