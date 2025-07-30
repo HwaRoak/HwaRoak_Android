@@ -50,67 +50,15 @@ class MypageFragment : Fragment() {
     ): View {
         _binding = FragmentMypageBinding.inflate(inflater, container, false)
 
-        // 원형 그래프 함수 호출
-        initPieChart()
-
-        // 내정보 버튼 클릭시 해당 프래그먼트로 전환
-        binding.btnMyinfo.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, EditProfileFragment())
-                .addToBackStack(null)
-                .commit()
-        }
-
-        // 상세보기 버튼 클릭시 해당 프래그먼트로 전환
-        binding.btnCheckDetail.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, AnalysisFragment())
-                .addToBackStack(null)
-                .commit()
-        }
-
-        // 공지사항 글자 클릭시 해당 프래그먼트로 전환
-        binding.announcement.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, AnnouncementFragment())
-                .addToBackStack(null)
-                .commit()
-        }
-
-        // 알림설정 글자 클릭시 해당 프래그먼트로 전환
-        binding.notificationSetting.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, SettingFragment())
-                .addToBackStack(null)
-                .commit()
-        }
-
-        // 약관 및 정책 글자 클릭시 해당 프래그먼트로 전환
-        binding.terms.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, TermsFragment())
-                .addToBackStack(null)
-                .commit()
-        }
-
-        // 유저 검색 글자 클릭시 해당 프래그먼트로 전환
-        binding.searchUser.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, AddFriendFragment())
-                .addToBackStack(null)
-                .commit()
-        }
-
-        // 로그아웃 글자 클릭 시 다이얼로그 띄우게 구현
-        binding.logout.setOnClickListener {
-            showLogoutDialog()
-        }
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initPieChart()
+        setupNavigation()
+        setupLogout()
 
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
         accessToken = pref.getString("accessToken", "").toString()
@@ -183,9 +131,43 @@ class MypageFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun setupNavigation() {
+        binding.btnMyinfo.setOnClickListener {
+            replaceFragment(EditProfileFragment())
+        }
+
+        binding.btnCheckDetail.setOnClickListener {
+            replaceFragment(AnalysisFragment())
+        }
+
+        binding.announcement.setOnClickListener {
+            replaceFragment(AnnouncementFragment())
+        }
+
+        binding.notificationSetting.setOnClickListener {
+            replaceFragment(SettingFragment())
+        }
+
+        binding.terms.setOnClickListener {
+            replaceFragment(TermsFragment())
+        }
+
+        binding.searchUser.setOnClickListener {
+            replaceFragment(AddFriendFragment())
+        }
+    }
+
+    private fun setupLogout() {
+        binding.logout.setOnClickListener {
+            showLogoutDialog()
+        }
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragmentContainer, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun showLogoutDialog() {
@@ -233,4 +215,8 @@ class MypageFragment : Fragment() {
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
