@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -113,8 +115,6 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun showChangeNicknameDialog() {
-        binding.btnEditNickname.setOnClickListener {
-
             // 1. 뷰 생성
             val dialogBinding = DialogChangeNicknameBinding.inflate(LayoutInflater.from(requireContext()))
 
@@ -129,9 +129,31 @@ class EditProfileFragment : Fragment() {
                 .setView(dialogBinding.root) // 뷰 바인딩의 root 뷰를 설정
                 .create()
 
+            // 텍스트 변화 감지해서 버튼 활성/비활성
+            dialogBinding.dialogNicknameEt.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    val input = s.toString().trim()
+                    if (input.isEmpty() || input == currentNickname) {
+                        dialogBinding.dialogChangeBtn.setBackgroundResource(R.drawable.bg_diary_write_no_btn)
+                        dialogBinding.dialogChangeBtn.isEnabled = false
+                    } else {
+                        dialogBinding.dialogChangeBtn.setBackgroundResource(R.drawable.bg_diary_write_btn)
+                        dialogBinding.dialogChangeBtn.isEnabled = true
+                    }
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
+
             // 4. 변경 버튼 리스너와 취소 버튼 리스너
             dialogBinding.dialogChangeBtn.setOnClickListener {
                 val newNickname = dialogBinding.dialogNicknameEt.text.toString()
+
+                if (newNickname.isEmpty()) {
+                    Toast.makeText(requireContext(), "닉네임을 입력하세요.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
                 // EditProfileFragment의 닉네임 TextView 업데이트
                 binding.nickname.text = newNickname
@@ -143,10 +165,12 @@ class EditProfileFragment : Fragment() {
                 dialog.dismiss() // 다이얼로그 닫기
             }
 
+            // 다이얼로그 처음 뜰 때도 비활성화 상태로
+            dialogBinding.dialogChangeBtn.setBackgroundResource(R.drawable.bg_diary_write_no_btn)
+            dialogBinding.dialogChangeBtn.isEnabled = false
+
             // 5. 다이얼로그 표시
             dialog.show()
-        }
-
     }
 
     override fun onDestroyView() {
