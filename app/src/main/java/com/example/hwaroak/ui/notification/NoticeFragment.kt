@@ -18,7 +18,11 @@ import com.example.hwaroak.api.notice.access.NoticeViewModelFactory
 import com.example.hwaroak.api.notice.repository.NoticeRepository
 import com.example.hwaroak.data.NoticeItem
 import com.example.hwaroak.databinding.FragmentNoticeBinding
+import com.example.hwaroak.ui.diary.DiaryFragment
+import com.example.hwaroak.ui.friend.FriendFragment
 import com.example.hwaroak.ui.main.MainActivity
+import com.example.hwaroak.ui.mypage.AnalysisFragment
+import com.example.hwaroak.ui.mypage.AnnouncementFragment
 import com.example.hwaroak.ui.mypage.SettingFragment
 import kotlin.getValue
 
@@ -62,11 +66,44 @@ class NoticeFragment : Fragment() {
             result.onSuccess { resp ->
                 val noticeList = resp.map { item ->
                     NoticeItem(item.id, item.title, item.content,
-                        item.alarmType, item.createdAt)
+                        item.alarmType, item.isRead, item.createdAt)
                 }
 
-                //알림 recyclerveiw 어댑터 선언, 설정, inflate
-                val adapter = NoticeItemRVAdaptor(noticeList)
+                //알림 recyclerview 어댑터 선언, 설정, inflate
+                val adapter = NoticeItemRVAdaptor(noticeList, accessToken)
+                //콜백 함수 정의
+                {
+                    selectedNotice ->
+                    //불 키우기
+                    if(selectedNotice.alarmType == "FIRE"){
+                        (activity as? MainActivity)?.selectTab(R.id.friendFragment)
+                    }
+                    //월간 리포트
+                    else if(selectedNotice.alarmType == "DAILY"){
+                        (activity as? MainActivity)?.selectTab(R.id.mypageFragment)
+                        requireActivity().supportFragmentManager.beginTransaction()
+                            .replace(R.id.main_fragmentContainer, AnalysisFragment())
+                            .addToBackStack(null)
+                            .commit()
+                    }
+                    //일기 리마인더
+                    else if(selectedNotice.alarmType == "REMINDER"){
+                        (activity as? MainActivity)?.selectTab(R.id.diaryFragment)
+                    }
+                    //공지 사항
+                    else if(selectedNotice.alarmType == "NOTIFICATION"){
+                        (activity as? MainActivity)?.selectTab(R.id.mypageFragment)
+                        requireActivity().supportFragmentManager.beginTransaction()
+                            .replace(R.id.main_fragmentContainer, AnnouncementFragment())
+                            .addToBackStack(null)
+                            .commit()
+                    }
+                    //친구 요청
+                    else if(selectedNotice.alarmType == "FRIEND_REQUEST"){
+                        (activity as? MainActivity)?.selectTab(R.id.friendFragment)
+                    }
+
+                }
                 binding.rvNoticeContainer.adapter = adapter
                 binding.rvNoticeContainer.layoutManager = LinearLayoutManager(requireContext())
 
