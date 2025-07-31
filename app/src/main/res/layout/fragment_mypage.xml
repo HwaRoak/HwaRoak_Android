@@ -68,7 +68,7 @@
                     android:id="@+id/profile_nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="포동이"
+                    android:text=""
                     style="@style/freesentation5_24sp_title"
                     app:layout_constraintTop_toBottomOf="@id/profile_image"
                     app:layout_constraintLeft_toLeftOf="parent"

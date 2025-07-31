@@ -1,9 +1,14 @@
 package com.example.hwaroak.ui.mypage
 
 import android.app.AlertDialog
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -59,6 +64,7 @@ class EditProfileFragment : Fragment() {
                 Log.d("member", "닉네임=${data.nickname}")
                 Log.d("member", "자기소개=${data.introduction}")
                 binding.nickname.setText(data.nickname)
+                binding.userId.setText(data.userId)
                 binding.etIntroduce.setText(data.introduction ?: "")
             }
 
@@ -68,6 +74,10 @@ class EditProfileFragment : Fragment() {
             }
         }
 
+        binding.btnCopyId.setOnClickListener {
+            val userId = binding.userId.text.toString()
+            copyUserIdToClipboard(userId)
+        }
 
         // 저장 버튼 리스너
         binding.btnSave.setOnClickListener {
@@ -76,9 +86,14 @@ class EditProfileFragment : Fragment() {
             val introduction = binding.etIntroduce.text.toString().trim()
             val profileImgUrl = "" // 추후 이미지 업로드 기능과 연결 가능
 
+            // 수정한 닉네임 캐시에 즉시 저장
+            val pref = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE)
+            pref.edit().putString("cachedNickname", nickname).apply()
 
+            // 수정 요청 실행
+            memberViewModel.editProfile(accessToken, nickname, profileImgUrl, introduction)
 
-            // 🔹 observer 정의
+            // observer 정의
             val resultObserver = object : Observer<Result<EditProfileResponse>> {
                 override fun onChanged(result: Result<EditProfileResponse>) {
                     result.onSuccess {
@@ -89,16 +104,14 @@ class EditProfileFragment : Fragment() {
                         Toast.makeText(requireContext(), "프로필 수정 실패: ${it.message}", Toast.LENGTH_SHORT).show()
                     }
 
-                    // 🔹 observe 해제
+                    // observe 해제
                     memberViewModel.editProfileResult.removeObserver(this)
                 }
             }
 
-            // 🔹 버튼 클릭 시에만 observe 시작
+            // 버튼 클릭 시에만 observe 시작
             memberViewModel.editProfileResult.observe(viewLifecycleOwner, resultObserver)
 
-            // 🔹 수정 요청 실행
-            memberViewModel.editProfile(accessToken, nickname, profileImgUrl, introduction)
         }
 
         // 닉네임 변경 연필 버튼 리스너
@@ -107,9 +120,15 @@ class EditProfileFragment : Fragment() {
         }
     }
 
-    private fun showChangeNicknameDialog() {
-        binding.btnEditNickname.setOnClickListener {
+    private fun copyUserIdToClipboard(userId: String) {
+        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("userId", userId)
+        clipboard.setPrimaryClip(clip)
 
+        Toast.makeText(requireContext(), "아이디가 복사되었습니다.", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showChangeNicknameDialog() {
             // 1. 뷰 생성
             val dialogBinding = DialogChangeNicknameBinding.inflate(LayoutInflater.from(requireContext()))
 
@@ -124,9 +143,31 @@ class EditProfileFragment : Fragment() {
                 .setView(dialogBinding.root) // 뷰 바인딩의 root 뷰를 설정
                 .create()
 
+            // 텍스트 변화 감지해서 버튼 활성/비활성
+            dialogBinding.dialogNicknameEt.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    val input = s.toString().trim()
+                    if (input.isEmpty() || input == currentNickname) {
+                        dialogBinding.dialogChangeBtn.setBackgroundResource(R.drawable.bg_diary_write_no_btn)
+                        dialogBinding.dialogChangeBtn.isEnabled = false
+                    } else {
+                        dialogBinding.dialogChangeBtn.setBackgroundResource(R.drawable.bg_diary_write_btn)
+                        dialogBinding.dialogChangeBtn.isEnabled = true
+                    }
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
+
             // 4. 변경 버튼 리스너와 취소 버튼 리스너
             dialogBinding.dialogChangeBtn.setOnClickListener {
                 val newNickname = dialogBinding.dialogNicknameEt.text.toString()
+
+                if (newNickname.isEmpty()) {
+                    Toast.makeText(requireContext(), "닉네임을 입력하세요.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
                 // EditProfileFragment의 닉네임 TextView 업데이트
                 binding.nickname.text = newNickname
@@ -138,10 +179,12 @@ class EditProfileFragment : Fragment() {
                 dialog.dismiss() // 다이얼로그 닫기
             }
 
+            // 다이얼로그 처음 뜰 때도 비활성화 상태로
+            dialogBinding.dialogChangeBtn.setBackgroundResource(R.drawable.bg_diary_write_no_btn)
+            dialogBinding.dialogChangeBtn.isEnabled = false
+
             // 5. 다이얼로그 표시
             dialog.show()
-        }
-
     }
 
     override fun onDestroyView() {
