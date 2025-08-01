@@ -53,9 +53,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        //테스트
+        //SSE 연결테스트
         val sseClient = SSEClient(this)
-        //sseClient.connectToSSE()
+        sseClient.connectToSSE()
 
 
 
