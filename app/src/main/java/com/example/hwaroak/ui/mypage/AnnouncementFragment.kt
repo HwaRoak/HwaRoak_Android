@@ -21,6 +21,7 @@ import com.example.hwaroak.api.notice.access.NoticeViewModelFactory
 import com.example.hwaroak.api.notice.repository.NoticeRepository
 import com.example.hwaroak.data.AnnouncementData
 import com.example.hwaroak.databinding.FragmentAnnouncementBinding
+import com.example.hwaroak.ui.main.MainActivity
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -63,6 +64,7 @@ class AnnouncementFragment : Fragment() {
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
         accessToken = pref.getString("accessToken", "").toString()
 
+        (activity as? MainActivity)?.setTopBar("공지사항", isBackVisible = true)
 
         /**공지 observer**/
         noticeViewModel.noticeList.observe(viewLifecycleOwner) { result ->

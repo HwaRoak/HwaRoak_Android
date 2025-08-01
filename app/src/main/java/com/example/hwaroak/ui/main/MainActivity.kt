@@ -1,5 +1,6 @@
 package com.example.hwaroak.ui.main
 
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -28,23 +29,35 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private lateinit var pref: SharedPreferences
+    private lateinit var title: String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        enableEdgeToEdge()
+        setContentView(binding.root)
 
         //ThreeTenABP 초기화(애플리케이션 상 1번)
         com.jakewharton.threetenabp.AndroidThreeTen.init(applicationContext)
 
         //splash 화면 테마 되돌리기
         setTheme(R.style.Theme_HwaRoak)
+        pref = getSharedPreferences("user", MODE_PRIVATE)
+        val name = pref.getString("nickname", "") ?: ""
+        val nickname = pref.getString("cachedNickname", "") ?: ""
+
+        title = if(nickname == "") "${name}의 화록" else "${nickname}의 화록"
+        binding.mainTitleTv.text = title
+
+
 
         //테스트
         val sseClient = SSEClient(this)
         //sseClient.connectToSSE()
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        enableEdgeToEdge()
-        setContentView(binding.root)
+
 
         //키해시값 추출(자유롭게 삭제가능)
         val keyHash = Utility.getKeyHash(this)
@@ -129,6 +142,26 @@ class MainActivity : AppCompatActivity() {
             // BottomNavigationView는 보이게 설정
             binding.mainBnv.visibility = View.VISIBLE
         }
+        //뒤로 가기 < 버튼
+        binding.mainBackBtn.setOnClickListener {
+            // 현재 화면 확인
+            val current = supportFragmentManager
+                .findFragmentById(R.id.main_fragmentContainer)
+
+            // 1. 백스택에 프래그먼트가 존재하면 pop (예: MyPage → EditProfile → 뒤로 → MyPage)
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                supportFragmentManager.popBackStack()
+                
+            }
+            // 2. 홈 화면으로 돌아가게 하기
+            else if (current !is HomeFragment) {
+                // 홈으로 돌아가기
+                binding.mainBnv.selectedItemId = R.id.homeFragment
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_fragmentContainer, HomeFragment())
+                    .commit()
+            } 
+        }
 
 
         //뒤로 가기 시 일단 HomeFragment 이동 후 종료
@@ -206,5 +239,20 @@ class MainActivity : AppCompatActivity() {
         binding.mainLockerBtn.visibility = View.VISIBLE
         binding.mainTitleTv.visibility = View.VISIBLE
     }
+
+    //다른 fragment에서 동적 제어
+    fun setTopBar(mytitle: String, isBackVisible: Boolean){
+        binding.mainTitleTv.text = mytitle
+        binding.mainBackBtn.visibility = if (isBackVisible) View.VISIBLE else View.INVISIBLE
+
+    }
+    fun setTopBar(isBackVisible: Boolean){
+        binding.mainTitleTv.text = title
+        binding.mainBackBtn.visibility = if (isBackVisible) View.VISIBLE else View.INVISIBLE
+    }
+    fun changeTitle(newTitle: String){
+        title = "${newTitle}의 화록"
+    }
+
 
 }

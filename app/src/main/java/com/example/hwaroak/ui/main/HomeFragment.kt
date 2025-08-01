@@ -51,6 +51,9 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        /**일단 홈 화면에서는 < 없애기**/
+        (activity as? MainActivity)?.setTopBar(isBackVisible = false)
+
         // ItemService 인스턴스를 NetworkModule에서 가져옵니다.
         val itemService = HwaRoakClient.itemApiService // NetworkModule.kt에 정의된 itemApiService 사용
 
