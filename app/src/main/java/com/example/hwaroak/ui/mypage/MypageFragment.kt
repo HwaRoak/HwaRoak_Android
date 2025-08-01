@@ -23,6 +23,7 @@ import com.example.hwaroak.databinding.DialogLogoutCheckBinding
 import com.example.hwaroak.databinding.FragmentMypageBinding
 import com.example.hwaroak.ui.friend.AddFriendFragment
 import com.example.hwaroak.ui.login.LoginKakaoActivity
+import com.example.hwaroak.ui.main.MainActivity
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -55,6 +56,9 @@ class MypageFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        /**상단바 설정**/
+        (activity as? MainActivity)?.setTopBar(isBackVisible = true)
 
         initPieChart()
         setupNavigation()

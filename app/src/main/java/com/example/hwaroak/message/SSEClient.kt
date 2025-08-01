@@ -70,7 +70,7 @@ class SSEClient(private val context: Context) {
                         // createdAt → "2025-07-29T20:35:51.652606127" → "20:35" 추출
                         val time = alarmEvent.createdAt.substringAfter("T").substring(0, 5)
 
-                        val title = "${alarmEvent.title} (${time})"
+                        val title = alarmEvent.title
                         val message = alarmEvent.message
 
                         showNotification(title, message)

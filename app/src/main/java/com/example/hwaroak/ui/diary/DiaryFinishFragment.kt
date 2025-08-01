@@ -90,6 +90,9 @@ class DiaryFinishFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         diaryPref = requireContext().getSharedPreferences("diary", MODE_PRIVATE)
 
+        /**얘는 바 없음**/
+        (activity as? MainActivity)?.setTopBar(isBackVisible = false)
+
         //애니메이션
         binding.diaryFinishResultImv.visibility = TextView.INVISIBLE
         binding.diaryFinishFire1Imv.visibility= TextView.INVISIBLE

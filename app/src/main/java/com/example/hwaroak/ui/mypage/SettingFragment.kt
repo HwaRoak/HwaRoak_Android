@@ -20,6 +20,7 @@ import com.example.hwaroak.api.notice.access.NoticeViewModelFactory
 import com.example.hwaroak.api.notice.model.AlarmSettingRequest
 import com.example.hwaroak.api.notice.repository.NoticeRepository
 import com.example.hwaroak.databinding.FragmentSettingBinding
+import com.example.hwaroak.ui.main.MainActivity
 import java.util.Calendar
 import kotlin.getValue
 
@@ -84,6 +85,8 @@ class SettingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? MainActivity)?.setTopBar("알람 설정", isBackVisible = true)
+        
         //초기 설정
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
         accessToken = pref.getString("accessToken", "").toString()

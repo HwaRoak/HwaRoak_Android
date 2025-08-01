@@ -27,6 +27,7 @@ import com.example.hwaroak.api.mypage.repository.MemberRepository
 import com.example.hwaroak.data.MypageData
 import com.example.hwaroak.databinding.DialogChangeNicknameBinding
 import com.example.hwaroak.databinding.FragmentEditProfileBinding
+import com.example.hwaroak.ui.main.MainActivity
 
 class EditProfileFragment : Fragment() {
 
@@ -52,6 +53,9 @@ class EditProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        /**상단바 수정**/
+        (activity as? MainActivity)?.setTopBar("프로필 수정", isBackVisible = true)
 
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
         accessToken = pref.getString("accessToken", "").toString()
@@ -89,6 +93,9 @@ class EditProfileFragment : Fragment() {
             // 수정한 닉네임 캐시에 즉시 저장
             val pref = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE)
             pref.edit().putString("cachedNickname", nickname).apply()
+
+            //상단 바 이름에도 적용
+            (activity as? MainActivity)?.changeTitle(nickname)
 
             // 수정 요청 실행
             memberViewModel.editProfile(accessToken, nickname, profileImgUrl, introduction)
@@ -171,7 +178,6 @@ class EditProfileFragment : Fragment() {
 
                 // EditProfileFragment의 닉네임 TextView 업데이트
                 binding.nickname.text = newNickname
-
                 dialog.dismiss() // 다이얼로그 닫기
             }
 

@@ -18,6 +18,7 @@ import com.example.hwaroak.api.friend.access.FriendViewModel
 import com.example.hwaroak.api.friend.access.FriendViewModelFactory
 import com.example.hwaroak.api.friend.repository.FriendRepository
 import com.example.hwaroak.databinding.FragmentAddFriendBinding
+import com.example.hwaroak.ui.main.MainActivity
 
 class AddFriendFragment : Fragment() {
 
@@ -39,6 +40,9 @@ class AddFriendFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        /**친구 검색 상단 바**/
+        (activity as? MainActivity)?.setTopBar("친구 검색",isBackVisible = true)
 
         val repository = FriendRepository(HwaRoakClient.friendService)
         val factory = FriendViewModelFactory(repository)
