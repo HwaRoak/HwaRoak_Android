@@ -36,6 +36,7 @@ data class AlarmListResponse(
     val title: String,
     val content: String,
     val alarmType: String,
+    val isRead: Boolean,
     val createdAt: String
 )
 
@@ -51,5 +52,18 @@ data class NoticeDetailResponse(
 )
 
 //6. 알람 설정 조회
+data class AlarmSettingResponse(
+    val reminderEnabled: Boolean,
+    val reminderTime: String,
+    val fireAlarmEnabled: Boolean,
+    val allOffEnabled: Boolean
+)
 
+//7. 알람 설정하기
+data class AlarmSettingRequest(
+    val reminderEnabled: Boolean,
+    val reminderTime: String,
+    val fireAlarmEnabled: Boolean,
+    val allOffEnabled: Boolean
+)
 

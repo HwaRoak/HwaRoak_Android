@@ -6,8 +6,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -25,7 +23,6 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
 import com.example.hwaroak.R
 import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.mypage.access.MemberViewModel
@@ -37,6 +34,7 @@ import com.example.hwaroak.databinding.DialogChangeImageBinding
 import com.example.hwaroak.databinding.DialogChangeNicknameBinding
 import com.example.hwaroak.databinding.FragmentEditProfileBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.example.hwaroak.ui.main.MainActivity
 
 class EditProfileFragment : Fragment() {
 
@@ -64,6 +62,9 @@ class EditProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        /**상단바 수정**/
+        (activity as? MainActivity)?.setTopBar("프로필 수정", isBackVisible = true)
 
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
         accessToken = pref.getString("accessToken", "").toString()
@@ -106,6 +107,9 @@ class EditProfileFragment : Fragment() {
             // 수정한 닉네임 캐시에 즉시 저장
             val pref = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE)
             pref.edit().putString("cachedNickname", nickname).apply()
+
+            //상단 바 이름에도 적용
+            (activity as? MainActivity)?.changeTitle(nickname)
 
             // 수정 요청 실행
             memberViewModel.editProfile(accessToken, nickname, profileImgUrl, introduction)
@@ -189,7 +193,6 @@ class EditProfileFragment : Fragment() {
 
                 // EditProfileFragment의 닉네임 TextView 업데이트
                 binding.nickname.text = newNickname
-
                 dialog.dismiss() // 다이얼로그 닫기
             }
 

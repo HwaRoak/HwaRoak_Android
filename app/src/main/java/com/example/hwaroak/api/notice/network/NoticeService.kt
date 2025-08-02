@@ -1,6 +1,8 @@
 package com.example.hwaroak.api.notice.network
 
 import com.example.hwaroak.api.notice.model.AlarmListResponse
+import com.example.hwaroak.api.notice.model.AlarmSettingRequest
+import com.example.hwaroak.api.notice.model.AlarmSettingResponse
 import com.example.hwaroak.api.notice.model.NoticeDetailResponse
 import com.example.hwaroak.api.notice.model.NoticeListResponse
 import com.example.hwaroak.api.notice.model.NoticeRegisterRequest
@@ -47,4 +49,19 @@ interface NoticeService {
         @Header("Authorization") token: String,
         @Path("id") id: Int
     ) : Response<NoticeResponseBody<NoticeDetailResponse>>
+
+
+    //6. 알람 설정 불러오기
+    @GET("api/v1/members/alarmSetting")
+    suspend fun getAlarmSetting(
+        @Header("Authorization") token: String
+    ) : Response<NoticeResponseBody<AlarmSettingResponse>>
+
+    //7. 알람 설정 세팅하기
+    @PATCH("api/v1/members/alarmSetting")
+    suspend fun setAlarmSetting(
+        @Header("Authorization") token: String,
+        @Body req: AlarmSettingRequest
+    ) : Response<NoticeResponseBody<Unit?>>
+
 }

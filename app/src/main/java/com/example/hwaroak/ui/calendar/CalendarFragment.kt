@@ -139,6 +139,9 @@ class CalendarFragment : Fragment() {
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
         accessToken = pref.getString("accessToken", "").toString()
 
+        /**얘는 상단다 없음 < X**/
+        (activity as? MainActivity)?.setTopBar(isBackVisible = true)
+
         //초기화
         todayDec    = TodayDecorator(requireContext())
         selectedDec = SelectedDecorator(requireContext())

@@ -32,6 +32,7 @@ import com.example.hwaroak.api.login.repository.LoginRepository
 import com.example.hwaroak.data.DiaryContent
 import com.example.hwaroak.data.DiaryEmotion
 import com.example.hwaroak.databinding.FragmentDiaryWriteBinding
+import com.example.hwaroak.ui.main.MainActivity
 import org.json.JSONObject
 import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
@@ -123,6 +124,9 @@ class DiaryWriteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
         accessToken = pref.getString("accessToken", "").toString()
+
+        /**상단 바 표시 < **/
+        (activity as? MainActivity)?.setTopBar("오늘의 화록",isBackVisible = true)
 
         //맨 처음 날짜 표시
         updateDateText()
