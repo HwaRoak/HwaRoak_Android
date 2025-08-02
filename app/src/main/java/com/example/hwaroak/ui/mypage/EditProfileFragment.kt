@@ -6,6 +6,8 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,10 +16,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.PopupMenu
+import android.widget.PopupWindow
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
 import com.example.hwaroak.R
 import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.mypage.access.MemberViewModel
@@ -25,8 +33,10 @@ import com.example.hwaroak.api.mypage.access.MemberViewModelFactory
 import com.example.hwaroak.api.mypage.model.EditProfileResponse
 import com.example.hwaroak.api.mypage.repository.MemberRepository
 import com.example.hwaroak.data.MypageData
+import com.example.hwaroak.databinding.DialogChangeImageBinding
 import com.example.hwaroak.databinding.DialogChangeNicknameBinding
 import com.example.hwaroak.databinding.FragmentEditProfileBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class EditProfileFragment : Fragment() {
 
@@ -38,6 +48,8 @@ class EditProfileFragment : Fragment() {
     //유저 정보를 담을 sharedPreference
     private lateinit var pref: SharedPreferences
     private lateinit var accessToken: String
+
+    private var profileImgUrl: String? = null
 
     private val memberViewModel: MemberViewModel by activityViewModels()
 
@@ -72,6 +84,11 @@ class EditProfileFragment : Fragment() {
                 Log.e("member", "불러오기 실패: ${it.message}")
                 Toast.makeText(requireContext(), "회원정보 불러오기 실패", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        // 바텀시트다이얼로그 띄우기 (로직은 밑에 있음)
+        binding.btnChangeProfileImage.setOnClickListener {
+            showChangeImageDialog()
         }
 
         binding.btnCopyId.setOnClickListener {
@@ -125,7 +142,8 @@ class EditProfileFragment : Fragment() {
         val clip = ClipData.newPlainText("userId", userId)
         clipboard.setPrimaryClip(clip)
 
-        Toast.makeText(requireContext(), "아이디가 복사되었습니다.", Toast.LENGTH_SHORT).show()
+        // 안드로이드 OS 자체에서 "클립보드에 복사했어요" 토스트 메시지 출력됨
+        // Toast.makeText(requireContext(), "아이디가 복사되었습니다.", Toast.LENGTH_SHORT).show()
     }
 
     private fun showChangeNicknameDialog() {
@@ -185,6 +203,50 @@ class EditProfileFragment : Fragment() {
 
             // 5. 다이얼로그 표시
             dialog.show()
+    }
+
+    private fun showChangeImageDialog() {
+        val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
+
+        val sheetBinding = DialogChangeImageBinding.inflate(layoutInflater)
+        dialog.setContentView(sheetBinding.root)
+
+        dialog.window?.setDimAmount(0.3f)
+
+        dialog.setOnShowListener {
+            val bottomSheet = dialog.findViewById<FrameLayout>(
+                com.google.android.material.R.id.design_bottom_sheet
+            ) ?: return@setOnShowListener
+
+        }
+
+        // 조건에 따라 '기본 이미지 적용' 메뉴 숨김
+        if (isDefaultProfileImage()) {
+            sheetBinding.changeDefaultImageTv.visibility = View.GONE
+        }
+
+        sheetBinding.chooseFromGalleryTv.setOnClickListener {
+            // 앨범에서 사진 선택
+            dialog.dismiss()
+        }
+
+        sheetBinding.changeDefaultImageTv.setOnClickListener {
+            // 프로필 이미지 삭제 후 기본 이미지로 변경 로직
+            profileImgUrl = null
+            dialog.dismiss()
+        }
+
+        sheetBinding.cancelTv.setOnClickListener {
+            // 취소 버튼 로직
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun isDefaultProfileImage(): Boolean {
+        return profileImgUrl.isNullOrEmpty()
+//        return profileImgUrl.isNullOrEmpty() || profileImgUrl == DEFAULT_PROFILE_IMAGE_URL
     }
 
     override fun onDestroyView() {
