@@ -5,6 +5,8 @@ plugins {
     id("kotlin-parcelize")
     //구글 서비스 플러그인 적용
     id("com.google.gms.google-services")
+    //Glide를 위해
+    id("kotlin-kapt")
 }
 
 android {
@@ -101,6 +103,10 @@ dependencies {
     //Http-SSE 통신
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:okhttp-sse:4.12.0")
+
+    //프로필 이미지 관련 Glide 라이브러리
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
 
     // …기존 의존성들…
 
