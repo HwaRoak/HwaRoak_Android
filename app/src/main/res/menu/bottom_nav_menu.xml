@@ -2,22 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/homeFragment"
-        android:icon="@drawable/ic_menu_home"
+        android:icon="@drawable/ic_menu_home2"
         android:title="홈" />
     <item
         android:id="@+id/diaryFragment"
-        android:icon="@drawable/ic_menu_diary"
+        android:icon="@drawable/ic_menu_diary2"
         android:title="일기쓰기" />
     <item
         android:id="@+id/calendarFragment"
-        android:icon="@drawable/ic_menu_schedule"
+        android:icon="@drawable/ic_menu_calendar2"
         android:title="달력" />
     <item
         android:id="@+id/friendFragment"
-        android:icon="@drawable/ic_menu_mypage"
+        android:icon="@drawable/ic_menu_friend2"
         android:title="친구" />
     <item
         android:id="@+id/mypageFragment"
-        android:icon="@drawable/ic_menu_setting"
+        android:icon="@drawable/ic_menu_mypage2"
         android:title="마이페이지" />
 </menu>
