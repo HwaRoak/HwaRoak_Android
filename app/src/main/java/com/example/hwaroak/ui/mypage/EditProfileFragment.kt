@@ -225,6 +225,7 @@ class EditProfileFragment : Fragment() {
 
         // 조건에 따라 '기본 이미지 적용' 메뉴 숨김
         if (isDefaultProfileImage()) {
+            sheetBinding.divider.visibility = View.GONE
             sheetBinding.changeDefaultImageTv.visibility = View.GONE
         }
 
