@@ -88,6 +88,14 @@ class MypageFragment : Fragment() {
                 Toast.makeText(requireContext(), "회원 정보 불러오기 실패", Toast.LENGTH_SHORT).show()
             }
         }
+
+        memberViewModel.getMypageInfo(accessToken)
+
+        memberViewModel.mypageInfoResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { data ->
+                applyUi(data.totalDiary, data.nextItemName, data.reward)
+            }
+        }
     }
 
     // 원형 그래프 함수
@@ -137,6 +145,31 @@ class MypageFragment : Fragment() {
         }
     }
 
+    private fun applyUi(totalDiary: Int, itemId: String, reward: Int) {
+        binding.mypageCountDiaryTv.text = "${totalDiary}개"
+        binding.mypageItemImageIv.setImageResource(
+            when (itemId) {
+                "cup" -> R.drawable.img_item_cup
+                // …다른 아이템 매핑
+                "cheeze" -> R.drawable.img_item_cheeze
+                "chicken" -> R.drawable.img_item_chicken
+                "chopstick" -> R.drawable.img_item_chopstick
+                "coal" -> R.drawable.img_item_coal
+                "egg" -> R.drawable.img_item_egg
+                "mashmellow" -> R.drawable.img_item_mashmellow
+                "meat" -> R.drawable.img_item_meat
+                "paper" -> R.drawable.img_item_paper
+                "potato" -> R.drawable.img_item_potato
+                "ruby" -> R.drawable.img_item_ruby
+                "soup" -> R.drawable.img_item_soup
+                "tire" -> R.drawable.img_item_tire
+                "tissue" -> R.drawable.img_item_tissue
+                "trash" -> R.drawable.img_item_trash
+                else -> R.drawable.img_item_tissue
+            }
+        )
+        binding.mypageDdayTv.text = "D-${reward}"
+    }
     private fun setupNavigation() {
         binding.mypageMyinfoBtn.setOnClickListener {
             replaceFragment(EditProfileFragment())

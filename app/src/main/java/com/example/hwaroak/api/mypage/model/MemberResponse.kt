@@ -21,3 +21,25 @@ data class EditProfileResponse(
     val profileImgUrl: String?,  // null 또는 "" 가능
     val introduction: String     // 항상 있음
 )
+
+// 3. 마이페이지 정보 조회
+data class MypageInfoResponse(
+    val nickname: String,
+    val profileImgUrl: String?,  // null 또는 "" 가능
+    val emotionSummary: EmotionSummary?,
+    val totalDiary: Int,
+    val reward: Int,
+    val nextItemName: String
+)
+
+data class EmotionSummary(
+    val CALM: EmotionData,
+    val HAPPY: EmotionData,
+    val SAD: EmotionData,
+    val ANGRY: EmotionData
+)
+
+data class EmotionData(
+    val number: Int,
+    val percent: Double
+)
