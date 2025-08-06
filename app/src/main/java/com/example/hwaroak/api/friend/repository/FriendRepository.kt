@@ -4,11 +4,14 @@ import android.util.Log
 import com.example.hwaroak.api.HwaRoakClient.friendService
 import com.example.hwaroak.api.diary.model.DiaryResponseBody
 import com.example.hwaroak.api.friend.model.ApiResponse
+import com.example.hwaroak.api.friend.model.FireResponseData
 import com.example.hwaroak.api.friend.model.FriendRequestResponse
 import com.example.hwaroak.api.friend.model.FriendResponse
 import com.example.hwaroak.api.friend.model.ReceivedFriendData
+import com.example.hwaroak.api.friend.model.VisitFriendPage
 import com.example.hwaroak.api.friend.network.FriendService
 import com.example.hwaroak.ui.friend.FriendData
+import retrofit2.Response
 
 class FriendRepository(private val api: FriendService) {
 
@@ -133,6 +136,18 @@ class FriendRepository(private val api: FriendService) {
         }
     }
 
+    //8. 친구 페이지 방문
+    suspend fun getFriendPage(token: String, userId: String): VisitFriendPage {
+        val response = api.visitFriendPage("Bearer $token", userId)
+        if (response.isSuccessful) {
+            return response.body()?.data ?: throw Exception("친구 정보 없음")
+        } else {
+            throw Exception("친구 정보 조회 실패: ${response.code()}")
+        }
+    }
 
-
+    //9. 친구에게 불씨 보내기
+    suspend fun sendFireToFriend(token: String, userId: String): Response<ApiResponse<FireResponseData>> {
+        return api.sendFireToFriend(token, userId)
+    }
 }
