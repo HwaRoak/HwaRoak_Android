@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/transparent" >
+
+    <LinearLayout
+        android:id="@+id/dialog_menu_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_rounded_box"
+        >
+
+        <TextView
+            android:id="@+id/dialog_choose_image_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/freesentation5_16sp"
+            android:textSize="20sp"
+            android:text="앨범에서 사진 선택"
+            android:gravity="center"
+            android:paddingVertical="18dp" />
+
+        <View
+            android:id="@+id/dialog_menu_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EEEEEE" />
+
+        <TextView
+            android:id="@+id/dialog_default_image_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/freesentation5_16sp"
+            android:textSize="20sp"
+            android:text="기본 이미지 적용"
+            android:gravity="center"
+            android:paddingVertical="18dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_cancel_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="10dp"
+        android:background="@drawable/bg_rounded_box"
+        android:layout_marginBottom="10dp" >
+
+        <TextView
+            android:id="@+id/dialog_cancel_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/freesentation5_16sp"
+            android:textSize="20sp"
+            android:text="취소"
+            android:gravity="center"
+            android:paddingVertical="18dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

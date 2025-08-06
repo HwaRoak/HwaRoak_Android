@@ -1,18 +1,28 @@
 package com.example.hwaroak.ui.mypage
 
 import android.app.TimePickerDialog
+import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.fragment.app.viewModels
 import com.example.hwaroak.R
+import com.example.hwaroak.api.HwaRoakClient
+import com.example.hwaroak.api.notice.access.NoticeViewModel
+import com.example.hwaroak.api.notice.access.NoticeViewModelFactory
+import com.example.hwaroak.api.notice.model.AlarmSettingRequest
+import com.example.hwaroak.api.notice.repository.NoticeRepository
 import com.example.hwaroak.databinding.FragmentSettingBinding
+import com.example.hwaroak.ui.main.MainActivity
 import java.util.Calendar
+import kotlin.getValue
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,6 +46,19 @@ class SettingFragment : Fragment() {
     private var isOffAlarm : Boolean = false
     private var hour : Int = 0
     private var minute : Int = 0
+
+    // 1) Retrofit 서비스로 Repository 인스턴스 생성
+    private val noticeRepository by lazy {
+        NoticeRepository(HwaRoakClient.noticeService)
+    }
+    // 2) Activity 스코프로 ViewModel 생성 (Factory 주입)
+    private val noticeViewModel: NoticeViewModel by viewModels{
+        NoticeViewModelFactory(noticeRepository)
+    }
+
+    //엑세스 토큰 받기
+    private lateinit var pref: SharedPreferences
+    private lateinit var accessToken: String
 
 
     private lateinit var binding: FragmentSettingBinding
@@ -62,6 +85,12 @@ class SettingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? MainActivity)?.setTopBar("알람 설정", isBackVisible = true)
+        
+        //초기 설정
+        pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
+        accessToken = pref.getString("accessToken", "").toString()
+
         //sharedPreference 초기화
         /**
          * sharedPreference : setting 사용
@@ -85,10 +114,49 @@ class SettingFragment : Fragment() {
         binding.settingOffAlarmSwitch.isChecked = isOffAlarm
         binding.settingTimeTv.text = String.format("%02d:%02d", hour, minute)
 
+        /**observer 설정 : API 가져오기**/
+        noticeViewModel.alarmSetting.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { resp ->
+                //각각 리마인더 여부, 불 키우기 여부, 모든 알람 끄기 여부, 시간
+                val isRemind2 = resp.reminderEnabled
+                val isFireAlarm2 = resp.fireAlarmEnabled
+                val isOffAlarm2 = resp.allOffEnabled
+                val part = resp.reminderTime.split(":")
+                val hour2 = part[0].toInt()
+                val minute2 = part[1].toInt()
+                val time2 = String.format("%02d:%02d", hour2, minute2)
+
+                settingPref.edit {putBoolean("isRemind", isRemind2)
+                    .putBoolean("isFireAlarm", isFireAlarm2)
+                    .putBoolean("isOffAlarm", isOffAlarm2)
+                    .putInt("hour", hour2)
+                        .putInt("minute", minute2)
+                        .apply()
+                }
+
+                //설정
+                binding.settingGetReminderSwitch.isChecked = isRemind2
+                binding.settingFireAlarmSwitch.isChecked = isFireAlarm2
+                binding.settingOffAlarmSwitch.isChecked = isOffAlarm2
+                binding.settingTimeTv.text = time2
+                updateUISetting()
+
+            }.onFailure { err ->
+                //일단 shared
+            }
+
+        }
+        /**1. 일단 shared로 1차 설정**/
         //UI 세팅
         updateUISetting()
         //버튼 setting
         settingListener()
+
+        /**2. API로 2차 설정**/
+        noticeViewModel.getAlarmSetting(accessToken)
+
+
+
 
     }
     
@@ -161,6 +229,29 @@ class SettingFragment : Fragment() {
             tp.show()
         }
     }
+
+
+    //화면이 바뀔 때 보내기
+    override fun onPause() {
+        super.onPause()
+
+        isRemind = settingPref.getBoolean("isRemind", true)
+        isFireAlarm = settingPref.getBoolean("isFireAlarm", true)
+        isOffAlarm = settingPref.getBoolean("isOffAlarm", false)
+        hour = settingPref.getInt("hour", 0)
+        minute = settingPref.getInt("minute", 0)
+        Log.d("log_setting", "isRemind : $isRemind, isFireAlarm : $isFireAlarm, isOffAlarm : $isOffAlarm, hour : $hour, minute : $minute")
+        val req  = AlarmSettingRequest(
+            isRemind,
+            String.format("%02d:%02d:00", hour, minute),
+            isFireAlarm,
+            isOffAlarm
+        )
+        noticeViewModel.setAlarmSetting(accessToken, req)
+
+    }
+
+
 
     companion object {
         /**

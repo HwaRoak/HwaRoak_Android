@@ -12,7 +12,6 @@ data class MemberInfoResponse(
 // 2. 회원 정보 수정
 data class EditProfileRequest(
     val nickname: String,
-    val profileImageUrl: String,
     val introduction: String
 )
 data class EditProfileResponse(

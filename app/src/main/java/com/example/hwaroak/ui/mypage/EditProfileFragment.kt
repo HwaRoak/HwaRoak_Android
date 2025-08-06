@@ -1,5 +1,6 @@
 package com.example.hwaroak.ui.mypage
 
+import android.R.attr.text
 import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -14,7 +15,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.PopupMenu
+import android.widget.PopupWindow
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -25,8 +31,11 @@ import com.example.hwaroak.api.mypage.access.MemberViewModelFactory
 import com.example.hwaroak.api.mypage.model.EditProfileResponse
 import com.example.hwaroak.api.mypage.repository.MemberRepository
 import com.example.hwaroak.data.MypageData
+import com.example.hwaroak.databinding.DialogChangeImageBinding
 import com.example.hwaroak.databinding.DialogChangeNicknameBinding
 import com.example.hwaroak.databinding.FragmentEditProfileBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.example.hwaroak.ui.main.MainActivity
 
 class EditProfileFragment : Fragment() {
 
@@ -38,6 +47,8 @@ class EditProfileFragment : Fragment() {
     //유저 정보를 담을 sharedPreference
     private lateinit var pref: SharedPreferences
     private lateinit var accessToken: String
+
+    private var profileImgUrl: String? = null
 
     private val memberViewModel: MemberViewModel by activityViewModels()
 
@@ -53,6 +64,9 @@ class EditProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        /**상단바 수정**/
+        (activity as? MainActivity)?.setTopBar("프로필 수정", isBackVisible = true)
+
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
         accessToken = pref.getString("accessToken", "").toString()
 
@@ -63,9 +77,9 @@ class EditProfileFragment : Fragment() {
                 Log.d("member", "불러오기 성공")
                 Log.d("member", "닉네임=${data.nickname}")
                 Log.d("member", "자기소개=${data.introduction}")
-                binding.nickname.setText(data.nickname)
-                binding.userId.setText(data.userId)
-                binding.etIntroduce.setText(data.introduction ?: "")
+                binding.editProfileNicknameTv.setText(data.nickname)
+                binding.editProfileUserIdTv.setText(data.userId)
+                binding.editProfileIntroductionEt.setText(data.introduction ?: "")
             }
 
             result.onFailure {
@@ -74,24 +88,32 @@ class EditProfileFragment : Fragment() {
             }
         }
 
-        binding.btnCopyId.setOnClickListener {
-            val userId = binding.userId.text.toString()
+        // 바텀시트다이얼로그 띄우기 (로직은 밑에 있음)
+        binding.editProfileImageBtn.setOnClickListener {
+            showChangeImageDialog()
+        }
+
+        binding.editProfileCopyIdBtn.setOnClickListener {
+            val userId = binding.editProfileUserIdTv.text.toString()
             copyUserIdToClipboard(userId)
         }
 
         // 저장 버튼 리스너
-        binding.btnSave.setOnClickListener {
+        binding.editProfileSaveBtn.setOnClickListener {
             parentFragmentManager.popBackStack()
-            val nickname = binding.nickname.text.toString().trim()
-            val introduction = binding.etIntroduce.text.toString().trim()
+            val nickname = binding.editProfileNicknameTv.text.toString().trim()
+            val introduction = binding.editProfileIntroductionEt.text.toString().trim()
             val profileImgUrl = "" // 추후 이미지 업로드 기능과 연결 가능
 
             // 수정한 닉네임 캐시에 즉시 저장
             val pref = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE)
             pref.edit().putString("cachedNickname", nickname).apply()
 
+            //상단 바 이름에도 적용
+            (activity as? MainActivity)?.changeTitle(nickname)
+
             // 수정 요청 실행
-            memberViewModel.editProfile(accessToken, nickname, profileImgUrl, introduction)
+            memberViewModel.editProfile(accessToken, nickname, introduction)
 
             // observer 정의
             val resultObserver = object : Observer<Result<EditProfileResponse>> {
@@ -115,7 +137,7 @@ class EditProfileFragment : Fragment() {
         }
 
         // 닉네임 변경 연필 버튼 리스너
-        binding.btnEditNickname.setOnClickListener {
+        binding.editProfileNicknameBtn.setOnClickListener {
             showChangeNicknameDialog() // 다이얼로그 표시 함수 호출
         }
     }
@@ -125,7 +147,8 @@ class EditProfileFragment : Fragment() {
         val clip = ClipData.newPlainText("userId", userId)
         clipboard.setPrimaryClip(clip)
 
-        Toast.makeText(requireContext(), "아이디가 복사되었습니다.", Toast.LENGTH_SHORT).show()
+        // 안드로이드 OS 자체에서 "클립보드에 복사했어요" 토스트 메시지 출력됨
+        // Toast.makeText(requireContext(), "아이디가 복사되었습니다.", Toast.LENGTH_SHORT).show()
     }
 
     private fun showChangeNicknameDialog() {
@@ -133,7 +156,7 @@ class EditProfileFragment : Fragment() {
             val dialogBinding = DialogChangeNicknameBinding.inflate(LayoutInflater.from(requireContext()))
 
             // 2. 현재 닉네임 가져와서 EditText에 적어놓기
-            val currentNickname = binding.nickname.text.toString() // EditProfileFragment의 닉네임 가져오기
+            val currentNickname = binding.editProfileNicknameTv.text.toString() // EditProfileFragment의 닉네임 가져오기
             dialogBinding.dialogNicknameEt.setText(currentNickname)
             dialogBinding.dialogNicknameEt.setSelection(currentNickname.length) // EditText에서 커서 맨 뒤로 가게 하기
 
@@ -170,8 +193,7 @@ class EditProfileFragment : Fragment() {
                 }
 
                 // EditProfileFragment의 닉네임 TextView 업데이트
-                binding.nickname.text = newNickname
-
+                binding.editProfileNicknameTv.text = newNickname
                 dialog.dismiss() // 다이얼로그 닫기
             }
 
@@ -185,6 +207,51 @@ class EditProfileFragment : Fragment() {
 
             // 5. 다이얼로그 표시
             dialog.show()
+    }
+
+    private fun showChangeImageDialog() {
+        val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
+
+        val sheetBinding = DialogChangeImageBinding.inflate(layoutInflater)
+        dialog.setContentView(sheetBinding.root)
+
+        dialog.window?.setDimAmount(0.3f)
+
+        dialog.setOnShowListener {
+            val bottomSheet = dialog.findViewById<FrameLayout>(
+                com.google.android.material.R.id.design_bottom_sheet
+            ) ?: return@setOnShowListener
+
+        }
+
+        // 조건에 따라 '기본 이미지 적용' 메뉴 숨김
+        if (isDefaultProfileImage()) {
+            sheetBinding.dialogMenuDivider.visibility = View.GONE
+            sheetBinding.dialogDefaultImageTv.visibility = View.GONE
+        }
+
+        sheetBinding.dialogChooseImageTv.setOnClickListener {
+            // 앨범에서 사진 선택
+            dialog.dismiss()
+        }
+
+        sheetBinding.dialogDefaultImageTv.setOnClickListener {
+            // 프로필 이미지 삭제 후 기본 이미지로 변경 로직
+            profileImgUrl = null
+            dialog.dismiss()
+        }
+
+        sheetBinding.dialogCancelTv.setOnClickListener {
+            // 취소 버튼 로직
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun isDefaultProfileImage(): Boolean {
+        return profileImgUrl.isNullOrEmpty()
+//        return profileImgUrl.isNullOrEmpty() || profileImgUrl == DEFAULT_PROFILE_IMAGE_URL
     }
 
     override fun onDestroyView() {

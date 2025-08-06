@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hwaroak.api.notice.model.AlarmListResponse
+import com.example.hwaroak.api.notice.model.AlarmSettingRequest
+import com.example.hwaroak.api.notice.model.AlarmSettingResponse
 import com.example.hwaroak.api.notice.model.NoticeDetailResponse
 import com.example.hwaroak.api.notice.model.NoticeListResponse
 import com.example.hwaroak.api.notice.repository.NoticeRepository
@@ -21,6 +23,9 @@ class NoticeViewModel(private val repository: NoticeRepository) : ViewModel() {
     private val _alarmList = MutableLiveData<Result<List<AlarmListResponse>>>()
     val alarmList : MutableLiveData<Result<List<AlarmListResponse>>> = _alarmList
 
+    //알람 설정 데이터 IN
+    private val _alarmSetting = MutableLiveData<Result<AlarmSettingResponse>>()
+    val alarmSetting : MutableLiveData<Result<AlarmSettingResponse>> = _alarmSetting
 
     //1. 공지 리스트 가져오기
     fun getNoticeList(token: String){
@@ -51,6 +56,22 @@ class NoticeViewModel(private val repository: NoticeRepository) : ViewModel() {
     : NoticeDetailResponse? {
         //getOrNull() -> result에서 성공 시 값 실패 시 null
         return repository.getDetailNotice(token, noticeId).getOrNull()
+    }
+
+    //6. 알람 가져오기
+    fun getAlarmSetting(token: String){
+        viewModelScope.launch {
+            val res = repository.getAlarmSetting(token)
+            _alarmSetting.postValue(res)
+        }
+    }
+
+    //7. 알람 세팅하기
+    fun setAlarmSetting(token: String, req: AlarmSettingRequest){
+        viewModelScope.launch {
+            repository.setAlarmSetting(token, req)
+        }
+
     }
 
 

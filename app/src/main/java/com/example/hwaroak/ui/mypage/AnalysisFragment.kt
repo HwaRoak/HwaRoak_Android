@@ -40,11 +40,11 @@ class AnalysisFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
-        binding.btnPreviousAnalysis.setOnClickListener {
+        binding.analysisPreviousBtn.setOnClickListener {
             monthViewModel.previousMonth()
         }
 
-        binding.btnNextAnalysis.setOnClickListener {
+        binding.analysisNextBtn.setOnClickListener {
             monthViewModel.nextMonth()
         }
     }
@@ -53,15 +53,15 @@ class AnalysisFragment : Fragment() {
         lifecycleScope.launch {
             monthViewModel.monthData.collectLatest { state ->
                 // 텍스트 업데이트
-                binding.btnPreviousAnalysis.text = state.previousMonthText
-                binding.monthlyNumberDiaryTv.text = state.currentMonthText
-                binding.btnNextAnalysis.text = state.nextMonthText
+                binding.analysisPreviousBtn.text = state.previousMonthText
+                binding.analysisNumberDiaryTv.text = state.currentMonthText
+                binding.analysisNextBtn.text = state.nextMonthText
 
                 // '이전 달' 버튼 상태 업데이트
-                updateButtonState(binding.btnPreviousAnalysis, state.isPreviousEnabled)
+                updateButtonState(binding.analysisPreviousBtn, state.isPreviousEnabled)
 
                 // '다음 달' 버튼 상태 업데이트
-                updateButtonState(binding.btnNextAnalysis, state.isNextEnabled)
+                updateButtonState(binding.analysisNextBtn, state.isNextEnabled)
             }
         }
     }
@@ -105,7 +105,7 @@ class AnalysisFragment : Fragment() {
         // 지금 서비스에서는 그래프에 퍼센트로 표시하지 않으므로 false
         dataSet.setDrawValues(false)
 
-        binding.emotionPiechart.apply {
+        binding.analysisEmotionPiechart.apply {
             data = PieData(dataSet)
 
             // description.isEnabled : 차트 설명 유무 설정
