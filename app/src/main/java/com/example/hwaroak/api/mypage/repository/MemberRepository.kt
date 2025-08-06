@@ -27,11 +27,10 @@ class MemberRepository(private val service: MemberService) {
     suspend fun editProfile(
         token: String,
         nickname: String,
-        profileImgUrl: String,
         introduction: String
     ): Result<EditProfileResponse> {
         return try {
-            val req = EditProfileRequest(nickname, profileImgUrl, introduction)
+            val req = EditProfileRequest(nickname, introduction)
             val response = service.editProfile("Bearer $token", req)
             val body = response.body()
 
