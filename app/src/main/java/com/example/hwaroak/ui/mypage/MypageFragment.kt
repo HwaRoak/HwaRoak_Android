@@ -1,5 +1,7 @@
 package com.example.hwaroak.ui.mypage
 
+import android.R.attr.data
+import android.R.attr.description
 import android.app.AlertDialog
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
@@ -69,7 +71,7 @@ class MypageFragment : Fragment() {
 
         // 캐시된 닉네임 먼저 표시
         val cachedNickname = pref.getString("cachedNickname", null)
-        binding.profileNickname.text = cachedNickname ?: "닉네임 불러오는 중..."
+        binding.mypageNicknameTv.text = cachedNickname ?: "닉네임 불러오는 중..."
 
         // 1. 최초에 한 번 사용자 정보를 요청 (또는 화면에 보일 때마다)
         memberViewModel.getMemberInfo(accessToken)
@@ -77,7 +79,7 @@ class MypageFragment : Fragment() {
         // 2. ViewModel의 사용자 정보를 관찰
         memberViewModel.memberInfoResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess { data ->
-                binding.profileNickname.text = data.nickname
+                binding.mypageNicknameTv.text = data.nickname
                 // 닉네임을 SharedPreferences에 저장
                 pref.edit().putString("cachedNickname", data.nickname).apply()
             }
@@ -115,7 +117,7 @@ class MypageFragment : Fragment() {
         // 지금 서비스에서는 그래프에 퍼센트로 표시하지 않으므로 false
         dataSet.setDrawValues(false)
 
-        binding.emotionPiechart.apply {
+        binding.mypageEmotionPiechart.apply {
             data = PieData(dataSet)
 
             // description.isEnabled : 차트 설명 유무 설정
@@ -136,33 +138,33 @@ class MypageFragment : Fragment() {
     }
 
     private fun setupNavigation() {
-        binding.btnMyinfo.setOnClickListener {
+        binding.mypageMyinfoBtn.setOnClickListener {
             replaceFragment(EditProfileFragment())
         }
 
-        binding.btnCheckDetail.setOnClickListener {
+        binding.mypageDetailBtn.setOnClickListener {
             replaceFragment(AnalysisFragment())
         }
 
-        binding.announcement.setOnClickListener {
+        binding.mypageAnnouncementTv.setOnClickListener {
             replaceFragment(AnnouncementFragment())
         }
 
-        binding.notificationSetting.setOnClickListener {
+        binding.mypageNotificationSettingTv.setOnClickListener {
             replaceFragment(SettingFragment())
         }
 
-        binding.terms.setOnClickListener {
+        binding.mypageTermsTv.setOnClickListener {
             replaceFragment(TermsFragment())
         }
 
-        binding.searchUser.setOnClickListener {
+        binding.mypageSearchUserTv.setOnClickListener {
             replaceFragment(AddFriendFragment())
         }
     }
 
     private fun setupLogout() {
-        binding.logout.setOnClickListener {
+        binding.mypageLogoutTv.setOnClickListener {
             showLogoutDialog()
         }
     }
