@@ -68,9 +68,14 @@ class FriendListFragment : Fragment() {
                 pendingDeleteList.add(friend)
             },
             onVisitClicked = { friendData ->
-                // 방문하기 버튼 클릭 → FriendVisitFragment 전환
+                val visitFragment = FriendVisitFragment().apply {
+                    arguments = Bundle().apply {
+                        putString("friendUserId", friendData.id) //userId 전달
+                    }
+                }
+
                 requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.main_fragmentContainer, FriendVisitFragment())
+                    .replace(R.id.main_fragmentContainer, visitFragment)
                     .addToBackStack(null)
                     .commit()
             }
@@ -82,7 +87,7 @@ class FriendListFragment : Fragment() {
         //친구목록 observe
         viewModel.friendListResult.observe(viewLifecycleOwner) { result ->
 
-            val currentBinding = _binding ?: return@observe
+            //val currentBinding = _binding ?: return@observe
             result.onSuccess { serverList ->
                 if (!isAdded || view == null) return@onSuccess
 
@@ -177,10 +182,10 @@ class FriendListFragment : Fragment() {
         pendingDeleteList.forEach { friend ->
             val friendId = friend.id
             if (!friendId.isNullOrBlank()) {
-                Log.d("DELETE_FRIEND", "정상 삭제 요청 → id: $friendId")
+                Log.d("DELETE_FRIEND", "정상 삭제 요청 -> id: $friendId")
                 viewModel.deleteFriend(token, friendId)
             } else {
-                Log.e("DELETE_FRIEND", "❌ friend.id 누락 → 삭제 요청 실패 friend = $friend")
+                Log.e("DELETE_FRIEND", "friend.id 누락 -> 삭제 요청 실패 friend = $friend")
             }
         }
 
