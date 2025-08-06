@@ -225,22 +225,22 @@ class EditProfileFragment : Fragment() {
 
         // 조건에 따라 '기본 이미지 적용' 메뉴 숨김
         if (isDefaultProfileImage()) {
-            sheetBinding.divider.visibility = View.GONE
-            sheetBinding.changeDefaultImageTv.visibility = View.GONE
+            sheetBinding.dialogMenuDivider.visibility = View.GONE
+            sheetBinding.dialogDefaultImageTv.visibility = View.GONE
         }
 
-        sheetBinding.chooseFromGalleryTv.setOnClickListener {
+        sheetBinding.dialogChooseImageTv.setOnClickListener {
             // 앨범에서 사진 선택
             dialog.dismiss()
         }
 
-        sheetBinding.changeDefaultImageTv.setOnClickListener {
+        sheetBinding.dialogDefaultImageTv.setOnClickListener {
             // 프로필 이미지 삭제 후 기본 이미지로 변경 로직
             profileImgUrl = null
             dialog.dismiss()
         }
 
-        sheetBinding.cancelTv.setOnClickListener {
+        sheetBinding.dialogCancelTv.setOnClickListener {
             // 취소 버튼 로직
             dialog.dismiss()
         }
