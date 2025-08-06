@@ -27,9 +27,9 @@ class MemberViewModel(private val repository: MemberRepository): ViewModel() {
         }
     }
 
-    fun editProfile(token: String, nickname: String, profileImgUrl: String, introduction: String) {
+    fun editProfile(token: String, nickname: String, introduction: String) {
         viewModelScope.launch {
-            val result = repository.editProfile(token, nickname, profileImgUrl, introduction)
+            val result = repository.editProfile(token, nickname, introduction)
             _editProfileResult.postValue(result)
 
             if (result.isSuccess) {
