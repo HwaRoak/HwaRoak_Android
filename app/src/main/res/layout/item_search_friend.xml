@@ -31,7 +31,7 @@
             <TextView
                 android:id="@+id/friend_search_name"
                 style="@style/freesentation5_24sp_icon"
-                android:layout_width="105dp"
+                android:layout_width="110dp"
                 android:layout_height="40dp"
                 android:gravity="center"
                 android:paddingStart="12dp"
