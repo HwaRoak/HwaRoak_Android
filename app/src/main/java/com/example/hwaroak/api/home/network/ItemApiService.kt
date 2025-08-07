@@ -11,21 +11,27 @@ import retrofit2.http.Path
 interface ItemApiService {
 
     // 1. 보유 아이템 리스트 조회
-    @GET("api/v1/members/items")
+    @GET("api/v1/items")
     suspend fun getItemList(
         @Header("Authorization") token: String
     ): Response<ApiResponse<List<ItemDto>>>
 
     // 2. 대표 아이템 조회
-    @GET("api/v1/members/items/selected")
+    @GET("api/v1/items/selected")
     suspend fun getEquippedItem(
         @Header("Authorization") token: String
     ): Response<ApiResponse<ItemDto>>
 
     // 3. 대표 아이템 변경
-    @PATCH("api/v1/members/items/{itemId}/selected")
+    @PATCH("api/v1/items/{itemId}/selected")
     suspend fun changeEquippedItem(
         @Header("Authorization") token: String,
         @Path("itemId") itemId: Int
+    ): Response<ApiResponse<ItemDto>>
+
+    // 4. 아이템 보상받기
+    @PATCH("api/v1/items")
+    suspend fun claimReward(
+        @Header("Authorization") token: String
     ): Response<ApiResponse<ItemDto>>
 }

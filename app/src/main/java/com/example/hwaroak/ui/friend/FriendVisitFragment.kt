@@ -3,14 +3,21 @@ package com.example.hwaroak.ui.friend
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.OvershootInterpolator
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.hwaroak.R
+import com.example.hwaroak.api.HwaRoakClient.friendService
+import com.example.hwaroak.api.friend.access.FriendViewModel
+import com.example.hwaroak.api.friend.access.FriendViewModelFactory
+import com.example.hwaroak.api.friend.repository.FriendRepository
 import com.example.hwaroak.databinding.FragmentFriendVisitBinding
 
 class FriendVisitFragment : Fragment() {
@@ -18,7 +25,10 @@ class FriendVisitFragment : Fragment() {
     private var _binding: FragmentFriendVisitBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var viewModel: FriendViewModel
     private var hasSentFireOnce = false // API 대체용: 처음 클릭 여부만 체크
+
+    private var originalStatusMessage: String? = null //status 저장용(방문하기 버튼 눌러도 status 출력)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,25 +41,65 @@ class FriendVisitFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.friendFireupBtn.setOnClickListener {
-            // 말풍선 텍스트 변경
-            //binding.tvSpeechBubble.text = "화록이 불타올라요!"
+        // 1. viewModel 초기화
+        viewModel = ViewModelProvider(
+            this,
+            FriendViewModelFactory(FriendRepository(friendService))
+        )[FriendViewModel::class.java]
 
-            // 불 애니메이션 실행
-            showFireAnimation()
+        //UI 초기화 받아오는데 오래 걸릴 경우 표시
+        binding.tvFriendTitle.text = "불러오는 중..."
+        binding.friendVisitBubbleTv.text = "불러오는 중..."
 
-            // 캐릭터 & 게이지 불 커짐 효과
-            animateCharacterAndGaugeFire()
+        // 2. LiveData observe
+        Log.d("FriendVisitFragment", "observe 진입 전")
+        viewModel.friendPage.observe(viewLifecycleOwner) { data ->
+            Log.d("FriendVisitFragment", "닉네임: ${data.nickname}, 메시지: ${data.message}")
 
-            // API는 아직 연동 X
-            if (!hasSentFireOnce) {
-                hasSentFireOnce = true
-                // sendFireApi()
+            // 저장해놓기
+            originalStatusMessage = data.message
+
+
+            // UI 갱신
+            binding.tvFriendTitle.text = "${data.nickname}의 화록"
+            binding.friendVisitBubbleTv.text = data.message
+
+            //불씨 응답 observe
+            viewModel.fireResponse.observe(viewLifecycleOwner) { data ->
+                data?.let {
+                    Log.d("불씨", "응답 메시지: ${it.message}, ${it.minutesLeft}분 남음")
+                    //binding.friendVisitBubbleTv.text = it.message
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                }
             }
-            //api 연동후 수정예정.. 서버에서 남은 시간 받아야 함
-            Toast.makeText(requireContext(), "다음 알림은 59분 후에 전송돼요!", Toast.LENGTH_SHORT).show()
+
+            // 방문하기 버튼 클릭
+            binding.friendFireupBtn.setOnClickListener {
+                val token = getAccessTokenFromPreferences()
+                val friendUserId = arguments?.getString("friendUserId")
+
+                if (!token.isNullOrBlank() && !friendUserId.isNullOrBlank()) {
+                    viewModel.sendFireToFriend("Bearer $token", friendUserId)
+                }
+
+                showFireAnimation()
+                animateCharacterAndGaugeFire()
+            }
+
+        }
+
+        // 3. 토큰 설정 (Bearer 중복 제거)
+        val token = getAccessTokenFromPreferences()?.replace("Bearer ", "")
+        val friendUserId = arguments?.getString("friendUserId")
+
+        if (!token.isNullOrBlank() && !friendUserId.isNullOrBlank()) {
+            viewModel.visitFriendPage("Bearer $token", friendUserId)
+        } else {
+            Log.e("FriendVisitFragment", "토큰 또는 유저 ID가 null입니다.")
         }
     }
+
+
 
     private fun showFireAnimation() {
         val fires = listOf(binding.friendFire1Imv, binding.friendFire2Imv, binding.friendFire3Imv)
@@ -61,10 +111,14 @@ class FriendVisitFragment : Fragment() {
             it.scaleY = 0f
         }
 
-        //api 연동후 수정..
-        binding.friendVisitBubbleTv.text = "뽀동이님의 화록이 불타올라요!"
+        val nickname = binding.tvFriendTitle.text.toString().replace("의 화록", "")
+        binding.friendVisitBubbleTv.text = "${nickname}의 화록이 불타올라요!"
+
+        //900ms 후 원래 메시지 복구
         binding.friendVisitBubbleTv.postDelayed({
-            binding.friendVisitBubbleTv.text = "뽀둥이님은 오늘 즐거워요"
+            originalStatusMessage?.let {
+                binding.friendVisitBubbleTv.text = it
+            }
         }, 900L)
 
         // 각 불 애니메이션
@@ -147,8 +201,10 @@ class FriendVisitFragment : Fragment() {
         animator.start()
     }
 
-
-
+    private fun getAccessTokenFromPreferences(): String? {
+        val pref = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE)
+        return pref.getString("accessToken", null)
+    }
 
 
     override fun onDestroyView() {

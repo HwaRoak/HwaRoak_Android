@@ -1,5 +1,6 @@
 package com.example.hwaroak.ui.mypage
 
+import android.R.attr.text
 import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -76,9 +77,9 @@ class EditProfileFragment : Fragment() {
                 Log.d("member", "불러오기 성공")
                 Log.d("member", "닉네임=${data.nickname}")
                 Log.d("member", "자기소개=${data.introduction}")
-                binding.nickname.setText(data.nickname)
-                binding.userId.setText(data.userId)
-                binding.etIntroduce.setText(data.introduction ?: "")
+                binding.editProfileNicknameTv.setText(data.nickname)
+                binding.editProfileUserIdTv.setText(data.userId)
+                binding.editProfileIntroductionEt.setText(data.introduction ?: "")
             }
 
             result.onFailure {
@@ -88,20 +89,20 @@ class EditProfileFragment : Fragment() {
         }
 
         // 바텀시트다이얼로그 띄우기 (로직은 밑에 있음)
-        binding.btnChangeProfileImage.setOnClickListener {
+        binding.editProfileImageBtn.setOnClickListener {
             showChangeImageDialog()
         }
 
-        binding.btnCopyId.setOnClickListener {
-            val userId = binding.userId.text.toString()
+        binding.editProfileCopyIdBtn.setOnClickListener {
+            val userId = binding.editProfileUserIdTv.text.toString()
             copyUserIdToClipboard(userId)
         }
 
         // 저장 버튼 리스너
-        binding.btnSave.setOnClickListener {
+        binding.editProfileSaveBtn.setOnClickListener {
             parentFragmentManager.popBackStack()
-            val nickname = binding.nickname.text.toString().trim()
-            val introduction = binding.etIntroduce.text.toString().trim()
+            val nickname = binding.editProfileNicknameTv.text.toString().trim()
+            val introduction = binding.editProfileIntroductionEt.text.toString().trim()
             val profileImgUrl = "" // 추후 이미지 업로드 기능과 연결 가능
 
             // 수정한 닉네임 캐시에 즉시 저장
@@ -112,7 +113,7 @@ class EditProfileFragment : Fragment() {
             (activity as? MainActivity)?.changeTitle(nickname)
 
             // 수정 요청 실행
-            memberViewModel.editProfile(accessToken, nickname, profileImgUrl, introduction)
+            memberViewModel.editProfile(accessToken, nickname, introduction)
 
             // observer 정의
             val resultObserver = object : Observer<Result<EditProfileResponse>> {
@@ -136,7 +137,7 @@ class EditProfileFragment : Fragment() {
         }
 
         // 닉네임 변경 연필 버튼 리스너
-        binding.btnEditNickname.setOnClickListener {
+        binding.editProfileNicknameBtn.setOnClickListener {
             showChangeNicknameDialog() // 다이얼로그 표시 함수 호출
         }
     }
@@ -155,7 +156,7 @@ class EditProfileFragment : Fragment() {
             val dialogBinding = DialogChangeNicknameBinding.inflate(LayoutInflater.from(requireContext()))
 
             // 2. 현재 닉네임 가져와서 EditText에 적어놓기
-            val currentNickname = binding.nickname.text.toString() // EditProfileFragment의 닉네임 가져오기
+            val currentNickname = binding.editProfileNicknameTv.text.toString() // EditProfileFragment의 닉네임 가져오기
             dialogBinding.dialogNicknameEt.setText(currentNickname)
             dialogBinding.dialogNicknameEt.setSelection(currentNickname.length) // EditText에서 커서 맨 뒤로 가게 하기
 
@@ -192,7 +193,7 @@ class EditProfileFragment : Fragment() {
                 }
 
                 // EditProfileFragment의 닉네임 TextView 업데이트
-                binding.nickname.text = newNickname
+                binding.editProfileNicknameTv.text = newNickname
                 dialog.dismiss() // 다이얼로그 닫기
             }
 
@@ -225,22 +226,22 @@ class EditProfileFragment : Fragment() {
 
         // 조건에 따라 '기본 이미지 적용' 메뉴 숨김
         if (isDefaultProfileImage()) {
-            sheetBinding.divider.visibility = View.GONE
-            sheetBinding.changeDefaultImageTv.visibility = View.GONE
+            sheetBinding.dialogMenuDivider.visibility = View.GONE
+            sheetBinding.dialogDefaultImageTv.visibility = View.GONE
         }
 
-        sheetBinding.chooseFromGalleryTv.setOnClickListener {
+        sheetBinding.dialogChooseImageTv.setOnClickListener {
             // 앨범에서 사진 선택
             dialog.dismiss()
         }
 
-        sheetBinding.changeDefaultImageTv.setOnClickListener {
+        sheetBinding.dialogDefaultImageTv.setOnClickListener {
             // 프로필 이미지 삭제 후 기본 이미지로 변경 로직
             profileImgUrl = null
             dialog.dismiss()
         }
 
-        sheetBinding.cancelTv.setOnClickListener {
+        sheetBinding.dialogCancelTv.setOnClickListener {
             // 취소 버튼 로직
             dialog.dismiss()
         }

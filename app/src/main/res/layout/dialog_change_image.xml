@@ -6,6 +6,7 @@
     android:background="@android:color/transparent" >
 
     <LinearLayout
+        android:id="@+id/dialog_menu_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
@@ -16,7 +17,7 @@
         >
 
         <TextView
-            android:id="@+id/choose_from_gallery_tv"
+            android:id="@+id/dialog_choose_image_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/freesentation5_16sp"
@@ -26,13 +27,13 @@
             android:paddingVertical="18dp" />
 
         <View
-            android:id="@+id/divider"
+            android:id="@+id/dialog_menu_divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#EEEEEE" />
 
         <TextView
-            android:id="@+id/change_default_image_tv"
+            android:id="@+id/dialog_default_image_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/freesentation5_16sp"
@@ -44,6 +45,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/dialog_cancel_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -52,7 +54,7 @@
         android:layout_marginBottom="10dp" >
 
         <TextView
-            android:id="@+id/cancel_tv"
+            android:id="@+id/dialog_cancel_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/freesentation5_16sp"
