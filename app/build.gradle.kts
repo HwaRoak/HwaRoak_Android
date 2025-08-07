@@ -1,3 +1,7 @@
+import java.util.Properties
+import java.io.FileInputStream
+
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -21,11 +25,20 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        //API를 넣는 코드
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "BASE_URL", "\"${properties.getProperty("BASE_URL")}\"")
+        buildConfigField("String", "BASE_URL_SSE", "\"${properties.getProperty("BASE_URL_SSE")}\"")
+
     }
 
     buildFeatures {
         // ViewBinding 활성화
         viewBinding = true
+        // Gradile이 BuildConfig을 하게
+        buildConfig = true
     }
 
     buildTypes {

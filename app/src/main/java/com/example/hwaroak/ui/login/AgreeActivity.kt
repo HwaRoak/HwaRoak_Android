@@ -41,7 +41,7 @@ class AgreeActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (viewPager.currentItem == 1) {
+                if (viewPager.currentItem == 1 || viewPager.currentItem == 2) {
                     // 두 번째 페이지(1)라면 첫 페이지(0)로
                     viewPager.currentItem = 0
                 } else {
@@ -64,5 +64,8 @@ class AgreeActivity : AppCompatActivity() {
     }
     fun goToMainPage() {
         viewPager.currentItem = 0
+    }
+    fun goToDetailPage2(){
+        viewPager.currentItem = 2
     }
 }

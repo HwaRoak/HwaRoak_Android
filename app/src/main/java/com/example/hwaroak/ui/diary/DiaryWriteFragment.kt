@@ -277,7 +277,7 @@ class DiaryWriteFragment : Fragment() {
                         val obj = JSONObject(jsonPart)
                         val code = obj.optString("code")
                         val message = obj.optString("message")
-                        if (code == "DE4001") {
+                        if (code == "DE4001" || code=="DBERROR4002") {
                             Toast.makeText(
                                 requireContext(),
                                 "오늘은 이미 일기를 작성하셨습니다.",
