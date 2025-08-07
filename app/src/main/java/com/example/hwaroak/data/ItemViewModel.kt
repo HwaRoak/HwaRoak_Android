@@ -47,6 +47,7 @@ class ItemViewModel(private val itemRepository: ItemRepository) : ViewModel() {
                 if (response?.status == "OK") {
                     // 성공 처리 (예: _homeItemList 업데이트)
                     _homeItemList.value = listOf(item)
+                    Log.d("ItemViewModel", "Home item changed to ${item.name}")
                 } else {
                     // 실패 처리 (예: 오류 메시지 토스트)
                     Log.e("ItemViewModel", "Failed to change item: ${response?.message}")
@@ -132,6 +133,4 @@ class ItemViewModel(private val itemRepository: ItemRepository) : ViewModel() {
             else -> R.drawable.img_item_lock // 기본값은 자물쇠 이미지로 유지
         }
     }
-
-// ... (나머지 코드)
 }
