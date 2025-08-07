@@ -1,5 +1,6 @@
 package com.example.hwaroak.api
 
+import com.example.hwaroak.BuildConfig
 import com.example.hwaroak.api.diary.network.DiaryService
 import com.example.hwaroak.api.friend.network.FriendService
 import com.example.hwaroak.api.home.network.ItemApiService
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit
 object HwaRoakClient {
 
     //Swagger에서 가져오는 주소
-    private const val BASE_URL = "http://52.78.74.252/"
+    private const val BASE_URL = BuildConfig.BASE_URL
 
     //일단 호출을 로그로 추적하게
     private val logging = HttpLoggingInterceptor().apply {

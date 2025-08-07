@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.example.hwaroak.BuildConfig
 import com.example.hwaroak.R
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
@@ -42,7 +43,7 @@ class SSEClient(private val context: Context) {
     //연결 로직
     fun connectToSSE(){
         val request = Request.Builder()
-            .url("http://52.78.74.252/api/v1/sse/connect")
+            .url(BuildConfig.BASE_URL_SSE)
             .addHeader("Authorization", token)
             .build()
 
@@ -122,7 +123,7 @@ class SSEClient(private val context: Context) {
 
         //알람 세팅
         val notification = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_emotion1)
+            .setSmallIcon(R.drawable.ic_app_hwaroak_foreground)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)

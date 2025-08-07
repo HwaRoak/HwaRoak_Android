@@ -112,5 +112,14 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+
+    <!--bottomNav 조절-->
+    <style name="CustomBottomNavigationTextStyle" parent="TextAppearance.AppCompat.Caption">
+        <!-- 간격 줄이기 -->
+        <item name="android:layout_marginTop">-2dp</item>
+        <!-- 필요시 텍스트 사이즈 조정 -->
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="Theme.HwaRoak" parent="Base.Theme.HwaRoak" />
 </resources>
