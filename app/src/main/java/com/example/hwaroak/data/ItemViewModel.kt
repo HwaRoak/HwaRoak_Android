@@ -65,7 +65,7 @@ class ItemViewModel(private val itemRepository: ItemRepository) : ViewModel() {
         _rewardItemList.value = items
     }
 
-    // 모든 보유 아이템을 불러오는 함수 (예시)
+    // 모든 보유 아이템을 불러오는 함수
     fun loadUserItems() {
         viewModelScope.launch {
             HwaRoakClient.currentAccessToken?.let { token ->
@@ -77,6 +77,32 @@ class ItemViewModel(private val itemRepository: ItemRepository) : ViewModel() {
             } ?: run {
                 // Log.e("ItemViewModel", "Access token is null, cannot fetch reward items.")
                 _rewardItemList.value = emptyList()
+            }
+        }
+    }
+
+    // 보상획득 로직
+    fun claimReward(onResult: (LockerItem?) -> Unit) {
+        viewModelScope.launch {
+            val token = HwaRoakClient.currentAccessToken
+            if (token != null) {
+                val rewardedItemDto = itemRepository.claimReward(token)
+                rewardedItemDto?.let {
+                    val rewardedItem = LockerItem(
+                        it.itemId,
+                        it.name,
+                        getImageResForName(it.name)
+                    )
+                    // 홈 아이템으로 설정
+                    _homeItemList.value = listOf(rewardedItem)
+                    // 보유 아이템 목록 갱신
+                    loadUserItems()
+                    onResult(rewardedItem)
+                } ?: run {
+                    onResult(null)
+                }
+            } else {
+                onResult(null)
             }
         }
     }
