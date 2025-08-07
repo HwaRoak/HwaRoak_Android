@@ -30,11 +30,25 @@ data class ReceivedFriendResponse(
     val data: List<ReceivedFriendData>
 )
 
-//친구 삭제 api 데이터클래스
+//친구 정보 이름, 상태, 소개
 data class ReceivedFriendData(
     val userId: String,
     val nickname: String,
     val introduction: String?
+)
+
+//친구 페이지 방문
+data class VisitFriendPage (
+    val userId: String,
+    val nickname: String,
+    val message: String
+)
+
+//친구에게 불씨 보내기
+data class FireResponseData(
+    val notifiedAt: String?,
+    val message: String,
+    val minutesLeft: Int
 )
 
 

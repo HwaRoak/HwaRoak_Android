@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="90dp"
     android:padding="5dp"
     android:clickable="true"
     android:focusable="true">
@@ -12,7 +12,7 @@
         android:id="@+id/friend_add_btn"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="390dp"
-        android:layout_height="62dp"
+        android:layout_height="72dp"
         android:layout_marginStart="4dp"
         android:background="@drawable/bg_friend_add_btn"
         android:insetLeft="0dp"

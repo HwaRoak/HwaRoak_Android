@@ -30,4 +30,10 @@ class ItemRepository(private val service: ItemApiService) {
         val response = service.changeEquippedItem(token, itemId) // token 전달
         return response.body()
     }
+    // 아이템 획득
+    suspend fun claimReward(accessToken: String): ItemDto? {
+        val token = if (accessToken.startsWith("Bearer ")) accessToken else "Bearer $accessToken"
+        val response = service.claimReward(token)
+        return response.body()?.data
+    }
 }

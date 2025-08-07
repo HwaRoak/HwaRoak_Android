@@ -1,11 +1,12 @@
 package com.example.hwaroak.api.friend.network
 
 import com.example.hwaroak.api.friend.model.ApiResponse
+import com.example.hwaroak.api.friend.model.FireResponseData
 import com.example.hwaroak.api.friend.model.FriendRequestResponse
 import com.example.hwaroak.api.friend.model.FriendResponse
 import com.example.hwaroak.api.friend.model.FriendSearchResponse
 import com.example.hwaroak.api.friend.model.ReceivedFriendResponse
-import com.example.hwaroak.ui.friend.FriendData
+import com.example.hwaroak.api.friend.model.VisitFriendPage
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -62,5 +63,21 @@ interface FriendService {
         @Header("Authorization") token: String,
         @Path("userId") userId: String
     ): Response<ApiResponse<Unit>>
+
+    // 친구 페이지 방문하기
+    @GET("/api/v1/friends/{userId}")
+    suspend fun visitFriendPage(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): Response<ApiResponse<VisitFriendPage>>
+
+    //친구에게 불씨 보내기
+    @POST("/api/v1/friends/{userId}/fire")
+    suspend fun sendFireToFriend(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): Response<ApiResponse<FireResponseData>>
+
+
 }
 

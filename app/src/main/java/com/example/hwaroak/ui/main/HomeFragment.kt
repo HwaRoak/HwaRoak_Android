@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hwaroak.R
@@ -90,31 +91,28 @@ class HomeFragment : Fragment() {
             }
         }
 
-
         btnClaimReward.setOnClickListener {
-            // 홈 아이템 보상 아이템으로 세팅
-            itemViewModel.rewardItemList.value?.firstOrNull()?.let { firstItem ->
-                itemViewModel.setHomeItem(firstItem)
-            } ?: run {
-                // rewardList가 비어있거나 null인 경우 처리 (예: 토스트 메시지 표시)
-                // Log.w("HomeFragment", "Reward list is empty or null when claiming reward.")
+            itemViewModel.claimReward { rewardedItem ->
+                if (rewardedItem != null) {
+                    // 캐릭터 말풍선 변경
+                    speechBubbleTV.text = "보상이야!(추후매핑)"
+
+                    // 보상 UI 숨기고 보상완료 UI 표시
+                    rewardContainer.visibility = View.GONE
+                    val rewardCompletionContainer = view.findViewById<LinearLayout>(R.id.reward_completion_container)
+                    rewardCompletionContainer.visibility = View.VISIBLE
+
+                    // 2초 후 다시 기본 홈 상태로 되돌리기
+                    view.postDelayed({
+                        rewardCompletionContainer.visibility = View.GONE
+                    }, 2000)
+                } else {
+                    // 실패 시 처리
+                    Toast.makeText(requireContext(), "보상받기 실패", Toast.LENGTH_SHORT).show()
+                }
             }
-
-
-            // 보상 UI 숨기고 보상완료 UI표시
-            rewardContainer.visibility = View.GONE
-            val rewardCompletionContainer = view.findViewById<LinearLayout>(R.id.reward_completion_container)
-            rewardCompletionContainer.visibility = View.VISIBLE
-
-            //캐릭터 말풍선 변경
-            speechBubbleTV.text ="보상이야!(추후매핑)"
-
-            // 2초 후 다시 기본 홈 상태로 되돌리기
-            view.postDelayed({
-                rewardCompletionContainer.visibility = View.GONE
-            }, 2000)
-
         }
+
 
         // 감정 버튼 참조 가져오기
         val btnSad = view.findViewById<MaterialButton>(R.id.btn_sad)

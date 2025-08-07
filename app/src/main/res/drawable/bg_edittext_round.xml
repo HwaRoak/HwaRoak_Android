@@ -4,7 +4,7 @@
     >
 
     <!--색깔-->
-    <solid android:color="@color/colorTextBackground"/>
+    <solid android:color="@color/white"/>
 
     <!--모서리 둥글게-->
     <corners android:radius="10dp"/>
