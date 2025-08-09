@@ -38,10 +38,10 @@ class NoticeItemRVAdaptor(private val noticeList: List<NoticeItem>,
         val notice = noticeList[position]
 
         //기본 세팅
-
+        val day = notice.createdAt.replace(" ", "|")
         holder.binding.tvNoticeTitle.text = notice.title
         holder.binding.tvNoticeContent.text = notice.content
-        holder.binding.tvNoticeDay.text = notice.createdAt
+        holder.binding.tvNoticeDay.text = day
 
         val context = holder.itemView.context
         val backgroundColor = if (notice.isRead) context.getColor(R.color.colorGrayIcon)

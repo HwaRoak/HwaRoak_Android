@@ -106,8 +106,6 @@ class AgreeInitialFragment : Fragment() {
                 vm.privacyAgree.value = false
                 vm.serviceAgree.value = false
             }
-
-
         }
 
         //2. 서비스 동의
@@ -128,15 +126,20 @@ class AgreeInitialFragment : Fragment() {
         //3. 개인정보 처리 방침 동의
         binding.agreeCheck3Btn.setOnClickListener {
             current = vm.privacyAgree.value ?: false
-            if(current){vm.privacyAgree.value = false}
-            else{vm.privacyAgree.value = true}
+            if(!current){
+                vm.privacyAgree.value = false
+                (activity as AgreeActivity).goToDetailPage2()
+            }
+            else{vm.privacyAgree.value = false}
         }
 
         //4. 보기 버튼
         binding.agreeSee2Tv.setOnClickListener {
             vm.allGo.value = false
             (activity as AgreeActivity).goToDetailPage() }
-        //binding.agreeSee3Tv.setOnClickListener { (activity as AgreeActivity).goToDetailPage() }
+        binding.agreeSee3Tv.setOnClickListener {
+            vm.allGo.value = false
+            (activity as AgreeActivity).goToDetailPage2() }
     }
 
     //T/F 유무에 따라 버튼 UI 변경
