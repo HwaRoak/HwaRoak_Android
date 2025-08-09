@@ -1,6 +1,8 @@
 // HomeFragment.kt
 package com.example.hwaroak.ui.main
 
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -33,6 +35,10 @@ class HomeFragment : Fragment() {
     //locker와의 아이템 상태 공유를 위한 viewmodel선언
     private lateinit var itemViewModel: ItemViewModel
 
+
+    //감정 게이지 바를 위한 pref
+    private lateinit var diaryPref: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -51,6 +57,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        diaryPref = requireContext().getSharedPreferences("diary", MODE_PRIVATE)
 
         /**일단 홈 화면에서는 < 없애기**/
         (activity as? MainActivity)?.setTopBar(isBackVisible = false)
@@ -69,6 +76,9 @@ class HomeFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.home_item_rv)
         homeItemRVAdapter = HomeItemRVAdapter()
         recyclerView.adapter = homeItemRVAdapter
+
+        //감정 게이지바 세팅
+        setEmotionBar()
 
         // 아이템에 따른 캐릭터 멘트 변경 위해 tv_speech_bubble 참조 가져오기
         val speechBubbleTV = view.findViewById<TextView>(R.id.tv_speech_bubble)
@@ -237,6 +247,33 @@ class HomeFragment : Fragment() {
                 speechBubbleTV.text = speechOptions.random()
             }
         }
+    }
+
+    //홈 게이지 바 설정
+    private fun setEmotionBar(){
+        val emotionGauge = view?.findViewById<ImageView>(R.id.emotion_gauge_home)
+        val isWrite = diaryPref.getBoolean("isWrite", false)
+
+        //일기 안 썼어
+        if(!isWrite){
+            emotionGauge!!.setImageResource(R.drawable.img_home_emotion_gauge_default)
+        }
+        else{
+            //기준 0=기본, 1=긍정ALL, 2=긍정/부정 반반, 3=부정부정긍정, 4=부정긍정긍정, 5=부정ALL
+            val barType = diaryPref.getInt("barType", 0)
+            if(barType == 0) {emotionGauge!!.setImageResource(R.drawable.img_home_emotion_gauge_default)}
+            else if(barType == 1) {emotionGauge!!.setImageResource(R.drawable.img_home_emotion_gauge_all_pos)}
+            else if(barType == 2) {emotionGauge!!.setImageResource(R.drawable.img_home_emotion_gauge_half_half)}
+            else if(barType == 3) {emotionGauge!!.setImageResource(R.drawable.img_home_emotion_gauge_neg_neg_pos)}
+            else if(barType == 4) {emotionGauge!!.setImageResource(R.drawable.img_home_emotion_gauge_neg_pos_pos)}
+            else if(barType == 5) {emotionGauge!!.setImageResource(R.drawable.img_home_emotion_gauge_all_neg)}
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setEmotionBar()
     }
 
     companion object {
