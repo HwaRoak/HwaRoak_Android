@@ -101,7 +101,7 @@ class FriendRequestFragment : Fragment() {
                 // 이 acceptedFriend 안에 name, status가 제대로 들어있는지 확인
                 (parentFragment as? FriendFragment)?.addFriend(
                     FriendData(
-                        name = acceptedFriend.nickname ?: "이름 없음",
+                        name = acceptedFriend.nickname,
                         status = acceptedFriend.introduction ?: "",  // null 방지
                         id = acceptedFriend.userId
                     )

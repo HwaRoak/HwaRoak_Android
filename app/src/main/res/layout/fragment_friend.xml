@@ -30,8 +30,8 @@
         app:iconTint="@null"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="24dp" />
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="10dp" />
 
     <!-- 친구목록 텍스트 -->
     <TextView
@@ -47,6 +47,7 @@
         app:layout_constraintEnd_toEndOf="@id/friend_list_btn"/>
 
     <!--요청확인 버튼-->
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/friend_requestcheck_btn"
         style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -63,10 +64,9 @@
         app:iconTint="@null"
         app:layout_constraintBottom_toBottomOf="@id/friend_list_btn"
         app:layout_constraintEnd_toEndOf="@id/friend_guideline"
-        app:layout_constraintHorizontal_bias="0.912"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/friend_list_btn"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.785"
+        app:layout_constraintStart_toStartOf="@id/friend_list_btn"
+        app:layout_constraintTop_toTopOf="@id/friend_list_btn" />
 
     <TextView
         android:id="@+id/friend_requestcheck_tv"

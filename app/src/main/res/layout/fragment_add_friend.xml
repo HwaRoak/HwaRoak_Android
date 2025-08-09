@@ -43,6 +43,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@null"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:scrollHorizontally="true"
                     android:gravity="center_vertical"
                     android:hint="유저 아이디를 검색하세요"
                     android:textColor="#BCBCBC" />

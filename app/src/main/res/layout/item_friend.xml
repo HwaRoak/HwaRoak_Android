@@ -30,7 +30,7 @@
         <TextView
             android:id="@+id/friend_tv_name"
             style="@style/freesentation5_24sp_icon"
-            android:layout_width="110dp"
+            android:layout_width="115dp"
             android:layout_height="40dp"
             android:gravity="center"
             android:paddingStart="12dp"
@@ -54,15 +54,14 @@
         <TextView
             android:id="@+id/friend_tv_status"
             style="@style/freesentation5_16sp_icon"
-            android:layout_width="0dp"
+            android:layout_width="135dp"
             android:layout_height="40dp"
-            android:paddingStart="8dp"
             android:gravity="center"
+            android:paddingStart="8dp"
             android:text="(자기소개)"
             app:layout_constraintBottom_toBottomOf="@id/friend_tv_name"
             app:layout_constraintStart_toEndOf="@id/friend_tv_name"
-            app:layout_constraintTop_toTopOf="@id/friend_tv_name"
-            app:layout_constraintEnd_toStartOf="@id/friend_visit_btn"/>
+            app:layout_constraintTop_toTopOf="@id/friend_tv_name" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/friend_visit_btn"

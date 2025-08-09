@@ -6,5 +6,6 @@ data class FriendData(
     val id: String = "", //아이디
     val isAddButton: Boolean = false, // 버튼 여부
     var isDeletable: Boolean = false,  // 삭제 여부
-    var isRequested: Boolean = false // 요청 보냈는지 여부
+    var isRequested: Boolean = false, // 요청 보냈는지 여부
+    var isFriend: Boolean = false //친구 여부
 )

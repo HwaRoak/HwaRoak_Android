@@ -27,7 +27,6 @@ class AddFriendFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: FriendSearchAdapter
-    private val allUsers = mutableListOf<FriendData>()         // 전체 사용자 더미 데이터
     private val searchResult = mutableListOf<FriendData>()     // 검색된 사용자 목록
 
     override fun onCreateView(
@@ -111,7 +110,7 @@ class AddFriendFragment : Fragment() {
 
         viewModel.friendRequestResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess {
-                Toast.makeText(requireContext(), "친구 요청 성공!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "친구 요청을 보냈습니다.", Toast.LENGTH_SHORT).show()
             }
             result.onFailure { throwable ->
                 Log.e("FriendRequest", "친구 요청 실패 전체 로그", throwable)

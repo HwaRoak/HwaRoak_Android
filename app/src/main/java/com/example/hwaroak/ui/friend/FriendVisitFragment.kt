@@ -59,7 +59,6 @@ class FriendVisitFragment : Fragment() {
             // 저장해놓기
             originalStatusMessage = data.message
 
-
             // UI 갱신
             binding.tvFriendTitle.text = "${data.nickname}의 화록"
             binding.friendVisitBubbleTv.text = data.message
