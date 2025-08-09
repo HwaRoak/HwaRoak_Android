@@ -270,7 +270,7 @@
 
 
     <ImageView
-        android:id="@+id/emotion_gauge_default"
+        android:id="@+id/emotion_gauge_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/img_home_emotion_gauge_default"
@@ -281,70 +281,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
-        android:id="@+id/emotion_gauge_all_neg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/img_home_emotion_gauge_all_neg"
-        android:visibility="gone"
-        android:background="@drawable/bg_emotion_gauge_shadow"
-        android:adjustViewBounds="true"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@id/rounded_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
-        android:id="@+id/emotion_gauge_all_pos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/img_home_emotion_gauge_all_pos"
-        android:visibility="gone"
-        android:background="@drawable/bg_emotion_gauge_shadow"
-        android:adjustViewBounds="true"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@id/rounded_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
-        android:id="@+id/emotion_gauge_half_half"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/img_home_emotion_gauge_half_half"
-        android:visibility="gone"
-        android:background="@drawable/bg_emotion_gauge_shadow"
-        android:adjustViewBounds="true"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@id/rounded_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
-        android:id="@+id/emotion_gauge_neg_neg_pos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/img_home_emotion_gauge_neg_neg_pos"
-        android:visibility="gone"
-        android:background="@drawable/bg_emotion_gauge_shadow"
-        android:adjustViewBounds="true"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@id/rounded_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
-        android:id="@+id/emotion_gauge_neg_pos_pos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/img_home_emotion_gauge_neg_pos_pos"
-        android:visibility="gone"
-        android:background="@drawable/bg_emotion_gauge_shadow"
-        android:adjustViewBounds="true"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@id/rounded_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 
     <androidx.gridlayout.widget.GridLayout
@@ -354,7 +291,7 @@
         android:layout_height="wrap_content"
         app:columnCount="3"
         app:rowCount="3"
-        app:layout_constraintTop_toBottomOf="@id/emotion_gauge_default"
+        app:layout_constraintTop_toBottomOf="@id/emotion_gauge_home"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
