@@ -13,14 +13,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.ViewCompat.animate
 import androidx.fragment.app.activityViewModels
 import com.example.hwaroak.R
 import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.mypage.access.MemberViewModel
 import com.example.hwaroak.api.mypage.access.MemberViewModelFactory
+import com.example.hwaroak.api.mypage.model.MypageInfoResponse
 import com.example.hwaroak.api.mypage.repository.MemberRepository
+import com.example.hwaroak.data.EmotionSummary
+import com.example.hwaroak.data.MypageData
 import com.example.hwaroak.databinding.DialogLogoutCheckBinding
 import com.example.hwaroak.databinding.FragmentMypageBinding
 import com.example.hwaroak.ui.friend.AddFriendFragment
@@ -62,7 +67,6 @@ class MypageFragment : Fragment() {
         /**상단바 설정**/
         (activity as? MainActivity)?.setTopBar(isBackVisible = true)
 
-        initPieChart()
         setupNavigation()
         setupLogout()
 
@@ -93,62 +97,16 @@ class MypageFragment : Fragment() {
 
         memberViewModel.mypageInfoResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess { data ->
-                applyUi(data.totalDiary, data.nextItemName, data.reward)
+                updateUi(data)
             }
         }
     }
 
-    // 원형 그래프 함수
-    private fun initPieChart() {
-        // 그래프 데이터 비율
-        val emotionRatio = listOf(
-            PieEntry(25f),
-            PieEntry(75f),
-            PieEntry(0f),
-            PieEntry(0f)
-        )
-
-        // 그래프 데이터별 색상 지정
-        val pieColors = listOf(
-            ContextCompat.getColor(requireContext(), R.color.comfy),
-            ContextCompat.getColor(requireContext(), R.color.happy),
-            ContextCompat.getColor(requireContext(), R.color.depressed),
-            ContextCompat.getColor(requireContext(), R.color.angry)
-        )
-
-        // 데이터별 스타일링을 위해 DataSet 생성(label은 필요 없어서 공백으로 둠)
-        val dataSet = PieDataSet(emotionRatio, "")
-
-        // slice의 색상을 설정해준다.
-        dataSet.colors = pieColors
-
-        // 지금 서비스에서는 그래프에 퍼센트로 표시하지 않으므로 false
-        dataSet.setDrawValues(false)
-
-        binding.mypageEmotionPiechart.apply {
-            data = PieData(dataSet)
-
-            // description.isEnabled : 차트 설명 유무 설정
-            // legend.isEnabled : 범례 유무 설정
-            // isRotationEnabled : 차트 회전 활성화 여부 설정
-            // holeRadius : 차트 중간 구멍 크기 설정
-            // setTouchEnabled : slice 터치 활성화 여부 설정
-            // animateY(1200, Easing.EaseInOutCubic) : 애니메이션 시간, 효과 설정
-            description.isEnabled = false
-            legend.isEnabled = false
-            isRotationEnabled = true
-            holeRadius = 55f
-            setTouchEnabled(false)
-            // animateY(1200, Easing.EaseInOutCubic)
-
-            animate()
-        }
-    }
-
-    private fun applyUi(totalDiary: Int, itemId: String, reward: Int) {
-        binding.mypageCountDiaryTv.text = "${totalDiary}개"
+    private fun updateUi(data: MypageData) {
+        // 공통적으로 표시되는 데이터(일기 개수, 다음 아이템 관련 정보)
+        binding.mypageCountDiaryTv.text = "${data.totalDiary}개"
         binding.mypageItemImageIv.setImageResource(
-            when (itemId) {
+            when (data.itemId) {
                 "cup" -> R.drawable.img_item_cup
                 // …다른 아이템 매핑
                 "cheeze" -> R.drawable.img_item_cheeze
@@ -168,7 +126,74 @@ class MypageFragment : Fragment() {
                 else -> R.drawable.img_item_tissue
             }
         )
-        binding.mypageDdayTv.text = "D-${reward}"
+        binding.mypageDdayTv.text = "D-${data.reward}"
+
+        // 감정분석 관련 데이터
+        data.emotionSummary?.let { summary ->
+            binding.mypageComfyPercentTv.text = "${summary.CALM.percent.toInt()}%"
+            binding.mypageHappyPercentTv.text = "${summary.HAPPY.percent.toInt()}%"
+            binding.mypageDepressedPercentTv.text = "${summary.SAD.percent.toInt()}%"
+            binding.mypageAngryPercentTv.text = "${summary.ANGRY.percent.toInt()}%"
+        } ?: run {
+            binding.mypageComfyPercentTv.text = "0%"
+            binding.mypageHappyPercentTv.text = "0%"
+            binding.mypageDepressedPercentTv.text = "0%"
+            binding.mypageAngryPercentTv.text = "0%"
+        }
+
+        // 원형 그래프 함수 호출
+        initPiechart(data.emotionSummary)
+    }
+
+    private fun initPiechart(summary: EmotionSummary?) {
+        val emotionRatio: List<PieEntry>
+        val pieColors: List<Int>
+
+        if (summary != null) {
+            // 그래프 데이터 비율
+            emotionRatio = listOf(
+                PieEntry(summary.CALM.percent.toFloat()),
+                PieEntry(summary.HAPPY.percent.toFloat()),
+                PieEntry(summary.SAD.percent.toFloat()),
+                PieEntry(summary.ANGRY.percent.toFloat())
+            )
+            // 그래프 데이터별 색상 지정
+            pieColors = listOf(
+                ContextCompat.getColor(requireContext(), R.color.comfy),
+                ContextCompat.getColor(requireContext(), R.color.happy),
+                ContextCompat.getColor(requireContext(), R.color.depressed),
+                ContextCompat.getColor(requireContext(), R.color.angry)
+            )
+        } else {
+            emotionRatio = listOf(PieEntry(100f))
+            pieColors = listOf(ContextCompat.getColor(requireContext(), R.color.none))
+        }
+
+        // 데이터별 스타일링을 위해 DataSet 생성(label은 필요 없어서 공백으로 둠)
+        val dataSet = PieDataSet(emotionRatio, "").apply {
+            colors = pieColors // slice의 색상을 설정해준다.
+            setDrawValues(false) // 지금 서비스에서는 그래프에 퍼센트로 표시하지 않으므로 false
+        }
+
+        // 세부 스타일링 관련
+        binding.mypageEmotionPiechart.apply {
+            data = PieData(dataSet)
+
+            // description.isEnabled : 차트 설명 유무 설정
+            // legend.isEnabled : 범례 유무 설정
+            // isRotationEnabled : 차트 회전 활성화 여부 설정
+            // holeRadius : 차트 중간 구멍 크기 설정
+            // setTouchEnabled : slice 터치 활성화 여부 설정
+            // animateY(1200, Easing.EaseInOutCubic) : 애니메이션 시간, 효과 설정
+            description.isEnabled = false
+            legend.isEnabled = false
+            isRotationEnabled = true
+            holeRadius = 55f
+            setTouchEnabled(false)
+            // animateY(1200, Easing.EaseInOutCubic)
+
+            animate()
+        }
     }
     private fun setupNavigation() {
         binding.mypageMyinfoBtn.setOnClickListener {
