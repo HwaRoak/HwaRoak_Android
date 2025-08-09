@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
 
         android:layout_marginTop="140dp"
-        android:src="@drawable/ic_login_hwaroak_logo"
+        android:src="@drawable/img_hwaroak_main"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

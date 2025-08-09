@@ -205,6 +205,7 @@ class DiaryFinishFragment : Fragment() {
             putString("memberItemName", itemName)
             putInt("diaryId", dirayId)
             putInt("barType", barType)
+            putString("recordDate", recordDate)
                 .apply()
         }
         Log.d("log_diary", "barType = $barType")

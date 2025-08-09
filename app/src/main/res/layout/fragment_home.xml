@@ -269,17 +269,20 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
     <ImageView
-        android:id="@+id/progress_emotion_gauge"
+        android:id="@+id/emotion_gauge_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/friend_guage2"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="24dp"
+        android:src="@drawable/img_home_emotion_gauge_default"
+        android:background="@drawable/bg_emotion_gauge_shadow"
+        android:adjustViewBounds="true"
+        android:layout_marginTop="15dp"
         app:layout_constraintTop_toBottomOf="@id/rounded_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
+
 
     <androidx.gridlayout.widget.GridLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -288,7 +291,7 @@
         android:layout_height="wrap_content"
         app:columnCount="3"
         app:rowCount="3"
-        app:layout_constraintTop_toBottomOf="@id/progress_emotion_gauge"
+        app:layout_constraintTop_toBottomOf="@id/emotion_gauge_home"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 

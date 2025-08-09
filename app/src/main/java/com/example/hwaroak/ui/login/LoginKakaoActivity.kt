@@ -161,7 +161,11 @@ class LoginKakaoActivity : AppCompatActivity() {
 
         //일기 정보 체크(만약 오늘과 다르면 false)
         val recordDate = diaryPref.getString("recordDate", "") ?: ""
+        val tmp1 = diaryPref.getBoolean("isWrite", false)
+        val tmp2 = diaryPref.getInt("reward", 0)
+        Log.d("log_diary", "--일기 작성 기록 체크--")
         if(!isEquailToday(recordDate)){
+            Log.d("log_diary", "--날짜가 다르므로 pref를 초기화합니다--")
             diaryPref.edit{
                 putBoolean("isWrite", false)
                 putInt("reward", 0)
@@ -242,7 +246,7 @@ class LoginKakaoActivity : AppCompatActivity() {
         }
 
         val todayString = sdf.format(Date())
-
+        Log.d("log_diary", "$todayString / $dateString")
         // 2) 비교
         return dateString == todayString
     }

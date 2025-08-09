@@ -16,6 +16,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.fragment.app.viewModels
 import com.example.hwaroak.R
 import com.example.hwaroak.api.HwaRoakClient
@@ -35,7 +36,10 @@ import com.prolificinteractive.materialcalendarview.CalendarMode
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import kotlin.collections.mutableSetOf
 import kotlin.math.E
 
@@ -61,6 +65,8 @@ class CalendarFragment : Fragment() {
     //일단 임시 data (선택한 날짜 및 정보)
     private lateinit var selectedDate: CalendarDay
     private lateinit var todayDate : LocalDate
+
+    private lateinit var diaryPref: SharedPreferences
  /*
     private var tmpData: MutableMap<CalendarDay, EmotionResult> =
         mutableMapOf(
@@ -141,6 +147,8 @@ class CalendarFragment : Fragment() {
 
         /**얘는 상단다 없음 < X**/
         (activity as? MainActivity)?.setTopBar(isBackVisible = true)
+
+        diaryPref = requireContext().getSharedPreferences("diary", MODE_PRIVATE)
 
         //초기화
         todayDec    = TodayDecorator(requireContext())
@@ -267,6 +275,10 @@ class CalendarFragment : Fragment() {
             view.findViewById<MaterialButton>(R.id.dialog_delete_btn).setOnClickListener {
                 //id가 유효한 경우에만 수행
                 diaryMap[selectedDate]?.id?.let{
+                    //일당 감정 바 초기화
+                    deleteIsToday(diaryMap[selectedDate]!!.recordDate)
+
+
                     calendarViewModel.deleteDiary(accessToken, diaryMap[selectedDate]!!.id)
                     //낙관적 업데이트
                     diaryMap.remove(selectedDate)
@@ -438,6 +450,28 @@ class CalendarFragment : Fragment() {
             binding.calendarDeleteBtn.setBackgroundResource(R.drawable.bg_diary_write_no_btn)
         }
 
+    }
+
+    
+
+    //금일 일기 삭제에 대한 감정 게이지 바 세팅을 위한 메서드들
+    fun deleteIsToday(todayString: String){
+        //일기 정보 체크(만약 오늘과 다르면 false)
+        Log.d("log_diary", "오늘꺼 날림")
+
+        val recordDate = diaryPref.getString("recordDate", "") ?: ""
+        Log.d("log_diary", "$todayString / $recordDate")
+        if(recordDate == todayString){
+            diaryPref.edit{
+                putBoolean("isWrite", false)
+                putInt("reward", 0)
+                putString("memberItemName", "")
+                putInt("diaryId", 0)
+                putInt("barType", 0)
+                putString("recordDate", "")
+                apply()
+            }
+        }
     }
 
     companion object {
