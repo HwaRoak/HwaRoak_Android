@@ -112,18 +112,17 @@ class AddFriendFragment : Fragment() {
             result.onSuccess {
                 Toast.makeText(requireContext(), "친구 요청을 보냈습니다.", Toast.LENGTH_SHORT).show()
             }
-            result.onFailure { throwable ->
-                Log.e("FriendRequest", "친구 요청 실패 전체 로그", throwable)
-
-                val errorMessage = throwable.message ?: ""
-                if (errorMessage.contains("FRIEND4004")) {
-                    Toast.makeText(requireContext(), "이미 요청을 보냈거나 친구 상태입니다.", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(requireContext(), "요청 실패: $errorMessage", Toast.LENGTH_SHORT).show()
+            result.onFailure { t ->
+                val code = t.message.orEmpty()
+                when (code) {
+                    "FRIEND4004" -> Toast.makeText(requireContext(), "이미 친구 요청을 보냈습니다.", Toast.LENGTH_SHORT).show()
+                    "FRIEND4005" -> Toast.makeText(requireContext(), "이미 친구입니다.", Toast.LENGTH_SHORT).show()
+                    else -> Toast.makeText(requireContext(), "요청 실패: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
-
             }
         }
+
+
 
     }
 

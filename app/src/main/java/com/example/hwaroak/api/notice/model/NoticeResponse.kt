@@ -37,7 +37,8 @@ data class AlarmListResponse(
     val content: String,
     val alarmType: String,
     val isRead: Boolean,
-    val createdAt: String
+    val createdAt: String,
+    val userId: String
 )
 
 //5. 공지 상세 조회(공지 id를 파라미터로 주면 조회)

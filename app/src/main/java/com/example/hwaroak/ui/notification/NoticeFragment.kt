@@ -66,7 +66,7 @@ class NoticeFragment : Fragment() {
             result.onSuccess { resp ->
                 val noticeList = resp.map { item ->
                     NoticeItem(item.id, item.title, item.content,
-                        item.alarmType, item.isRead, item.createdAt)
+                        item.alarmType, item.isRead, item.createdAt, item.userId)
                 }
 
                 //알림 recyclerview 어댑터 선언, 설정, inflate
@@ -75,8 +75,14 @@ class NoticeFragment : Fragment() {
                 {
                     selectedNotice ->
                     //불 키우기
-                    if(selectedNotice.alarmType == "FIRE"){
-                        (activity as? MainActivity)?.selectTab(R.id.friendFragment)
+                    if (selectedNotice.alarmType == "FIRE") {
+                        val friendId = selectedNotice.userId   // FIRE 알림 보낸 사람 userId
+                        if (!friendId.isNullOrBlank()) {
+                            (activity as? MainActivity)?.navigateToFriendVisit(friendId)
+                        } else {
+                            //userId가 없다면 기존처럼 친구 탭만 열기(혹은 토스트)
+                            (activity as? MainActivity)?.selectTab(R.id.friendFragment)
+                        }
                     }
                     //월간 리포트
                     else if(selectedNotice.alarmType == "DAILY"){

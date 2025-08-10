@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.ItemFriendBinding
 import com.google.android.material.button.MaterialButton
@@ -25,6 +26,15 @@ class FriendAdapter(private var friendList: MutableList<FriendData>, var isManag
     inner class FriendViewHolder(private val binding: ItemFriendBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(friend: FriendData) {
+
+            //이미지
+            Glide.with(itemView)
+                .load(friend.profileImage)
+                .placeholder(R.drawable.ic_friend_profile)
+                .error(R.drawable.ic_friend_profile)
+                .circleCrop()
+                .into(binding.friendProfile)
+
             binding.friendTvName.text = friend.name
             binding.friendTvStatus.text = friend.status
 

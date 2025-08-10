@@ -6,5 +6,6 @@ data class NoticeItem(
     val content: String,
     val alarmType: String,
     val isRead: Boolean,
-    val createdAt: String
+    val createdAt: String,
+    val userId: String
 )

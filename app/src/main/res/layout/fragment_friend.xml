@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.friend.FriendFragment">
+    tools:context=".ui.friend.FriendFragment"
+    android:background="@color/colorBackground">
 
     <!-- 중앙 기준선 -->
     <androidx.constraintlayout.widget.Guideline

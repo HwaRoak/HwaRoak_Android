@@ -65,9 +65,10 @@ class FriendRequestFragment : Fragment() {
                 acceptedFriend?.let {
                     (parentFragment as? FriendFragment)?.addFriend(
                         FriendData(
-                            name = it.nickname ?: "이름 없음",
-                            status = it.introduction ?: "",
-                            id = it.userId
+                            name = it.nickname,
+                            status = it.introduction,
+                            id = it.userId,
+                            profileImage = it.profileImage
                         )
                     )
                 }
@@ -102,8 +103,9 @@ class FriendRequestFragment : Fragment() {
                 (parentFragment as? FriendFragment)?.addFriend(
                     FriendData(
                         name = acceptedFriend.nickname,
-                        status = acceptedFriend.introduction ?: "",  // null 방지
-                        id = acceptedFriend.userId
+                        status = acceptedFriend.introduction,
+                        id = acceptedFriend.userId,
+                        profileImage = acceptedFriend.profileImage
                     )
                 )
             },

@@ -3,15 +3,17 @@ package com.example.hwaroak.api.friend.model
 //친구 목록 조회 api 데이터클래스
 data class FriendResponse(
     val userId: String,
-    val nickname: String?,
-    val introduction: String?
+    val nickname: String,
+    val introduction: String,
+    val profileImage: String
 )
 
 //친구 검색 api 데이터클래스
 data class FriendSearchResponse(
     val userId: String,
-    val nickname: String?,
-    val introduction: String?
+    val nickname: String,
+    val introduction: String,
+    val profileImage: String
 )
 
 //친구 요청 보내기 api 데이터클래스
@@ -34,7 +36,8 @@ data class ReceivedFriendResponse(
 data class ReceivedFriendData(
     val userId: String,
     val nickname: String,
-    val introduction: String?
+    val introduction: String,
+    val profileImage: String
 )
 
 //친구 페이지 방문

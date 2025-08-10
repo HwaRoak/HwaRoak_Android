@@ -72,8 +72,11 @@ class FriendVisitFragment : Fragment() {
                 }
             }
 
-            // 방문하기 버튼 클릭
+            //불 키우기 버튼 클릭
             binding.friendFireupBtn.setOnClickListener {
+                //클릭 시 바로 잠금
+                binding.friendFireupBtn.isEnabled = false
+
                 val token = getAccessTokenFromPreferences()
                 val friendUserId = arguments?.getString("friendUserId")
 
@@ -83,6 +86,11 @@ class FriendVisitFragment : Fragment() {
 
                 showFireAnimation()
                 animateCharacterAndGaugeFire()
+
+                //1.5초 뒤 다시 활성화
+                binding.friendFireupBtn.postDelayed({
+                    binding.friendFireupBtn.isEnabled = true
+                }, 1500)
             }
 
         }
