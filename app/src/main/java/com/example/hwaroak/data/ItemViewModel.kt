@@ -10,11 +10,15 @@ import com.example.hwaroak.R
 import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.home.repository.ItemRepository // ItemRepository 임포트 추가
 import com.example.hwaroak.api.home.model.ItemDto // ItemDto 임포트 추가
+import com.example.hwaroak.api.question.repository.QuestionRepository
 import kotlinx.coroutines.launch
 
-// ItemRepository를 생성자로 주입받도록 변경합니다.
-// 이 ViewModel을 사용하는 곳(예: HomeFragment, LockerFragment)에서 ItemRepository 인스턴스를 넘겨줘야 합니다.
-class ItemViewModel(private val itemRepository: ItemRepository) : ViewModel() {
+// ItemRepository를 생성자로 주입받도록 변경
+// 이 ViewModel을 사용하는 곳(HomeFragment, LockerFragment)에서 ItemRepository 인스턴스를 전달
+class ItemViewModel(
+    private val itemRepository: ItemRepository,
+    private val questionRepository: QuestionRepository
+) : ViewModel() {
     private val _homeItemList = MutableLiveData<List<LockerItem?>>()
     val homeItemList: LiveData<List<LockerItem?>> = _homeItemList
 
@@ -59,11 +63,15 @@ class ItemViewModel(private val itemRepository: ItemRepository) : ViewModel() {
     }
 
     // 보상으로 받은 아이템 목록을 설정하는 부분 (이 부분은 API 연결과 직접적인 관련이 적고 기존과 동일)
-    private val _rewardItemList = MutableLiveData<List<LockerItem?>>()
-    val rewardItemList: LiveData<List<LockerItem?>> = _rewardItemList
+    private val _rewardItemList = MutableLiveData<List<LockerItem>>(emptyList())
+    val rewardItemList: LiveData<List<LockerItem>> = _rewardItemList
 
-    fun setRewardItems(items: List<LockerItem?>) {
+    fun setRewardItems(items: List<LockerItem>) {
         _rewardItemList.value = items
+    }
+
+    fun clearRewardItems() {
+        _rewardItemList.value = emptyList()
     }
 
     // 모든 보유 아이템을 불러오는 함수
@@ -76,7 +84,7 @@ class ItemViewModel(private val itemRepository: ItemRepository) : ViewModel() {
                 } ?: emptyList()
                 _rewardItemList.value = lockerItems
             } ?: run {
-                // Log.e("ItemViewModel", "Access token is null, cannot fetch reward items.")
+                Log.e("ItemViewModel", "Access token is null, cannot fetch reward items.")
                 _rewardItemList.value = emptyList()
             }
         }
@@ -108,29 +116,53 @@ class ItemViewModel(private val itemRepository: ItemRepository) : ViewModel() {
         }
     }
 
+    // 말풍선 관련
+    private val _speech = MutableLiveData("무슨 일이 있어?")
+    val speech: LiveData<String> = _speech
 
-    // ItemDto의 name(문자열)에 따라 안드로이드 drawable 리소스 ID(정수)를 반환하는 헬퍼 함수입니다.
-    // 이 함수에 모든 아이템 이름과 해당 이미지 리소스 매핑을 추가해야 합니다.
-    // ItemViewModel.kt
+    private val _rewardAvailable = MutableLiveData(false)
+    val rewardAvailable: LiveData<Boolean> = _rewardAvailable
+
+    suspend fun refreshQuestion(accessToken: String) {
+        val q = questionRepository.fetch(accessToken)
+        q?.let {
+            _speech.postValue(it.content)
+            val canReward = it.tag == "REWARD"
+            _rewardAvailable.postValue(canReward)
+            if (!canReward) {
+                // 서버가 보상조건 미충족이라면 리스트도 비워 ghost UI 예방
+                _rewardItemList.postValue(emptyList())
+            }
+        }
+    }
+
+    fun clearRewardAfterClaim() {
+        _rewardAvailable.value = false
+        _rewardItemList.value = emptyList()
+    }
+
+
+    // ItemDto의 name(문자열)에 따라 안드로이드 drawable 리소스 ID(정수)를 반환하는 헬퍼 함수
+    // 이 함수에 모든 아이템 이름과 해당 이미지 리소스 매핑을 추가
     private fun getImageResForName(itemName: String): Int {
         return when (itemName) {
-            "자물쇠" -> R.drawable.img_item_lock // 이 부분은 유지
-            "cheeze" -> R.drawable.img_item_cheeze // R.id 대신 R.drawable
-            "chicken" -> R.drawable.img_item_chicken // R.id 대신 R.drawable
-            "chopstick" -> R.drawable.img_item_chopstick // R.id 대신 R.drawable
-            "coal" -> R.drawable.img_item_coal // R.id 대신 R.drawable
-            "cup" -> R.drawable.img_item_cup // R.id 대신 R.drawable
-            "egg" -> R.drawable.img_item_egg // R.id 대신 R.drawable
-            "mashmellow" -> R.drawable.img_item_mashmellow // R.id 대신 R.drawable
-            "meat" -> R.drawable.img_item_meat // R.id 대신 R.drawable
-            "paper" -> R.drawable.img_item_paper // R.id 대신 R.drawable
-            "potato" -> R.drawable.img_item_potato // R.id 대신 R.drawable
-            "ruby" -> R.drawable.img_item_ruby // R.id 대신 R.drawable (만약 이 리소스가 있다면)
-            "soup" -> R.drawable.img_item_soup // R.id 대신 R.drawable
-            "tire" -> R.drawable.img_item_tire // R.id 대신 R.drawable
-            "tissue" -> R.drawable.img_item_tissue // **여기! R.id 대신 R.drawable.img_item_tissue 로 변경**
-            "trash" -> R.drawable.img_item_trash // R.id 대신 R.drawable
-            else -> R.drawable.img_item_lock // 기본값은 자물쇠 이미지로 유지
+            "자물쇠" -> R.drawable.img_item_lock
+            "cheeze" -> R.drawable.img_item_cheeze
+            "chicken" -> R.drawable.img_item_chicken
+            "chopstick" -> R.drawable.img_item_chopstick
+            "coal" -> R.drawable.img_item_coal
+            "cup" -> R.drawable.img_item_cup
+            "egg" -> R.drawable.img_item_egg
+            "mashmellow" -> R.drawable.img_item_mashmellow
+            "meat" -> R.drawable.img_item_meat
+            "paper" -> R.drawable.img_item_paper
+            "potato" -> R.drawable.img_item_potato
+            "ruby" -> R.drawable.img_item_ruby
+            "soup" -> R.drawable.img_item_soup
+            "tire" -> R.drawable.img_item_tire
+            "tissue" -> R.drawable.img_item_tissue
+            "trash" -> R.drawable.img_item_trash
+            else -> R.drawable.img_item_lock
         }
     }
 }

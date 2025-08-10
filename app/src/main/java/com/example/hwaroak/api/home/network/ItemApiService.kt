@@ -11,7 +11,7 @@ import retrofit2.http.Path
 interface ItemApiService {
 
     // 1. 보유 아이템 리스트 조회
-    @GET("api/v1/items/items")
+    @GET("api/v1/items")
     suspend fun getItemList(
         @Header("Authorization") token: String
     ): Response<ApiResponse<List<ItemDto>>>
