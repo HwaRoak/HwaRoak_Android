@@ -23,9 +23,12 @@ import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.mypage.access.MemberViewModel
 import com.example.hwaroak.api.mypage.access.MemberViewModelFactory
 import com.example.hwaroak.api.mypage.model.MypageInfoResponse
+import com.example.hwaroak.api.mypage.model.EmotionSummary as ApiEmotionSummary
+import com.example.hwaroak.api.mypage.model.EmotionData as ApiEmotionData
 import com.example.hwaroak.api.mypage.repository.MemberRepository
 import com.example.hwaroak.data.EmotionSummary
 import com.example.hwaroak.data.MypageData
+import com.example.hwaroak.data.EmotionData
 import com.example.hwaroak.databinding.DialogLogoutCheckBinding
 import com.example.hwaroak.databinding.FragmentMypageBinding
 import com.example.hwaroak.ui.friend.AddFriendFragment
@@ -97,7 +100,7 @@ class MypageFragment : Fragment() {
 
         memberViewModel.mypageInfoResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess { data ->
-                updateUi(data)
+                updateUi(data.toMypageData())
             }
         }
     }
@@ -194,6 +197,23 @@ class MypageFragment : Fragment() {
 
             animate()
         }
+    }
+
+    private fun MypageInfoResponse.toMypageData(): MypageData {
+        val uiEmotionSummary = this.emotionSummary?.let { apiSummary: ApiEmotionSummary ->
+            EmotionSummary(
+                CALM = EmotionData(percent = apiSummary.CALM.percent),
+                HAPPY = EmotionData(percent = apiSummary.HAPPY.percent),
+                SAD = EmotionData(percent = apiSummary.SAD.percent),
+                ANGRY = EmotionData(percent = apiSummary.ANGRY.percent)
+            )
+        }
+        return MypageData(
+            emotionSummary = uiEmotionSummary,
+            totalDiary = this.totalDiary,
+            itemId = this.nextItemName, // `nextItemName`을 `itemId`로 매핑
+            reward = this.reward
+        )
     }
     private fun setupNavigation() {
         binding.mypageMyinfoBtn.setOnClickListener {
