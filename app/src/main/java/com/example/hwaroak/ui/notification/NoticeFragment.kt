@@ -130,8 +130,10 @@ class NoticeFragment : Fragment() {
         binding.noticeBackBtn.setOnClickListener {
             // 뒤로가기 버튼 클릭 시 MainActivity의 상단 바를 다시 보이게 함
             (activity as? MainActivity)?.showMainTopBar()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
             // HomeFragment로 이동하거나 백 스택에서 현재 프래그먼트를 제거
-            (activity as? MainActivity)?.selectTab(R.id.homeFragment)
+            /**뒤로 가기를 누르면 HomeFragment로 이동 -> 해당 fragment 쪽으로 **/
+            //(activity as? MainActivity)?.selectTab(R.id.homeFragment)
         }
         // 추후 필요시 여기에 다른 로직 구현
 

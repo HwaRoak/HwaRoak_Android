@@ -80,7 +80,8 @@ class LockerFragment : Fragment() {
         binding.lockerCloseBtn.setOnClickListener {
             // 1. 현재 프래그먼트를 호스팅하는 액티비티를 가져오고
             // 2. 해당 액티비티가 MainActivity인지 확인하고, 맞다면 selectTab 함수(mainactivity에 구현되어 있음)를 호출
-            (activity as? MainActivity)?.selectTab(R.id.homeFragment)
+            //(activity as? MainActivity)?.selectTab(R.id.homeFragment)
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 

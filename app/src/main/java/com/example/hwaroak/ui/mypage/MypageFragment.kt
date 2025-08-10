@@ -13,14 +13,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.ViewCompat.animate
 import androidx.fragment.app.activityViewModels
 import com.example.hwaroak.R
 import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.mypage.access.MemberViewModel
 import com.example.hwaroak.api.mypage.access.MemberViewModelFactory
+import com.example.hwaroak.api.mypage.model.MypageInfoResponse
+import com.example.hwaroak.api.mypage.model.EmotionSummary as ApiEmotionSummary
+import com.example.hwaroak.api.mypage.model.EmotionData as ApiEmotionData
 import com.example.hwaroak.api.mypage.repository.MemberRepository
+import com.example.hwaroak.data.EmotionSummary
+import com.example.hwaroak.data.MypageData
+import com.example.hwaroak.data.EmotionData
 import com.example.hwaroak.databinding.DialogLogoutCheckBinding
 import com.example.hwaroak.databinding.FragmentMypageBinding
 import com.example.hwaroak.ui.friend.AddFriendFragment
@@ -62,7 +70,6 @@ class MypageFragment : Fragment() {
         /**상단바 설정**/
         (activity as? MainActivity)?.setTopBar(isBackVisible = true, false)
 
-        initPieChart()
         setupNavigation()
         setupLogout()
 
@@ -88,35 +95,94 @@ class MypageFragment : Fragment() {
                 Toast.makeText(requireContext(), "회원 정보 불러오기 실패", Toast.LENGTH_SHORT).show()
             }
         }
+
+        memberViewModel.getMypageInfo(accessToken)
+
+        memberViewModel.mypageInfoResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { data ->
+                updateUi(data.toMypageData())
+            }
+        }
     }
 
-    // 원형 그래프 함수
-    private fun initPieChart() {
-        // 그래프 데이터 비율
-        val emotionRatio = listOf(
-            PieEntry(25f),
-            PieEntry(75f),
-            PieEntry(0f),
-            PieEntry(0f)
+    private fun updateUi(data: MypageData) {
+        // 공통적으로 표시되는 데이터(일기 개수, 다음 아이템 관련 정보)
+        binding.mypageCountDiaryTv.text = "${data.totalDiary}개"
+        binding.mypageItemImageIv.setImageResource(
+            when (data.itemId) {
+                "cup" -> R.drawable.img_item_cup
+                // …다른 아이템 매핑
+                "cheeze" -> R.drawable.img_item_cheeze
+                "chicken" -> R.drawable.img_item_chicken
+                "chopstick" -> R.drawable.img_item_chopstick
+                "coal" -> R.drawable.img_item_coal
+                "egg" -> R.drawable.img_item_egg
+                "mashmellow" -> R.drawable.img_item_mashmellow
+                "meat" -> R.drawable.img_item_meat
+                "paper" -> R.drawable.img_item_paper
+                "potato" -> R.drawable.img_item_potato
+                "ruby" -> R.drawable.img_item_ruby
+                "soup" -> R.drawable.img_item_soup
+                "tire" -> R.drawable.img_item_tire
+                "tissue" -> R.drawable.img_item_tissue
+                "trash" -> R.drawable.img_item_trash
+                else -> R.drawable.img_item_tissue
+            }
         )
+        binding.mypageDdayTv.text = "D-${data.reward}"
 
-        // 그래프 데이터별 색상 지정
-        val pieColors = listOf(
-            ContextCompat.getColor(requireContext(), R.color.comfy),
-            ContextCompat.getColor(requireContext(), R.color.happy),
-            ContextCompat.getColor(requireContext(), R.color.depressed),
-            ContextCompat.getColor(requireContext(), R.color.angry)
-        )
+        // 감정분석 관련 데이터
+        data.emotionSummary?.let { summary ->
+            binding.mypageComfyPercentTv.text = "${summary.CALM.percent.toInt()}%"
+            binding.mypageHappyPercentTv.text = "${summary.HAPPY.percent.toInt()}%"
+            binding.mypageDepressedPercentTv.text = "${summary.SAD.percent.toInt()}%"
+            binding.mypageAngryPercentTv.text = "${summary.ANGRY.percent.toInt()}%"
+        } ?: run {
+            binding.mypageComfyPercentTv.text = "0%"
+            binding.mypageHappyPercentTv.text = "0%"
+            binding.mypageDepressedPercentTv.text = "0%"
+            binding.mypageAngryPercentTv.text = "0%"
+        }
+
+        // 원형 그래프 함수 호출
+        initPiechart(data.emotionSummary)
+    }
+
+    private fun initPiechart(summary: EmotionSummary?) {
+        val emotionRatio: List<PieEntry>
+        val pieColors: List<Int>
+
+        val totalPercent = summary?.let {
+            it.CALM.percent + it.HAPPY.percent + it.SAD.percent + it.ANGRY.percent
+        } ?: 0.0
+
+        if (summary != null && totalPercent != 0.0) {
+            // 그래프 데이터 비율
+            emotionRatio = listOf(
+                PieEntry(summary.CALM.percent.toFloat()),
+                PieEntry(summary.HAPPY.percent.toFloat()),
+                PieEntry(summary.SAD.percent.toFloat()),
+                PieEntry(summary.ANGRY.percent.toFloat())
+            )
+            // 그래프 데이터별 색상 지정
+            pieColors = listOf(
+                ContextCompat.getColor(requireContext(), R.color.comfy),
+                ContextCompat.getColor(requireContext(), R.color.happy),
+                ContextCompat.getColor(requireContext(), R.color.depressed),
+                ContextCompat.getColor(requireContext(), R.color.angry)
+            )
+        } else {
+            emotionRatio = listOf(PieEntry(100f))
+            pieColors = listOf(ContextCompat.getColor(requireContext(), R.color.none))
+        }
 
         // 데이터별 스타일링을 위해 DataSet 생성(label은 필요 없어서 공백으로 둠)
-        val dataSet = PieDataSet(emotionRatio, "")
+        val dataSet = PieDataSet(emotionRatio, "").apply {
+            colors = pieColors // slice의 색상을 설정해준다.
+            setDrawValues(false) // 지금 서비스에서는 그래프에 퍼센트로 표시하지 않으므로 false
+        }
 
-        // slice의 색상을 설정해준다.
-        dataSet.colors = pieColors
-
-        // 지금 서비스에서는 그래프에 퍼센트로 표시하지 않으므로 false
-        dataSet.setDrawValues(false)
-
+        // 세부 스타일링 관련
         binding.mypageEmotionPiechart.apply {
             data = PieData(dataSet)
 
@@ -133,10 +199,27 @@ class MypageFragment : Fragment() {
             setTouchEnabled(false)
             // animateY(1200, Easing.EaseInOutCubic)
 
-            animate()
+            invalidate()
         }
     }
 
+    // API 응답 데이터 클래스에서 UI 데이터 클래스로 매핑하는 함수
+    private fun MypageInfoResponse.toMypageData(): MypageData {
+        val uiEmotionSummary = this.emotionSummary?.let { apiSummary: ApiEmotionSummary ->
+            EmotionSummary(
+                CALM = EmotionData(percent = apiSummary.CALM.percent),
+                HAPPY = EmotionData(percent = apiSummary.HAPPY.percent),
+                SAD = EmotionData(percent = apiSummary.SAD.percent),
+                ANGRY = EmotionData(percent = apiSummary.ANGRY.percent)
+            )
+        }
+        return MypageData(
+            emotionSummary = uiEmotionSummary,
+            totalDiary = this.totalDiary,
+            itemId = this.nextItemName, // `nextItemName`을 `itemId`로 매핑
+            reward = this.reward
+        )
+    }
     private fun setupNavigation() {
         binding.mypageMyinfoBtn.setOnClickListener {
             replaceFragment(EditProfileFragment())

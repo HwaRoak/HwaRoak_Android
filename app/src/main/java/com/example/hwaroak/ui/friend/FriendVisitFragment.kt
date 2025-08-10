@@ -49,7 +49,7 @@ class FriendVisitFragment : Fragment() {
         )[FriendViewModel::class.java]
 
         //초기 방어
-        //(activity as? MainActivity)?.setTopBar("불러오는 중...",isBackVisible = true, true)
+        (activity as? MainActivity)?.setTopBar("불러오는 중...",isBackVisible = true, true)
 
         //UI 초기화 받아오는데 오래 걸릴 경우 표시
         binding.tvFriendTitle.text = "불러오는 중..."
@@ -66,6 +66,9 @@ class FriendVisitFragment : Fragment() {
             // UI 갱신
             binding.tvFriendTitle.text = "${data.nickname}의 화록"
             binding.friendVisitBubbleTv.text = data.message
+
+            //UI topbar 갱신
+            (activity as? MainActivity)?.setTopBar("${data.nickname}의 화록",isBackVisible = true, true)
 
             //불씨 응답 observe
             viewModel.fireResponse.observe(viewLifecycleOwner) { data ->
