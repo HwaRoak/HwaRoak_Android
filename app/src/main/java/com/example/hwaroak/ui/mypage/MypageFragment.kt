@@ -152,7 +152,11 @@ class MypageFragment : Fragment() {
         val emotionRatio: List<PieEntry>
         val pieColors: List<Int>
 
-        if (summary != null) {
+        val totalPercent = summary?.let {
+            it.CALM.percent + it.HAPPY.percent + it.SAD.percent + it.ANGRY.percent
+        } ?: 0.0
+
+        if (summary != null && totalPercent != 0.0) {
             // 그래프 데이터 비율
             emotionRatio = listOf(
                 PieEntry(summary.CALM.percent.toFloat()),
@@ -195,10 +199,11 @@ class MypageFragment : Fragment() {
             setTouchEnabled(false)
             // animateY(1200, Easing.EaseInOutCubic)
 
-            animate()
+            invalidate()
         }
     }
 
+    // API 응답 데이터 클래스에서 UI 데이터 클래스로 매핑하는 함수
     private fun MypageInfoResponse.toMypageData(): MypageData {
         val uiEmotionSummary = this.emotionSummary?.let { apiSummary: ApiEmotionSummary ->
             EmotionSummary(
