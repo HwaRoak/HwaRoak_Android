@@ -181,6 +181,19 @@ class MainActivity : AppCompatActivity() {
         binding.mainBnv.selectedItemId = menuItemId
     }
 
+    //친구 요청 페이지로 이동 (bottomNav이동 -> bundle에 인자 담아 FriendFragment 이동 -> freind에서 UI 처리)
+    fun navigateToFriendRequestPage() {
+        // BottomNavigationView의 탭을 '친구' 탭으로 선택
+        binding.mainBnv.selectedItemId = R.id.friendFragment
+
+        // FriendFragment의 newInstance를 호출하여 인수를 전달
+        val friendFragment = FriendFragment.newInstance(showRequests = true)
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragmentContainer, friendFragment)
+            .commit()
+    }
+
     //강제로 일기 작성 탭으로 이동하게 하기(단 bundle에 내용 채워서)
     fun navigateToDiaryWith(bundle: Bundle) {
         // 1. programmatically select the Diary tab
@@ -241,17 +254,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     //다른 fragment에서 동적 제어
-    fun setTopBar(mytitle: String, isBackVisible: Boolean){
+    fun setTopBar(mytitle: String, isBackVisible: Boolean, isShow: Boolean){
         binding.mainTitleTv.text = mytitle
         binding.mainBackBtn.visibility = if (isBackVisible) View.VISIBLE else View.INVISIBLE
+        if(isShow){
+            binding.mainLockerBtn.visibility = View.VISIBLE
+        }
+        else{
+            binding.mainLockerBtn.visibility = View.INVISIBLE
+        }
 
     }
-    fun setTopBar(isBackVisible: Boolean){
+    fun setTopBar(isBackVisible: Boolean, isShow: Boolean){
         binding.mainTitleTv.text = title
         binding.mainBackBtn.visibility = if (isBackVisible) View.VISIBLE else View.INVISIBLE
+        if(isShow){
+            binding.mainLockerBtn.visibility = View.VISIBLE
+        }
+        else{
+            binding.mainLockerBtn.visibility = View.INVISIBLE
+        }
     }
     fun changeTitle(newTitle: String){
         title = "${newTitle}의 화록"
+
     }
 
 
