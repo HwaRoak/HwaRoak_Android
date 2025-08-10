@@ -14,6 +14,7 @@ import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.LockerItemRVAdaptor
 import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.home.repository.ItemRepository
+import com.example.hwaroak.api.question.repository.QuestionRepository
 import com.example.hwaroak.data.ItemViewModel
 import com.example.hwaroak.data.ItemViewModelFactory
 import com.example.hwaroak.data.LockerItem
@@ -42,12 +43,17 @@ class LockerFragment : Fragment() {
 
         // ItemService 인스턴스를 HwaRoakClient에서 가져옵니다. (NetworkModule 대신 HwaRoakClient 사용)
         val itemService = HwaRoakClient.itemApiService // HwaRoakClient.kt에 정의된 itemApiService 사용
+        val questionService = HwaRoakClient.questionService
 
         // ItemRepository 인스턴스를 ItemService와 함께 생성합니다.
         val itemRepository = ItemRepository(itemService)
+        val questionRepository = QuestionRepository(questionService)
 
         // ViewModel 초기화: ItemViewModelFactory를 사용하여 ItemRepository를 주입합니다.
-        itemViewModel = ViewModelProvider(requireActivity(), ItemViewModelFactory(itemRepository))[ItemViewModel::class.java]
+        itemViewModel = ViewModelProvider(
+            requireActivity(),
+            ItemViewModelFactory(itemRepository, questionRepository)
+        )[ItemViewModel::class.java]
 
         // RecyclerView 불러오기
         val lockerRecyclerView: RecyclerView = binding.lockerItemRv
@@ -64,9 +70,11 @@ class LockerFragment : Fragment() {
 
         // LiveData observe
         itemViewModel.rewardItemList.observe(viewLifecycleOwner) { items ->
-            val filledItems = items.toMutableList()
-            repeat(20 - filledItems.size) { filledItems.add(null) } // 빈칸 추가
-            adapter.updateData(filledItems)
+            val filled = mutableListOf<LockerItem?>().apply {
+                addAll(items) // non-null 원소들 추가 (OK)
+                repeat((20 - size).coerceAtLeast(0)) { add(null) } // 빈칸 null 채우기
+            }
+            adapter.updateData(filled)
         }
 
         binding.lockerCloseBtn.setOnClickListener {
