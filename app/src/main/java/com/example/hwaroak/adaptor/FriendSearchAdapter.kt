@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.hwaroak.R
 import com.example.hwaroak.databinding.ItemSearchFriendBinding
 import com.example.hwaroak.ui.friend.FriendData
@@ -19,6 +20,14 @@ class FriendSearchAdapter(
         RecyclerView.ViewHolder(binding.root) {
         //데이터 바인딩 함수
         fun bind(friend: FriendData) {
+
+            Glide.with(itemView)
+                .load(friend.profileImage)
+                .placeholder(R.drawable.ic_friend_profile)
+                .error(R.drawable.ic_friend_profile)
+                .circleCrop()
+                .into(binding.friendProfile)
+
             binding.friendSearchName.text = friend.name //친구 이름
             binding.friendSearchID.text = friend.id //친구 아이디
 

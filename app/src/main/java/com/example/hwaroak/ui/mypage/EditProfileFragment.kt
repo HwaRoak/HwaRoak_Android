@@ -65,7 +65,7 @@ class EditProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         /**상단바 수정**/
-        (activity as? MainActivity)?.setTopBar("프로필 수정", isBackVisible = true)
+        (activity as? MainActivity)?.setTopBar("프로필 수정", isBackVisible = true, false)
 
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
         accessToken = pref.getString("accessToken", "").toString()

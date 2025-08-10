@@ -68,7 +68,7 @@ class MypageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         /**상단바 설정**/
-        (activity as? MainActivity)?.setTopBar(isBackVisible = true)
+        (activity as? MainActivity)?.setTopBar(isBackVisible = true, false)
 
         setupNavigation()
         setupLogout()

@@ -16,6 +16,15 @@ class FriendFragment : Fragment() {
 
     private var currentChild: FriendListFragment? = null
 
+    private var isLoadFromAlarm = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            isLoadFromAlarm = it.getBoolean(ARG_SHOW_REQUESTS, false)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -32,6 +41,11 @@ class FriendFragment : Fragment() {
         //처음 진입 시 친구 목록 프래그먼트 표시
         if (savedInstanceState == null) {
             showFriendListFragment()
+        }
+
+        if(isLoadFromAlarm){
+            showRequestFragment()
+            updateTabStyle(isFriendList = false)
         }
 
         // 친구 목록 탭 클릭
@@ -121,4 +135,18 @@ class FriendFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
+    /**화면 이동 관련!! -> 바로 친구 요청 페이지로 이동하기 위함입니다!**/
+    companion object {
+        private const val ARG_SHOW_REQUESTS = "show_requests"
+        fun newInstance(showRequests: Boolean): FriendFragment {
+            val fragment = FriendFragment()
+            val args = Bundle()
+            args.putBoolean(ARG_SHOW_REQUESTS, showRequests)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
 }

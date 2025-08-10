@@ -19,6 +19,7 @@ import com.example.hwaroak.api.friend.access.FriendViewModel
 import com.example.hwaroak.api.friend.access.FriendViewModelFactory
 import com.example.hwaroak.api.friend.repository.FriendRepository
 import com.example.hwaroak.databinding.FragmentFriendVisitBinding
+import com.example.hwaroak.ui.main.MainActivity
 
 class FriendVisitFragment : Fragment() {
 
@@ -47,6 +48,9 @@ class FriendVisitFragment : Fragment() {
             FriendViewModelFactory(FriendRepository(friendService))
         )[FriendViewModel::class.java]
 
+        //초기 방어
+        (activity as? MainActivity)?.setTopBar("불러오는 중...",isBackVisible = true, true)
+
         //UI 초기화 받아오는데 오래 걸릴 경우 표시
         binding.tvFriendTitle.text = "불러오는 중..."
         binding.friendVisitBubbleTv.text = "불러오는 중..."
@@ -59,10 +63,12 @@ class FriendVisitFragment : Fragment() {
             // 저장해놓기
             originalStatusMessage = data.message
 
-
             // UI 갱신
             binding.tvFriendTitle.text = "${data.nickname}의 화록"
             binding.friendVisitBubbleTv.text = data.message
+
+            //UI topbar 갱신
+            (activity as? MainActivity)?.setTopBar("${data.nickname}의 화록",isBackVisible = true, true)
 
             //불씨 응답 observe
             viewModel.fireResponse.observe(viewLifecycleOwner) { data ->
@@ -73,8 +79,11 @@ class FriendVisitFragment : Fragment() {
                 }
             }
 
-            // 방문하기 버튼 클릭
+            // 불키우기 버튼 클릭
             binding.friendFireupBtn.setOnClickListener {
+                //클릭 시 바로 잠금
+                binding.friendFireupBtn.isEnabled = false
+
                 val token = getAccessTokenFromPreferences()
                 val friendUserId = arguments?.getString("friendUserId")
 
@@ -84,6 +93,11 @@ class FriendVisitFragment : Fragment() {
 
                 showFireAnimation()
                 animateCharacterAndGaugeFire()
+
+                //1.5초 뒤 다시 활성화
+                binding.friendFireupBtn.postDelayed({
+                    binding.friendFireupBtn.isEnabled = true
+                }, 1500)
             }
 
         }
