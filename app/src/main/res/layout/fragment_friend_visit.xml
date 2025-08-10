@@ -7,44 +7,48 @@
     android:layout_height="match_parent"
     android:background="@color/colorBackground">
 
-    <!-- 상단 타이틀 -->
+    <!-- 상단 타이틀 (유지) -->
     <TextView
         android:id="@+id/tv_friend_title"
+        style="@style/freesentation6_20sp_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="뽀둥이의 화록"
-        style="@style/freesentation6_20sp_title"
         android:textColor="@color/black"
         android:layout_marginTop="24dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 메인 캐릭터 영역 컨테이너 -->
+    <!-- 메인 카드 컨테이너: 양옆 24dp, 최대폭 cap -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rounded_container"
-        android:layout_width="366dp"
-        android:layout_height="505dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
+        android:maxWidth="480dp"
         android:background="@drawable/bg_edittext_round"
         app:layout_constraintTop_toBottomOf="@id/tv_friend_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- 캐릭터 이미지 -->
+        <!-- 캐릭터 이미지: 컨테이너 폭의 46%, 비율 유지 -->
         <ImageView
             android:id="@+id/iv_friend_character"
-            android:layout_width="167dp"
-            android:layout_height="250dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:src="@drawable/img_home_hwaroaki"
+            app:layout_constraintWidth_percent="0.46"
+            app:layout_constraintDimensionRatio="167:250"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/friend_gauge_container"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_bias="0.45" />
 
-        <!-- 말풍선 -->
+        <!-- 말풍선 (유지) -->
         <FrameLayout
             android:id="@+id/friend_bubble_container"
             android:layout_width="wrap_content"
@@ -71,7 +75,7 @@
                 android:text="뽀둥이님은 오늘 즐거워요" />
         </FrameLayout>
 
-        <!-- 왼쪽 불 -->
+        <!-- 불1: 처음엔 invisible (유지) -->
         <ImageView
             android:id="@+id/friend_fire1_imv"
             android:layout_width="50dp"
@@ -114,40 +118,40 @@
             app:layout_constraintStart_toEndOf="@id/iv_friend_character"
             app:layout_constraintTop_toTopOf="@id/iv_friend_character" />
 
-        <!-- 감정 게이지와 하단 배경을 수평으로 배치 -->
+        <!-- 게이지 묶음 -->
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+            android:id="@+id/friend_gauge_container"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/iv_friend_character"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="24dp"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp">
+            app:layout_constraintTop_toBottomOf="@id/iv_friend_character"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- 배경 -->
             <ImageView
                 android:id="@+id/friend_fire_rec"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
                 android:src="@drawable/ic_friend_fire_rectangle"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent" />
 
-            <!-- 게이지 바 옆 불 -->
             <ImageView
                 android:id="@+id/friend_fire_rec_in"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_fire_friend_bar"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="@id/friend_fire_rec"
+                app:layout_constraintBottom_toBottomOf="@id/friend_fire_rec"
                 app:layout_constraintStart_toStartOf="@id/friend_fire_rec"
                 app:layout_constraintEnd_toEndOf="@id/friend_fire_rec" />
 
-            <!-- 감정 게이지 -->
-            <!-- 배경 게이지 (굵은 바) -->
+            <!-- 배경 게이지(굵은 바) -->
             <ImageView
                 android:id="@+id/progress_emotion_gauge_bold"
                 android:layout_width="0dp"
@@ -159,33 +163,34 @@
                 app:layout_constraintTop_toTopOf="@id/friend_fire_rec"
                 app:layout_constraintBottom_toBottomOf="@id/friend_fire_rec" />
 
-            <!-- 진행 게이지 (얇은 바) -->
+            <!-- 진행 게이지(얇은 바) -->
             <ImageView
                 android:id="@+id/progress_emotion_gauge"
                 android:layout_width="0dp"
                 android:layout_height="20dp"
+                android:layout_marginTop="9dp"
                 android:paddingStart="16dp"
                 android:paddingTop="10dp"
                 android:paddingEnd="10dp"
                 android:src="@drawable/friend_guage2"
-                app:layout_constraintTop_toTopOf="@id/friend_fire_rec"
                 app:layout_constraintStart_toEndOf="@id/friend_fire_rec"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="9dp"/>
-
+                app:layout_constraintTop_toTopOf="@id/friend_fire_rec" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- 하단 불키우기 버튼 -->
-
-    <!-- 버튼 텍스트 -->
-
+    <!-- 하단 불키우기 버튼: 양옆 24dp, 최대폭 cap -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/friend_fireup_btn"
         style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="328dp"
+        android:layout_width="0dp"
         android:layout_height="61dp"
+        android:maxWidth="480dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/bg_friend_visit_btn"
         android:insetLeft="0dp"
         android:insetTop="0dp"
@@ -194,16 +199,17 @@
         app:backgroundTint="@null"
         app:iconGravity="textStart"
         app:iconTint="@null"
+        app:layout_constraintTop_toBottomOf="@id/rounded_container"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rounded_container"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- 버튼 텍스트 (유지) -->
     <TextView
+        style="@style/freesentation7_22sp_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="불키우기"
-        style="@style/freesentation7_22sp_title"
         android:textColor="@color/white"
         app:layout_constraintTop_toTopOf="@id/friend_fireup_btn"
         app:layout_constraintBottom_toBottomOf="@id/friend_fireup_btn"

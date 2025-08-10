@@ -3,6 +3,8 @@ package com.example.hwaroak.adaptor
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.hwaroak.R
 import com.example.hwaroak.api.friend.model.ReceivedFriendData
 import com.example.hwaroak.databinding.ItemFriendRequestBinding
 import com.example.hwaroak.ui.friend.FriendData
@@ -17,6 +19,14 @@ class FriendRequestAdapter(
     inner class RequestViewHolder(private val binding: ItemFriendRequestBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: ReceivedFriendData) {
+
+            Glide.with(itemView)
+                .load(data.profileImage)
+                .placeholder(R.drawable.ic_friend_profile)
+                .error(R.drawable.ic_friend_profile)
+                .circleCrop()
+                .into(binding.friendRequestProfile)
+
             binding.friendRequestName.text = data.nickname
             binding.friendRequestStatus.text = data.introduction
 
