@@ -9,6 +9,7 @@ import com.example.hwaroak.api.login.network.LoginService
 import com.example.hwaroak.api.notice.network.NoticeService
 
 import com.example.hwaroak.api.mypage.network.MemberService
+import com.example.hwaroak.api.question.network.QuestionService
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -82,6 +83,7 @@ object HwaRoakClient {
     //마이페이지 관련
     val memberService: MemberService = retrofit.create(MemberService::class.java)
 
-
+    // 말풍선 관련
+    val questionService: QuestionService = retrofit.create(QuestionService::class.java)
 
 }
