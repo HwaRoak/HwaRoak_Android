@@ -15,6 +15,13 @@
             android:paddingStart="12dp"
             android:paddingEnd="12dp">
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/userId_guide_line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="43dp" />
+
             <!-- 프로필 이미지 -->
             <ImageView
                 android:id="@+id/friend_profile"
@@ -30,7 +37,8 @@
             <!-- 친구 이름 -->
             <TextView
                 android:id="@+id/friend_search_name"
-                style="@style/freesentation5_24sp_icon"
+                style="@style/freesentation5_24sp_title"
+                android:textSize="22sp"
                 android:layout_width="125dp"
                 android:layout_height="40dp"
                 android:gravity="center"
@@ -55,16 +63,24 @@
             <!-- 상태 메시지 -->
             <TextView
                 android:id="@+id/friend_search_ID"
-                style="@style/freesentation5_11sp_icon"
+                style="@style/freesentation5_16sp_icon"
+                android:text="(유저아이디)"
+
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:paddingStart="8dp"
-                android:gravity="center"
-                android:text="유저아이디"
+                android:paddingEnd="8dp"
+
+                app:layout_constraintStart_toEndOf="@id/friend_divider"
+                app:layout_constraintEnd_toStartOf="@id/userId_guide_line"
+                app:layout_constraintTop_toTopOf="@id/friend_search_name"
                 app:layout_constraintBottom_toBottomOf="@id/friend_search_name"
-                app:layout_constraintStart_toEndOf="@id/friend_search_name"
-                app:layout_constraintEnd_toStartOf="@id/friend_add_small_ic"
-                app:layout_constraintTop_toTopOf="@id/friend_search_name" />
+
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:breakStrategy="simple"
+                android:hyphenationFrequency="none"
+                android:includeFontPadding="false" />
 
             <!-- 추가 아이콘 -->
             <ImageView
