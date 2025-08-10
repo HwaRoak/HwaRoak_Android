@@ -30,6 +30,7 @@
     <color name="happy">#FF715B</color>
     <color name="depressed">#A0C8EA</color>
     <color name="angry">#81B4E0</color>
+    <color name="none">#D1D1D1</color>
 
 
 </resources>

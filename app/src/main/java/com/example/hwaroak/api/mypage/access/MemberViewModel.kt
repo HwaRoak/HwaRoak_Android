@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hwaroak.api.mypage.model.EditProfileResponse
 import com.example.hwaroak.api.mypage.model.MemberInfoResponse
+import com.example.hwaroak.api.mypage.model.MypageInfoResponse
 import com.example.hwaroak.api.mypage.repository.MemberRepository
 import kotlinx.coroutines.launch
 
@@ -18,6 +19,9 @@ class MemberViewModel(private val repository: MemberRepository): ViewModel() {
     // 회원 정보 수정 관련
     private val _editProfileResult = MutableLiveData<Result<EditProfileResponse>>()
     val editProfileResult: LiveData<Result<EditProfileResponse>> = _editProfileResult
+
+    private val _mypageInfoResult = MutableLiveData<Result<MypageInfoResponse>>()
+    val mypageInfoResult: LiveData<Result<MypageInfoResponse>> = _mypageInfoResult
 
     fun getMemberInfo(token: String) {
         viewModelScope.launch {
@@ -36,6 +40,13 @@ class MemberViewModel(private val repository: MemberRepository): ViewModel() {
                 // 프로필 수정 후 최신 정보 다시 불러오기
                 getMemberInfo(token)
             }
+        }
+    }
+
+    fun getMypageInfo(token: String) {
+        viewModelScope.launch {
+            val result = repository.getMypageInfo(token)
+            _mypageInfoResult.postValue(result)
         }
     }
 
