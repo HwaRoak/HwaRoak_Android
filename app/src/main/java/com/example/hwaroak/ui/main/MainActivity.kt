@@ -128,6 +128,7 @@ class MainActivity : AppCompatActivity() {
         binding.mainLockerBtn.setOnClickListener {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragmentContainer, LockerFragment())
+                .addToBackStack(null)
                 .commit()
             // BottomNavigationView는 보이게 설정
             binding.mainBnv.visibility = View.VISIBLE
@@ -136,6 +137,7 @@ class MainActivity : AppCompatActivity() {
         binding.mainBellBtn.setOnClickListener {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragmentContainer, NoticeFragment())
+                .addToBackStack(null)
                 .commit()
             // NoticeFragment로 갈 때 상단 바 숨김(모양이 다르므로 fragment에서 교체)
             hideMainTopBar()// 상단 바 숨김
@@ -144,23 +146,34 @@ class MainActivity : AppCompatActivity() {
         }
         //뒤로 가기 < 버튼
         binding.mainBackBtn.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+            /*
             // 현재 화면 확인
             val current = supportFragmentManager
                 .findFragmentById(R.id.main_fragmentContainer)
 
             // 1. 백스택에 프래그먼트가 존재하면 pop (예: MyPage → EditProfile → 뒤로 → MyPage)
             if (supportFragmentManager.backStackEntryCount > 0) {
+                Log.d("log_back", "1111")
                 supportFragmentManager.popBackStack()
                 
             }
             // 2. 홈 화면으로 돌아가게 하기
             else if (current !is HomeFragment) {
                 // 홈으로 돌아가기
+                Log.d("log_back", "2222")
                 binding.mainBnv.selectedItemId = R.id.homeFragment
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.main_fragmentContainer, HomeFragment())
                     .commit()
-            } 
+            }
+            else {
+                // 홈 화면일 땐 기본 뒤로가기 동작(앱 종료)
+                onBackPressedDispatcher.onBackPressed()
+                Log.d("log_back", "3333")
+            }
+            */
+
         }
 
 
@@ -247,7 +260,6 @@ class MainActivity : AppCompatActivity() {
 
     // 상단 바를 다시 보이게 하는 함수
     fun showMainTopBar() {
-        binding.mainBackBtn.visibility = View.VISIBLE
         binding.mainBellBtn.visibility = View.VISIBLE
         binding.mainLockerBtn.visibility = View.VISIBLE
         binding.mainTitleTv.visibility = View.VISIBLE
