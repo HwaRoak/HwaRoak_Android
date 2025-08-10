@@ -64,7 +64,7 @@ class HomeFragment : Fragment() {
         diaryPref = requireContext().getSharedPreferences("diary", MODE_PRIVATE)
 
         /**일단 홈 화면에서는 < 없애기**/
-        (activity as? MainActivity)?.setTopBar(isBackVisible = false)
+        (activity as? MainActivity)?.setTopBar(isBackVisible = false, true)
 
         // ItemService 인스턴스를 NetworkModule에서 가져옵니다.
         val itemService = HwaRoakClient.itemApiService // NetworkModule.kt에 정의된 itemApiService 사용

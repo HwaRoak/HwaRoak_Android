@@ -64,7 +64,7 @@ class AnnouncementFragment : Fragment() {
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
         accessToken = pref.getString("accessToken", "").toString()
 
-        (activity as? MainActivity)?.setTopBar("공지사항", isBackVisible = true)
+        (activity as? MainActivity)?.setTopBar("공지사항", isBackVisible = true, false)
 
         /**공지 observer**/
         noticeViewModel.noticeList.observe(viewLifecycleOwner) { result ->

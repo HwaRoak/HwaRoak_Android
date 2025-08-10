@@ -24,7 +24,7 @@ class TermsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as? MainActivity)?.setTopBar("이용 약관", isBackVisible = true)
+        (activity as? MainActivity)?.setTopBar("이용 약관", isBackVisible = true, false)
 
     }
 

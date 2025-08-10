@@ -45,7 +45,7 @@ class FriendListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         /**상단 바**/
-        (activity as? MainActivity)?.setTopBar("친구 목록",isBackVisible = true)
+        (activity as? MainActivity)?.setTopBar("친구 목록",isBackVisible = true, false)
 
         //viewmodel
         val prefs = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE)
@@ -195,6 +195,11 @@ class FriendListFragment : Fragment() {
 
         pendingDeleteList.clear()
         toggleManageMode()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.setTopBar("친구 목록",isBackVisible = true, false)
     }
 
     override fun onDestroyView() {

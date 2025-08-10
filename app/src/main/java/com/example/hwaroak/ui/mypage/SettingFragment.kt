@@ -85,7 +85,7 @@ class SettingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as? MainActivity)?.setTopBar("알람 설정", isBackVisible = true)
+        (activity as? MainActivity)?.setTopBar("알람 설정", isBackVisible = true, false)
         
         //초기 설정
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)

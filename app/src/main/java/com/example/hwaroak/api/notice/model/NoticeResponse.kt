@@ -33,6 +33,7 @@ data class NoticeRegisterRequest(
 // 로그인한 사용자의 모든 알람을 최신순으로 조회합니다. (request는 아무것도 X)
 data class AlarmListResponse(
     val id: Int,
+    val userId: String,
     val title: String,
     val content: String,
     val alarmType: String,

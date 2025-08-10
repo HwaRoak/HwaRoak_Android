@@ -91,7 +91,7 @@ class DiaryFinishFragment : Fragment() {
         diaryPref = requireContext().getSharedPreferences("diary", MODE_PRIVATE)
 
         /**얘는 바 없음**/
-        (activity as? MainActivity)?.setTopBar(isBackVisible = false)
+        (activity as? MainActivity)?.setTopBar(isBackVisible = false, false)
 
         //애니메이션
         binding.diaryFinishResultImv.visibility = TextView.INVISIBLE
