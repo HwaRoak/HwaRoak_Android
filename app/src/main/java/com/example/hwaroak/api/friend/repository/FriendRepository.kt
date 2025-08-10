@@ -41,8 +41,9 @@ class FriendRepository(private val api: FriendService) {
             if (response.isSuccessful && response.body()?.data != null) {
                 val data = response.body()!!.data
                 val friendData = FriendData(
-                    name = data.nickname ?: "이름 없음",
+                    name = data.nickname,
                     id = data.userId,
+                    profileImage = data.profileImage,
                     isRequested = false
                 )
                 Result.success(friendData)
@@ -55,19 +56,26 @@ class FriendRepository(private val api: FriendService) {
     }
 
     // 3. 친구 요청 보내기
+    // FriendRepository
+// 3. 친구 요청 보내기
     suspend fun sendFriendRequest(token: String, receiverId: String): Result<Unit> {
         return try {
             val response = api.sendFriendRequest(token, receiverId)
             if (response.isSuccessful) {
                 Result.success(Unit)
             } else {
-                val errorBody = response.errorBody()?.string()
-                val errorCode = if (errorBody?.contains("FRIEND4004") == true) {
-                    "FRIEND4004"
-                } else {
-                    "UNKNOWN"
+                val raw = response.errorBody()?.string().orEmpty()
+                // code 추출 (JSON 파싱이 실패해도 contains로 보조)
+                val code = try {
+                    org.json.JSONObject(raw).optString("code")
+                } catch (_: Exception) {
+                    when {
+                        raw.contains("FRIEND4004") -> "FRIEND4004"
+                        raw.contains("FRIEND4005") -> "FRIEND4005"
+                        else -> "UNKNOWN"
+                    }
                 }
-                Result.failure(Exception(errorCode))
+                Result.failure(Exception(code))
             }
         } catch (e: Exception) {
             Result.failure(e)

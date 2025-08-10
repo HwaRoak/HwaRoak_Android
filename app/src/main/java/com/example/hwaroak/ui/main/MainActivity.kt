@@ -8,12 +8,14 @@ import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.hwaroak.R
+import com.example.hwaroak.api.friend.access.FriendNavViewModel
 import com.example.hwaroak.databinding.ActivityMainBinding
 import com.example.hwaroak.message.SSEClient
 import com.example.hwaroak.ui.calendar.CalendarFragment
@@ -32,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var title: String
 
+    private val friendNavViewModel: FriendNavViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -280,5 +283,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    //
+    fun navigateToFriendVisit(friendId: String) {
+        binding.mainBnv.selectedItemId = R.id.friendFragment
+        friendNavViewModel.openFriend(friendId)  // FriendListFragment가 observe
+    }
 
 }

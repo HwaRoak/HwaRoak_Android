@@ -19,6 +19,8 @@ import com.example.hwaroak.api.friend.access.FriendViewModelFactory
 import com.example.hwaroak.api.friend.repository.FriendRepository
 import com.example.hwaroak.databinding.FragmentFriendListBinding
 import com.example.hwaroak.ui.main.MainActivity
+import androidx.fragment.app.activityViewModels
+import com.example.hwaroak.api.friend.access.FriendNavViewModel
 
 //처음 화면
 class FriendListFragment : Fragment() {
@@ -33,6 +35,8 @@ class FriendListFragment : Fragment() {
     private val pendingDeleteList = mutableListOf<FriendData>() //친구 삭제
     private lateinit var viewModel: FriendViewModel
 
+    private val friendNavViewModel: FriendNavViewModel by activityViewModels()
+    private var consumedFriendOpen = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -103,14 +107,15 @@ class FriendListFragment : Fragment() {
                 friendList.clear()
                 friendList.addAll(serverList.map {
                     FriendData(
-                        name = it.nickname ?: "",
-                        status = it.introduction ?: "", // <- 여기 null일 경우 빈 문자열 처리!
-                        id = it.userId ?: ""
+                        name = it.nickname.orEmpty(),
+                        status = it.introduction.orEmpty(),
+                        id = it.userId.orEmpty(),
+                        profileImage = it.profileImage?.takeUnless { it.isBlank() }
                     )
                 })
 
                 if (!isManageMode) {
-                    friendList.add(FriendData("", "", "", isAddButton = true))
+                    friendList.add(FriendData("", "", "", "", isAddButton = true))
                 }
 
                 adapter.notifyDataSetChanged()
@@ -142,6 +147,23 @@ class FriendListFragment : Fragment() {
         //드래그 설정
         val itemTouchHelper = ItemTouchHelper(DragItemTouchHelperCallback(adapter))
         itemTouchHelper.attachToRecyclerView(binding.friendRecyclerview)
+
+
+        friendNavViewModel.openFriendEvent.observe(viewLifecycleOwner) { friendId ->
+            if (!isAdded || friendId.isNullOrBlank() || consumedFriendOpen) return@observe
+            consumedFriendOpen = true
+
+            val visit = FriendVisitFragment().apply {
+                arguments = Bundle().apply { putString("friendUserId", friendId) }
+            }
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.main_fragmentContainer, visit)
+                .addToBackStack(null)
+                .commit()
+
+            //이벤트 소비
+            friendNavViewModel.clearOpenFriend()
+        }
     }
 
     //관리 버튼 클릭 이벤트 설정
@@ -158,7 +180,7 @@ class FriendListFragment : Fragment() {
             friendList.forEach { it.isDeletable = true }
         } else {
             friendList.forEach { it.isDeletable = false }
-            friendList.add(FriendData("", "", "", isAddButton = true))
+            friendList.add(FriendData("", "", "", "", isAddButton = true))
         }
 
         adapter.isManageMode = isManageMode
@@ -173,7 +195,7 @@ class FriendListFragment : Fragment() {
         val insertIndex = if (isManageMode) {
             friendList.size  // 그냥 맨 끝에 추가
         } else {
-            friendList.size - 1  // '친구 추가 버튼' 바로 앞에
+            friendList.size - 1  // 친구 추가 버튼 바로 앞에
         }
         friendList.add(insertIndex, friend)
         adapter.notifyItemInserted(insertIndex)

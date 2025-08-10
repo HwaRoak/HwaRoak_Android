@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.friend.FriendFragment">
+    tools:context=".ui.friend.FriendFragment"
+    android:background="@color/colorBackground">
 
-    <!-- 중앙 기준선 -->
+    <!-- 중앙 기준선 (유지) -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/friend_guideline"
         android:layout_width="wrap_content"
@@ -14,91 +15,95 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <!-- 친구 목록 버튼 -->
+    <!-- 친구 목록 버튼 (고정폭 제거, 체인 시작점) -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/friend_list_btn"
         style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="81dp"
+        android:layout_width="wrap_content"
         android:layout_height="32dp"
-        android:background="@drawable/bg_friend_list_btn"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
+        android:paddingHorizontal="12dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/bg_friend_list_btn"
         app:backgroundTint="@null"
         app:iconGravity="textStart"
         app:iconTint="@null"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="24dp" />
+        app:layout_constraintEnd_toStartOf="@id/friend_requestcheck_btn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed" />
 
-    <!-- 친구목록 텍스트 -->
+    <!-- 친구목록 텍스트 (유지, 버튼 안에 중앙 정렬) -->
     <TextView
         android:id="@+id/friend_list_tv"
+        style="@style/freesentation4_16sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="친구목록"
-        style="@style/freesentation4_16sp"
         android:textColor="@color/white"
         app:layout_constraintTop_toTopOf="@id/friend_list_btn"
         app:layout_constraintBottom_toBottomOf="@id/friend_list_btn"
         app:layout_constraintStart_toStartOf="@id/friend_list_btn"
-        app:layout_constraintEnd_toEndOf="@id/friend_list_btn"/>
+        app:layout_constraintEnd_toEndOf="@id/friend_list_btn" />
 
-    <!--요청확인 버튼-->
+    <!-- 요청확인 버튼 (가이드라인 안쪽에 고정) -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/friend_requestcheck_btn"
         style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="81dp"
+        android:layout_width="wrap_content"
         android:layout_height="32dp"
-        android:layout_margin="0dp"
-        android:background="@drawable/bg_friend_requestcheck_btn"
+        android:layout_marginStart="8dp"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
+        android:paddingHorizontal="12dp"
+        android:background="@drawable/bg_friend_requestcheck_btn"
         app:backgroundTint="@null"
         app:iconGravity="textStart"
         app:iconTint="@null"
-        app:layout_constraintBottom_toBottomOf="@id/friend_list_btn"
-        app:layout_constraintEnd_toEndOf="@id/friend_guideline"
-        app:layout_constraintHorizontal_bias="0.912"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/friend_list_btn"
+        app:layout_constraintEnd_toStartOf="@id/friend_guideline"
         app:layout_constraintTop_toTopOf="@id/friend_list_btn"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintBottom_toBottomOf="@id/friend_list_btn" />
 
+    <!-- 요청확인 텍스트 (유지, 버튼 중앙) -->
     <TextView
         android:id="@+id/friend_requestcheck_tv"
         style="@style/freesentation4_16sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="요청확인"
+        app:layout_constraintTop_toTopOf="@id/friend_requestcheck_btn"
         app:layout_constraintBottom_toBottomOf="@id/friend_requestcheck_btn"
-        app:layout_constraintEnd_toEndOf="@+id/friend_requestcheck_btn"
         app:layout_constraintStart_toStartOf="@id/friend_requestcheck_btn"
-        app:layout_constraintTop_toTopOf="@id/friend_requestcheck_btn" />
+        app:layout_constraintEnd_toEndOf="@id/friend_requestcheck_btn" />
 
-    <!-- 관리 텍스트뷰 -->
+    <!-- 관리 텍스트 (오른쪽 고정, 색상/스타일 유지) -->
     <TextView
         android:id="@+id/friend_manage"
         style="@style/freesentation4_16sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
         android:text="관리"
         android:textColor="#E18B79"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toTopOf="@id/friend_list_btn"
         app:layout_constraintBottom_toBottomOf="@id/friend_list_btn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/friend_list_btn" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- 컨텐츠 영역: 아래 전체 채움 -->
     <FrameLayout
         android:id="@+id/friend_content_container"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/friend_list_btn"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,7 +29,7 @@
         <TextView
             android:id="@+id/friend_request_name"
             style="@style/freesentation5_24sp_icon"
-            android:layout_width="105dp"
+            android:layout_width="115dp"
             android:layout_height="40dp"
             android:gravity="center"
             android:paddingStart="12dp"
@@ -52,7 +52,7 @@
         <TextView
             android:id="@+id/friend_request_status"
             style="@style/freesentation5_16sp_icon"
-            android:layout_width="0dp"
+            android:layout_width="135dp"
             android:layout_height="40dp"
             android:paddingStart="8dp"
             android:gravity="center"

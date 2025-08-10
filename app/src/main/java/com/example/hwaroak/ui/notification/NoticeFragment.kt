@@ -1,6 +1,5 @@
 package com.example.hwaroak.ui.notification
 
-import android.R.attr.fragment
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -68,7 +67,7 @@ class NoticeFragment : Fragment() {
                 /**알람 정보 및 친구의 ID를 따로 빼기**/
 
                 val noticeList = resp.map { item ->
-                    NoticeItem(item.id, item.userId,item.title, item.content,
+                    NoticeItem(item.id, item.userId, item.title, item.content,
                         item.alarmType, item.isRead, item.createdAt)
                 }
 
@@ -78,10 +77,14 @@ class NoticeFragment : Fragment() {
                 {
                     selectedNotice ->
                     //불 키우기
-                    if(selectedNotice.alarmType == "FIRE"){
-                        (activity as? MainActivity)?.selectTab(R.id.friendFragment)
-
-
+                    if (selectedNotice.alarmType == "FIRE") {
+                        val friendId = selectedNotice.userId  // FIRE 알림 보낸 사람 userId
+                        if (!friendId.isNullOrBlank()) {
+                            (activity as? MainActivity)?.navigateToFriendVisit(friendId)
+                        } else {
+                            //userId가 없다면 기존처럼 친구 탭만 열기(혹은 토스트)
+                            (activity as? MainActivity)?.selectTab(R.id.friendFragment)
+                        }
                     }
                     //월간 리포트
                     else if(selectedNotice.alarmType == "DAILY"){
@@ -106,7 +109,6 @@ class NoticeFragment : Fragment() {
                     //친구 요청
                     else if(selectedNotice.alarmType == "FRIEND_REQUEST"){
                         (activity as? MainActivity)?.navigateToFriendRequestPage()
-
                     }
 
                 }
