@@ -108,7 +108,7 @@ class NoticeFragment : Fragment() {
                     }
                     //친구 요청
                     else if(selectedNotice.alarmType == "FRIEND_REQUEST"){
-                        (activity as? MainActivity)?.selectTab(R.id.friendFragment)
+                        (activity as? MainActivity)?.navigateToFriendRequestPage()
                     }
 
                 }

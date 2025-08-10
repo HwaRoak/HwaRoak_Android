@@ -49,7 +49,7 @@ class FriendVisitFragment : Fragment() {
         )[FriendViewModel::class.java]
 
         //초기 방어
-        (activity as? MainActivity)?.setTopBar("불러오는 중...",isBackVisible = true, true)
+        //(activity as? MainActivity)?.setTopBar("불러오는 중...",isBackVisible = true, true)
 
         //UI 초기화 받아오는데 오래 걸릴 경우 표시
         binding.tvFriendTitle.text = "불러오는 중..."

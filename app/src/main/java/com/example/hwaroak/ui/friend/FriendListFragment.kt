@@ -107,10 +107,10 @@ class FriendListFragment : Fragment() {
                 friendList.clear()
                 friendList.addAll(serverList.map {
                     FriendData(
-                        name = it.nickname,
-                        status = it.introduction, //  여기 null일 경우 빈 문자열 처리!
-                        id = it.userId,
-                        profileImage = it.profileImage
+                        name = it.nickname.orEmpty(),
+                        status = it.introduction.orEmpty(),
+                        id = it.userId.orEmpty(),
+                        profileImage = it.profileImage?.takeUnless { it.isBlank() }
                     )
                 })
 

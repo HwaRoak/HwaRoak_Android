@@ -4,8 +4,8 @@ package com.example.hwaroak.api.friend.model
 data class FriendResponse(
     val userId: String,
     val nickname: String,
-    val introduction: String,
-    val profileImage: String
+    val introduction: String?,
+    val profileImage: String?
 )
 
 //친구 검색 api 데이터클래스
