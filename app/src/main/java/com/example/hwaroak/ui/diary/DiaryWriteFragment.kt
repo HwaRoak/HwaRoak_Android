@@ -126,7 +126,7 @@ class DiaryWriteFragment : Fragment() {
         accessToken = pref.getString("accessToken", "").toString()
 
         /**상단 바 표시 < **/
-        (activity as? MainActivity)?.setTopBar("오늘의 화록",isBackVisible = true)
+        (activity as? MainActivity)?.setTopBar("오늘의 화록",isBackVisible = true, false)
 
         //맨 처음 날짜 표시
         updateDateText()

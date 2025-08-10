@@ -41,7 +41,7 @@ class AddFriendFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         /**친구 검색 상단 바**/
-        (activity as? MainActivity)?.setTopBar("친구 검색",isBackVisible = true)
+        (activity as? MainActivity)?.setTopBar("친구 검색",isBackVisible = true, false)
 
         val repository = FriendRepository(HwaRoakClient.friendService)
         val factory = FriendViewModelFactory(repository)
@@ -124,6 +124,11 @@ class AddFriendFragment : Fragment() {
 
 
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.setTopBar("친구 검색",isBackVisible = true, false)
     }
 
     //query가 비어있으면 기본 안내만 표시, 결과 없으면 없음 표시, 결과 있으면 recycler 표시

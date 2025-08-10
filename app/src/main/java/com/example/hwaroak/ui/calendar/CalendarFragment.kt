@@ -146,7 +146,7 @@ class CalendarFragment : Fragment() {
         accessToken = pref.getString("accessToken", "").toString()
 
         /**얘는 상단다 없음 < X**/
-        (activity as? MainActivity)?.setTopBar(isBackVisible = true)
+        (activity as? MainActivity)?.setTopBar(isBackVisible = true, false)
 
         diaryPref = requireContext().getSharedPreferences("diary", MODE_PRIVATE)
 

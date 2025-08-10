@@ -19,6 +19,7 @@ import com.example.hwaroak.api.friend.access.FriendViewModel
 import com.example.hwaroak.api.friend.access.FriendViewModelFactory
 import com.example.hwaroak.api.friend.repository.FriendRepository
 import com.example.hwaroak.databinding.FragmentFriendVisitBinding
+import com.example.hwaroak.ui.main.MainActivity
 
 class FriendVisitFragment : Fragment() {
 
@@ -47,6 +48,9 @@ class FriendVisitFragment : Fragment() {
             FriendViewModelFactory(FriendRepository(friendService))
         )[FriendViewModel::class.java]
 
+        //초기 방어
+        (activity as? MainActivity)?.setTopBar("불러오는 중...",isBackVisible = true, true)
+
         //UI 초기화 받아오는데 오래 걸릴 경우 표시
         binding.tvFriendTitle.text = "불러오는 중..."
         binding.friendVisitBubbleTv.text = "불러오는 중..."
@@ -72,7 +76,7 @@ class FriendVisitFragment : Fragment() {
                 }
             }
 
-            //불 키우기 버튼 클릭
+            // 불키우기 버튼 클릭
             binding.friendFireupBtn.setOnClickListener {
                 //클릭 시 바로 잠금
                 binding.friendFireupBtn.isEnabled = false

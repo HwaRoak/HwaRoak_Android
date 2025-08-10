@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.HomeItemRVAdapter
@@ -20,8 +21,11 @@ import com.example.hwaroak.data.ItemViewModel
 // 다음 import 문들을 추가하거나 확인하세요.
 import com.example.hwaroak.api.home.repository.ItemRepository // ItemRepository 임포트
 import com.example.hwaroak.api.HwaRoakClient
+import com.example.hwaroak.api.HwaRoakClient.questionService
+import com.example.hwaroak.api.question.repository.QuestionRepository
 import com.example.hwaroak.data.ItemViewModelFactory // ItemViewModelFactory 임포트
 import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.launch
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -60,16 +64,21 @@ class HomeFragment : Fragment() {
         diaryPref = requireContext().getSharedPreferences("diary", MODE_PRIVATE)
 
         /**일단 홈 화면에서는 < 없애기**/
-        (activity as? MainActivity)?.setTopBar(isBackVisible = false)
+        (activity as? MainActivity)?.setTopBar(isBackVisible = false, true)
 
         // ItemService 인스턴스를 NetworkModule에서 가져옵니다.
         val itemService = HwaRoakClient.itemApiService // NetworkModule.kt에 정의된 itemApiService 사용
+        val questionService = HwaRoakClient.questionService
 
         // ItemRepository 인스턴스를 ItemService와 함께 생성합니다.
         val itemRepository = ItemRepository(itemService) // ItemRepository 생성자에 itemService 전달
+        val questionRepository = QuestionRepository(questionService)
 
         // ViewModel 초기화: ItemViewModelFactory를 사용하여 ItemRepository를 주입합니다.
-        itemViewModel = ViewModelProvider(requireActivity(), ItemViewModelFactory(itemRepository)).get(ItemViewModel::class.java) //
+        itemViewModel = ViewModelProvider(
+            requireActivity(),
+            ItemViewModelFactory(itemRepository, questionRepository)
+        ).get(ItemViewModel::class.java) //
 
 
         //RecyclerView 어뎁터 설정
@@ -82,6 +91,9 @@ class HomeFragment : Fragment() {
 
         // 아이템에 따른 캐릭터 멘트 변경 위해 tv_speech_bubble 참조 가져오기
         val speechBubbleTV = view.findViewById<TextView>(R.id.tv_speech_bubble)
+        itemViewModel.speech.observe(viewLifecycleOwner) { text ->
+            speechBubbleTV.text = text
+        }
 
         //참조 가져오기
         val rewardContainer = view.findViewById<LinearLayout>(R.id.reward_container)
@@ -92,26 +104,21 @@ class HomeFragment : Fragment() {
         rewardItemsRV.adapter = rewardItemRVAdapter
 
         //보상할 아이템이 있을 때만 reward영역 보여주기
-        itemViewModel.rewardItemList.observe(viewLifecycleOwner) { rewardList ->
-            if (rewardList.isNotEmpty()) { // 보상 리스트가 비어있지 않으면
-                rewardContainer.visibility = View.VISIBLE // 보상 컨테이너 표시
-                rewardItemRVAdapter.setData(rewardList) // 어댑터 데이터 업데이트
-            } else {
-                rewardContainer.visibility = View.GONE // 보상 컨테이너 숨김
-            }
+        itemViewModel.rewardAvailable.observe(viewLifecycleOwner) { canReward ->
+            rewardContainer.visibility = if (canReward == true) View.VISIBLE else View.GONE
         }
-
+        
+        // 보상처리
         btnClaimReward.setOnClickListener {
             itemViewModel.claimReward { rewardedItem ->
                 if (rewardedItem != null) {
                     // 캐릭터 말풍선 변경
-                    speechBubbleTV.text = "보상이야!(추후매핑)"
-
+//                    speechBubbleTV.text = "보상이야!(추후매핑)"
+                    itemViewModel.clearRewardAfterClaim()
                     // 보상 UI 숨기고 보상완료 UI 표시
                     rewardContainer.visibility = View.GONE
                     val rewardCompletionContainer = view.findViewById<LinearLayout>(R.id.reward_completion_container)
                     rewardCompletionContainer.visibility = View.VISIBLE
-
                     // 2초 후 다시 기본 홈 상태로 되돌리기
                     view.postDelayed({
                         rewardCompletionContainer.visibility = View.GONE
@@ -274,6 +281,12 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setEmotionBar()
+
+        val pref = requireContext().getSharedPreferences("member", MODE_PRIVATE) // 실제 키/이름 사용
+        val token = pref.getString("accessToken", null) ?: return
+        lifecycleScope.launch {
+            itemViewModel.refreshQuestion(token)
+        }
     }
 
     companion object {

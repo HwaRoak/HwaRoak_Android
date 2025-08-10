@@ -64,9 +64,11 @@ class NoticeFragment : Fragment() {
         /**알람함 observe**/
         noticeViewModel.alarmList.observe(viewLifecycleOwner) { result ->
             result.onSuccess { resp ->
+                /**알람 정보 및 친구의 ID를 따로 빼기**/
+
                 val noticeList = resp.map { item ->
-                    NoticeItem(item.id, item.title, item.content,
-                        item.alarmType, item.isRead, item.createdAt, item.userId)
+                    NoticeItem(item.id, item.userId, item.title, item.content,
+                        item.alarmType, item.isRead, item.createdAt)
                 }
 
                 //알림 recyclerview 어댑터 선언, 설정, inflate
@@ -76,7 +78,7 @@ class NoticeFragment : Fragment() {
                     selectedNotice ->
                     //불 키우기
                     if (selectedNotice.alarmType == "FIRE") {
-                        val friendId = selectedNotice.userId   // FIRE 알림 보낸 사람 userId
+                        val friendId = selectedNotice.userId  // FIRE 알림 보낸 사람 userId
                         if (!friendId.isNullOrBlank()) {
                             (activity as? MainActivity)?.navigateToFriendVisit(friendId)
                         } else {
