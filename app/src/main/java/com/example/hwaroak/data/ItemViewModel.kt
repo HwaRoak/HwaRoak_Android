@@ -124,13 +124,22 @@ class ItemViewModel(
     val rewardAvailable: LiveData<Boolean> = _rewardAvailable
 
     suspend fun refreshQuestion(accessToken: String) {
+        Log.d("HomeFragment", "onResume called")
         val q = questionRepository.fetch(accessToken)
         q?.let {
             _speech.postValue(it.content)
             val canReward = it.tag == "REWARD"
             _rewardAvailable.postValue(canReward)
-            if (!canReward) {
-                // 서버가 보상조건 미충족이라면 리스트도 비워 ghost UI 예방
+            if (canReward) {
+                // 보상 조건 충족 시, 보상 아이템 목록을 불러오는 로직 추가
+                // 현재는 전체 아이템을 불러와서 보상 아이템 목록처럼 사용
+                val items = itemRepository.getItems(accessToken)
+                val lockerItems = items?.map { item ->
+                    LockerItem(item.itemId, item.name, getImageResForName(item.name))
+                } ?: emptyList()
+                _rewardItemList.postValue(lockerItems)
+            } else {
+                // 보상 조건 미충족 시, 리스트 비우기
                 _rewardItemList.postValue(emptyList())
             }
         }
