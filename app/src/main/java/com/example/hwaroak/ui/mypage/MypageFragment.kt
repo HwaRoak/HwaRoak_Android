@@ -211,12 +211,17 @@ class MypageFragment : Fragment() {
     private fun MypageInfoResponse.toMypageData(): MypageData {
         val uiEmotionSummary = this.emotionSummary?.let { apiSummary: ApiEmotionSummary ->
             EmotionSummary(
-                CALM = EmotionData(percent = apiSummary.CALM.percent),
-                HAPPY = EmotionData(percent = apiSummary.HAPPY.percent),
-                SAD = EmotionData(percent = apiSummary.SAD.percent),
-                ANGRY = EmotionData(percent = apiSummary.ANGRY.percent)
+                CALM = EmotionData(percent = apiSummary.CALM?.percent ?: 0.0),
+                HAPPY = EmotionData(percent = apiSummary.HAPPY?.percent ?: 0.0),
+                SAD = EmotionData(percent = apiSummary.SAD?.percent ?: 0.0),
+                ANGRY = EmotionData(percent = apiSummary.ANGRY?.percent ?: 0.0)
             )
-        }
+        } ?: EmotionSummary(
+            CALM = EmotionData(percent = 0.0),
+            HAPPY = EmotionData(percent = 0.0),
+            SAD = EmotionData(percent = 0.0),
+            ANGRY = EmotionData(percent = 0.0)
+        )
         return MypageData(
             emotionSummary = uiEmotionSummary,
             totalDiary = this.totalDiary,

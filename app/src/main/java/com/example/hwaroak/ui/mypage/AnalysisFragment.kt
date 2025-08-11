@@ -57,7 +57,7 @@ class AnalysisFragment : Fragment() {
 
         setupClickListeners()
         observeMonthChanges()
-        
+
     }
 
     private fun setupClickListeners() {
