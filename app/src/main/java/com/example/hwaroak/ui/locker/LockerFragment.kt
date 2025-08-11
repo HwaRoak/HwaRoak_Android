@@ -18,9 +18,7 @@ import com.example.hwaroak.api.question.repository.QuestionRepository
 import com.example.hwaroak.data.ItemViewModel
 import com.example.hwaroak.data.ItemViewModelFactory
 import com.example.hwaroak.data.LockerItem
-import com.example.hwaroak.data.NoticeItem
 import com.example.hwaroak.databinding.FragmentLockerBinding
-import com.example.hwaroak.ui.main.MainActivity
 
 class LockerFragment : Fragment() {
 
@@ -103,6 +101,7 @@ class LockerFragment : Fragment() {
             // '변경'이 클릭되었을 때만 실제 아이템 변경 로직 실행
             itemViewModel.setHomeItem(item)
             dialog.dismiss() // 다이얼로그 닫기
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
         // 다이얼로그의 기본 배경을 투명하게 설정

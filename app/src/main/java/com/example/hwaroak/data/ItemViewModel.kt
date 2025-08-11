@@ -123,6 +123,10 @@ class ItemViewModel(
     private val _rewardAvailable = MutableLiveData(false)
     val rewardAvailable: LiveData<Boolean> = _rewardAvailable
 
+    // 보상 아이템의 상세 정보 (level, name)를 위한 LiveData 추가
+    private val _rewardItemDetail = MutableLiveData<ItemDto>()
+    val rewardItemDetail: LiveData<ItemDto> = _rewardItemDetail
+
     suspend fun refreshQuestion(accessToken: String) {
         Log.d("HomeFragment", "onResume called")
         val q = questionRepository.fetch(accessToken)
@@ -138,6 +142,11 @@ class ItemViewModel(
                     LockerItem(item.itemId, item.name, getImageResForName(item.name))
                 } ?: emptyList()
                 _rewardItemList.postValue(lockerItems)
+
+                // 보상 아이템의 상세 정보를 _rewardItemDetail에 저장
+                items?.firstOrNull()?.let { rewardItemDto ->
+                    _rewardItemDetail.postValue(rewardItemDto)
+                }
             } else {
                 // 보상 조건 미충족 시, 리스트 비우기
                 _rewardItemList.postValue(emptyList())
@@ -148,6 +157,18 @@ class ItemViewModel(
     fun clearRewardAfterClaim() {
         _rewardAvailable.value = false
         _rewardItemList.value = emptyList()
+    }
+
+    // 홈 아이템 클릭시 서버에 통지하고 응답 content로 말풍선 교체
+    fun onHomeItemClicked(token: String) {
+        viewModelScope.launch {
+            val q = questionRepository.itemClick(token)
+            q?.let {
+                _speech.postValue(it.content)   // 말풍선 갱신
+                _rewardAvailable.postValue(it.tag == "REWARD")
+                if (it.tag != "REWARD") _rewardItemList.postValue(emptyList())
+            }
+        }
     }
 
 
