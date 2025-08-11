@@ -22,3 +22,9 @@ data class EmotionSummary(
 data class EmotionData(
     val percent: Double
 )
+
+data class AnalysisData(
+    val diaryCount: Int,
+    val emotionSummary: EmotionSummary?,
+    val message: String?
+)

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hwaroak.api.mypage.model.AnalysisResponse
 import com.example.hwaroak.api.mypage.model.EditProfileResponse
 import com.example.hwaroak.api.mypage.model.MemberInfoResponse
 import com.example.hwaroak.api.mypage.model.MypageInfoResponse
@@ -22,6 +23,9 @@ class MemberViewModel(private val repository: MemberRepository): ViewModel() {
 
     private val _mypageInfoResult = MutableLiveData<Result<MypageInfoResponse>>()
     val mypageInfoResult: LiveData<Result<MypageInfoResponse>> = _mypageInfoResult
+
+    private val _analysisResult = MutableLiveData<Result<AnalysisResponse>>()
+    val analysisResult: LiveData<Result<AnalysisResponse>> = _analysisResult
 
     fun getMemberInfo(token: String) {
         viewModelScope.launch {
@@ -47,6 +51,13 @@ class MemberViewModel(private val repository: MemberRepository): ViewModel() {
         viewModelScope.launch {
             val result = repository.getMypageInfo(token)
             _mypageInfoResult.postValue(result)
+        }
+    }
+
+    fun getAnalysisInfo(token: String, summaryMonth: String) {
+        viewModelScope.launch {
+            val result = repository.getAnalysisInfo(token, summaryMonth)
+            _analysisResult.postValue(result)
         }
     }
 
