@@ -69,6 +69,7 @@ class LoginKakaoActivity : AppCompatActivity() {
         val agreePref = getSharedPreferences("agree", MODE_PRIVATE)
         val checkAgree = agreePref.getBoolean("agree", false)
 
+
         // 로그인 정보 확인
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
             if (error != null) {
@@ -200,7 +201,6 @@ class LoginKakaoActivity : AppCompatActivity() {
                     //Log.d("kakaoLogin", "재발금 후 리프레시 토큰: " + pref.getString("refreshToken", "").toString())
 
                     //약관 동의를 했으면
-                    
                     if(checkAgree) {
                         val intent = Intent(this@LoginKakaoActivity, MainActivity::class.java)
                         startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
