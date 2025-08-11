@@ -122,6 +122,19 @@ class AnalysisFragment : Fragment() {
                 binding.analysisNumberDiaryTv.text = state.currentMonthText
                 binding.analysisNextBtn.text = state.nextMonthText
 
+                // 1. SharedPreferences에서 사용자 이름 가져오기
+                val pref = requireActivity().getSharedPreferences("user", MODE_PRIVATE)
+                val name = pref.getString("nickname", "") ?: ""
+                val nickname = pref.getString("cachedNickname", "") ?: ""
+                val userName = if (nickname.isNotEmpty()) nickname else name
+
+                // 2. ViewModel에서 현재 월 숫자 가져오기
+                val currentMonth = monthViewModel.getMonth()
+
+                // 3. 최종 텍스트를 조합하여 TextView에 설정
+                binding.analysisTitleTv.text = "${currentMonth}월달 ${userName}님의 감정분석"
+
+
                 // '이전 달' 버튼 상태 업데이트
                 updateButtonState(binding.analysisPreviousBtn, state.isPreviousEnabled)
                 // '다음 달' 버튼 상태 업데이트
