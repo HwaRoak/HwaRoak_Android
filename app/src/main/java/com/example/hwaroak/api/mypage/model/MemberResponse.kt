@@ -47,5 +47,5 @@ data class EmotionData(
 data class AnalysisResponse(
     val diaryCount: Int,
     val emotionSummary: EmotionSummary?,
-    val message: String
+    val message: String?
 )

@@ -17,6 +17,16 @@ class MonthViewModel : ViewModel() {
     // -2: 저저번달, -1: 저번달, 0: 이번달(초기값)
     private var monthOffset = 0
 
+    fun getDate(): String {
+        val targetCalendar = Calendar.getInstance()
+        targetCalendar.add(Calendar.MONTH, monthOffset)
+
+        val year = targetCalendar.get(Calendar.YEAR)
+        val month = targetCalendar.get(Calendar.MONTH) + 1 // Calendar.MONTH는 0부터 시작
+
+        return String.format("%d-%02d", year, month)
+    }
+
     // 다음 달 버튼 클릭 시
     fun nextMonth() {
         if (monthOffset < 0) { // 0(이번달)이 최대치

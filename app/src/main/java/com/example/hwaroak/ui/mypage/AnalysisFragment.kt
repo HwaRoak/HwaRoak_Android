@@ -3,17 +3,22 @@ package com.example.hwaroak.ui.mypage
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.hwaroak.R
 import com.example.hwaroak.api.mypage.access.MemberViewModel
+import com.example.hwaroak.api.mypage.model.AnalysisResponse
+import com.example.hwaroak.api.mypage.model.EmotionSummary as ApiEmotionSummary
 import com.example.hwaroak.data.AnalysisData
+import com.example.hwaroak.data.EmotionData
 import com.example.hwaroak.data.EmotionSummary
 import com.example.hwaroak.data.MonthViewModel
 import com.example.hwaroak.databinding.FragmentAnalysisBinding
@@ -33,7 +38,6 @@ class AnalysisFragment : Fragment() {
     private val monthViewModel: MonthViewModel by viewModels()
     private val memberViewModel: MemberViewModel by activityViewModels()
 
-    private lateinit var pref: SharedPreferences
     private lateinit var accessToken: String
 
     override fun onCreateView(
@@ -51,6 +55,8 @@ class AnalysisFragment : Fragment() {
         val name = pref2.getString("nickname", "") ?: ""
         val nickname = pref2.getString("cachedNickname", "") ?: ""
 
+        accessToken = pref2.getString("accessToken", "").toString()
+
         var title = if(nickname == "") "${name}의 화록" else "${nickname}의 화록"
 
         (activity as? MainActivity)?.setTopBar(title, isBackVisible = true, false)
@@ -58,8 +64,46 @@ class AnalysisFragment : Fragment() {
         setupClickListeners()
         observeMonthChanges()
 
+        memberViewModel.getAnalysisInfo(accessToken, monthViewModel.getDate())
+
+        memberViewModel.analysisResult.observe(viewLifecycleOwner) {result ->
+            result.onSuccess { data ->
+                updateUi(data.toAnalysisData())
+            }
+            result.onFailure {
+                Log.e("analysis", "불러오기 실패: ${it.message}")
+                Toast.makeText(requireContext(), "불러오기 실패", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     }
 
+    private fun AnalysisResponse.toAnalysisData(): AnalysisData {
+        val finalMessage = if (this.emotionSummary == null) {
+            "일기를 하루 이상 작성 해야지\n" +
+                    "차트를 볼 수 있어요!"
+        } else {
+            this.message ?: message
+        }
+        val uiEmotionSummary = this.emotionSummary?.let { apiSummary: ApiEmotionSummary ->
+            EmotionSummary(
+                CALM = EmotionData(percent = apiSummary.CALM?.percent ?: 0.0),
+                HAPPY = EmotionData(percent = apiSummary.HAPPY?.percent ?: 0.0),
+                SAD = EmotionData(percent = apiSummary.SAD?.percent ?: 0.0),
+                ANGRY = EmotionData(percent = apiSummary.ANGRY?.percent ?: 0.0)
+            )
+        } ?: EmotionSummary(
+            CALM = EmotionData(percent = 0.0),
+            HAPPY = EmotionData(percent = 0.0),
+            SAD = EmotionData(percent = 0.0),
+            ANGRY = EmotionData(percent = 0.0)
+        )
+        return AnalysisData(
+            emotionSummary = uiEmotionSummary,
+            diaryCount = this.diaryCount,
+            message = finalMessage
+        )
+    }
     private fun setupClickListeners() {
         binding.analysisPreviousBtn.setOnClickListener {
             monthViewModel.previousMonth()
@@ -80,9 +124,10 @@ class AnalysisFragment : Fragment() {
 
                 // '이전 달' 버튼 상태 업데이트
                 updateButtonState(binding.analysisPreviousBtn, state.isPreviousEnabled)
-
                 // '다음 달' 버튼 상태 업데이트
                 updateButtonState(binding.analysisNextBtn, state.isNextEnabled)
+
+                memberViewModel.getAnalysisInfo(accessToken, monthViewModel.getDate())
             }
         }
     }
