@@ -170,29 +170,17 @@
 
             <!-- 배경 게이지 -->
             <ImageView
-                android:id="@+id/progress_emotion_gauge_bold"
+                android:id="@+id/friend_guagebar"
                 android:layout_width="0dp"
-                android:layout_height="35dp"
+                android:layout_height="0dp"
                 android:layout_marginStart="8dp"
-                android:src="@drawable/friend_guage"
+                android:layout_marginTop="6dp"
+                android:src="@drawable/img_friend_emotion_gauge_default"
                 app:layout_constraintStart_toEndOf="@id/friend_fire_rec"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/friend_fire_rec"
                 app:layout_constraintBottom_toBottomOf="@id/friend_fire_rec" />
 
-            <!-- 진행 게이지 -->
-            <ImageView
-                android:id="@+id/progress_emotion_gauge"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:paddingStart="16dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="10dp"
-                android:src="@drawable/friend_guage2"
-                android:layout_marginTop="9dp"
-                app:layout_constraintTop_toTopOf="@id/friend_fire_rec"
-                app:layout_constraintStart_toEndOf="@id/friend_fire_rec"
-                app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -220,7 +208,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="불키우기"
+        android:text="불 키우기"
         style="@style/freesentation7_22sp_title"
         android:textColor="@color/white"
         app:layout_constraintTop_toTopOf="@id/friend_fireup_btn"
