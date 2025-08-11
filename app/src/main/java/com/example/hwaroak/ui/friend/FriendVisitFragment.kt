@@ -101,12 +101,11 @@ class FriendVisitFragment : Fragment() {
                 showFireAnimation()
                 animateCharacterAndGaugeFire()
 
-                //1.5초 뒤 다시 활성화
+                //2.5초 뒤 다시 활성화
                 binding.friendFireupBtn.postDelayed({
                     binding.friendFireupBtn.isEnabled = true
-                }, 1500)
+                }, 2500)
             }
-
         }
 
         // 3. 토큰 설정 (Bearer 중복 제거)
