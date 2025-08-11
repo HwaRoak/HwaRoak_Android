@@ -27,9 +27,12 @@ class FriendVisitFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: FriendViewModel
-    private var hasSentFireOnce = false // API 대체용: 처음 클릭 여부만 체크
 
     private var originalStatusMessage: String? = null //status 저장용(방문하기 버튼 눌러도 status 출력)
+
+    //감정 게이지
+    private val POSITIVE = setOf("행복", "기쁨", "신나는", "설렘", "만족", "편안", "감사", "즐거움", "뿌듯", "희망")
+    private val NEGATIVE = setOf("슬픔", "외로움", "분노", "짜증", "불안", "우울", "피곤", "두려움", "걱정", "후회")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,6 +72,10 @@ class FriendVisitFragment : Fragment() {
 
             //UI topbar 갱신
             (activity as? MainActivity)?.setTopBar("${data.nickname}의 화록",isBackVisible = true, true)
+
+            //감정 게이지 적용
+            val barType = toBarTypeFromEmotions(data.emotions)
+            applyEmotionBarFriend(barType)
 
             //불씨 응답 observe
             viewModel.fireResponse.observe(viewLifecycleOwner) { data ->
@@ -113,8 +120,44 @@ class FriendVisitFragment : Fragment() {
         }
     }
 
+    //감정 게이지 bartype
+    private fun toBarTypeFromEmotions(raw: String?): Int {
+        if (raw.isNullOrBlank()) return 0
+        val tokens = raw.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+        if (tokens.isEmpty()) return 0
 
+        var pos = 0
+        var neg = 0
+        for (t in tokens) {
+            val term = t.replace(" ", "")
+            when {
+                POSITIVE.contains(term) -> pos++
+                NEGATIVE.contains(term) -> neg++
+            }
+        }
 
+        return when {
+            neg == 0 && pos > 0 -> 1 // 전부 긍정
+            pos == 0 && neg > 0 -> 5 // 전부 부정
+            pos == neg           -> 2 // 반반
+            neg > pos            -> 3 // 부정 많음
+            else                 -> 4 // 긍정 많음
+        }
+    }
+
+    private fun applyEmotionBarFriend(barType: Int) {
+        val iv = binding.friendGuagebar // 게이지바 ImageView ID
+        when (barType) {
+            0 -> iv.setImageResource(R.drawable.img_friend_emotion_gauge_default)
+            1 -> iv.setImageResource(R.drawable.img_friend_emotion_gauge_all_pos)
+            2 -> iv.setImageResource(R.drawable.img_friend_emotion_gauge_half_half)
+            3 -> iv.setImageResource(R.drawable.img_friend_emotion_gauge_neg_neg_pos)
+            4 -> iv.setImageResource(R.drawable.img_friend_emotion_gauge_neg_pos_pos)
+            5 -> iv.setImageResource(R.drawable.img_friend_emotion_gauge_all_neg)
+        }
+    }
+
+    //불키우기 애니메이션
     private fun showFireAnimation() {
         val fires = listOf(binding.friendFire1Imv, binding.friendFire2Imv, binding.friendFire3Imv)
 
