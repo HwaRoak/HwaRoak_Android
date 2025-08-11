@@ -1,5 +1,7 @@
 package com.example.hwaroak.ui.mypage
 
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.hwaroak.R
 import com.example.hwaroak.data.MonthViewModel
 import com.example.hwaroak.databinding.FragmentAnalysisBinding
+import com.example.hwaroak.ui.main.MainActivity
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -123,5 +126,17 @@ class AnalysisFragment : Fragment() {
 
             animate()
         }
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        var pref2: SharedPreferences = requireActivity().getSharedPreferences("user", MODE_PRIVATE)
+        val name = pref2.getString("nickname", "") ?: ""
+        val nickname = pref2.getString("cachedNickname", "") ?: ""
+
+        var title = if(nickname == "") "${name}의 화록" else "${nickname}의 화록"
+
+        (activity as? MainActivity)?.setTopBar(title, isBackVisible = true, false)
     }
 }
