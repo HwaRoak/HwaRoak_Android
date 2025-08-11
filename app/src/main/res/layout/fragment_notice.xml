@@ -6,81 +6,7 @@
     android:background="@color/colorBackground">
     <!--상단바-->
 
-    <ImageButton
-        android:id="@+id/notice_back_btn"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@drawable/ic_arrow_back"
-        android:background="@color/transparent"
-        android:layout_marginTop="25dp"
-        android:layout_marginStart="25dp"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
 
-    <ImageButton
-        android:id="@+id/notice_bell_btn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_bell"
-        android:background="@color/transparent"
-        android:layout_marginEnd="25dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/notice_back_btn"
-        app:layout_constraintBottom_toBottomOf="@id/notice_back_btn"/>
-
-    <TextView
-        android:id="@+id/notice_title_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="알림"
-        android:layout_marginStart="10dp"
-        style="@style/freesentation6_20sp_title"
-        app:layout_constraintStart_toEndOf="@id/notice_back_btn"
-        app:layout_constraintTop_toTopOf="@id/notice_back_btn"
-        app:layout_constraintBottom_toBottomOf="@id/notice_back_btn"/>
-
-    <!--
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-    <ImageButton
-        android:id="@+id/notice_back_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_arrow_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    <TextView
-        android:id="@+id/notice_title_tv"
-        style="@style/freesentation5_20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="알림"
-        app:layout_constraintBottom_toBottomOf="@id/notice_back_btn"
-        app:layout_constraintStart_toEndOf="@id/notice_back_btn"
-        app:layout_constraintTop_toTopOf="@id/notice_back_btn" />
-
-    <ImageButton
-        android:id="@+id/notice_bell_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="25dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_bell"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    -->
 
     <!--컨텐츠박스-->
     <!--버튼-->
@@ -90,10 +16,9 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorBackground"
         android:src="@drawable/btn_notice_mynotification"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/notice_back_btn"/>
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="@id/rv_notice_container"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageButton
         android:id="@+id/btn_notice_setting"
@@ -102,7 +27,7 @@
         android:layout_marginBottom="12dp"
         android:src="@drawable/btn_notice_notification_setting"
         android:backgroundTint="@color/colorBackground"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="25dp"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/btn_my_notice"

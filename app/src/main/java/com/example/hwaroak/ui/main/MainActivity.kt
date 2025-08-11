@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                 .addToBackStack(null)
                 .commit()
             // NoticeFragment로 갈 때 상단 바 숨김(모양이 다르므로 fragment에서 교체)
-            hideMainTopBar()// 상단 바 숨김
+            //hideMainTopBar()// 상단 바 숨김
             // BottomNavigationView는 보이게 설정
             binding.mainBnv.visibility = View.VISIBLE
         }
@@ -233,12 +233,14 @@ class MainActivity : AppCompatActivity() {
 
                 // 1. 백스택에 프래그먼트가 존재하면 pop (예: MyPage → EditProfile → 뒤로 → MyPage)
                 if (supportFragmentManager.backStackEntryCount > 0) {
+                    Log.d("log_back", "여기서 뒤로 가요!1")
                     supportFragmentManager.popBackStack()
                     return
                 }
 
                 if (current !is HomeFragment) {
                     // 홈으로 돌아가기
+                    Log.d("log_back", "여기서 뒤로 가요!2")
                     binding.mainBnv.selectedItemId = R.id.homeFragment
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_fragmentContainer, HomeFragment())
@@ -267,6 +269,7 @@ class MainActivity : AppCompatActivity() {
         binding.mainLockerBtn.visibility = View.VISIBLE
         binding.mainTitleTv.visibility = View.VISIBLE
     }
+    
 
     //다른 fragment에서 동적 제어
     fun setTopBar(mytitle: String, isBackVisible: Boolean, isShow: Boolean){
@@ -290,6 +293,19 @@ class MainActivity : AppCompatActivity() {
             binding.mainLockerBtn.visibility = View.INVISIBLE
         }
     }
+
+    //알람 화면을 보여줄 때 세팅
+    fun setTopBarNotice(){
+        binding.mainTitleTv.text = "알림"
+        binding.mainBackBtn.visibility = View.VISIBLE
+        binding.mainBellBtn.visibility = View.VISIBLE
+        binding.mainLockerBtn.visibility = View.INVISIBLE
+        binding.mainBellBtn.isEnabled = false
+    }
+    fun resetTopBarNotice(){
+        binding.mainBellBtn.isEnabled = true
+    }
+
     fun changeTitle(newTitle: String){
         title = "${newTitle}의 화록"
 

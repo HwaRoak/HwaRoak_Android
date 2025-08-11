@@ -14,6 +14,14 @@
         android:layout_height="match_parent"
         android:paddingStart="12dp"
         android:paddingEnd="12dp">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/status_guide_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="79dp" />
+
         <!-- 프로필 이미지 -->
         <ImageView
             android:id="@+id/friend_request_profile"
@@ -28,7 +36,8 @@
         <!-- 이름 -->
         <TextView
             android:id="@+id/friend_request_name"
-            style="@style/freesentation5_24sp_icon"
+            style="@style/freesentation5_24sp_title"
+            android:textSize="22sp"
             android:layout_width="115dp"
             android:layout_height="40dp"
             android:gravity="center"
@@ -52,15 +61,23 @@
         <TextView
             android:id="@+id/friend_request_status"
             style="@style/freesentation5_16sp_icon"
-            android:layout_width="135dp"
-            android:layout_height="40dp"
-            android:paddingStart="8dp"
-            android:gravity="center"
             android:text="(자기소개)"
-            app:layout_constraintBottom_toBottomOf="@id/friend_request_name"
-            app:layout_constraintStart_toEndOf="@id/friend_request_name"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+
+            app:layout_constraintStart_toEndOf="@id/friend_divider"
+            app:layout_constraintEnd_toStartOf="@id/status_guide_line"
             app:layout_constraintTop_toTopOf="@id/friend_request_name"
-            app:layout_constraintEnd_toStartOf="@id/friend_request_reject"/>
+            app:layout_constraintBottom_toBottomOf="@id/friend_request_name"
+
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:breakStrategy="simple"
+            android:hyphenationFrequency="none"
+            android:includeFontPadding="false" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/friend_request_accept"

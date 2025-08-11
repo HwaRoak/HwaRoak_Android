@@ -44,7 +44,9 @@ data class ReceivedFriendData(
 data class VisitFriendPage (
     val userId: String,
     val nickname: String,
-    val message: String
+    val message: String,
+    val emotions: String,
+    val selectedItemId: Int
 )
 
 //친구에게 불씨 보내기

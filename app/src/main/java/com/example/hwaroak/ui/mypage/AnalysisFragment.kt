@@ -17,6 +17,7 @@ import com.example.hwaroak.data.AnalysisData
 import com.example.hwaroak.data.EmotionSummary
 import com.example.hwaroak.data.MonthViewModel
 import com.example.hwaroak.databinding.FragmentAnalysisBinding
+import com.example.hwaroak.ui.main.MainActivity
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -46,16 +47,19 @@ class AnalysisFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var pref2: SharedPreferences = requireActivity().getSharedPreferences("user", MODE_PRIVATE)
+        val name = pref2.getString("nickname", "") ?: ""
+        val nickname = pref2.getString("cachedNickname", "") ?: ""
+
+        var title = if(nickname == "") "${name}의 화록" else "${nickname}의 화록"
+
+        (activity as? MainActivity)?.setTopBar(title, isBackVisible = true, false)
 
         setupClickListeners()
         observeMonthChanges()
-
-        pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
-        accessToken = pref.getString("accessToken", "").toString()
-
-//        memberViewModel.getAnalysisInfo(accessToken, "${}")
-
+        
     }
+
     private fun setupClickListeners() {
         binding.analysisPreviousBtn.setOnClickListener {
             monthViewModel.previousMonth()
@@ -174,4 +178,5 @@ class AnalysisFragment : Fragment() {
         super.onDestroyView()
         _binding = null // 메모리 누수 방지
     }
+
 }

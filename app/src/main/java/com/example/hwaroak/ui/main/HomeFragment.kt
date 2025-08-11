@@ -4,6 +4,7 @@ package com.example.hwaroak.ui.main
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -92,6 +93,7 @@ class HomeFragment : Fragment() {
         // 아이템에 따른 캐릭터 멘트 변경 위해 tv_speech_bubble 참조 가져오기
         val speechBubbleTV = view.findViewById<TextView>(R.id.tv_speech_bubble)
         itemViewModel.speech.observe(viewLifecycleOwner) { text ->
+            android.util.Log.d("HomeFragment", "speech='$text'")
             speechBubbleTV.text = text
         }
 
@@ -99,6 +101,7 @@ class HomeFragment : Fragment() {
         val rewardContainer = view.findViewById<LinearLayout>(R.id.reward_container)
         val rewardItemsRV = view.findViewById<RecyclerView>(R.id.rv_reward_items)
         val btnClaimReward = view.findViewById<MaterialButton>(R.id.btn_claim_reward)
+        val itemContainer = view.findViewById<RecyclerView>(R.id.home_item_rv)
 
         val rewardItemRVAdapter = HomeItemRVAdapter()
         rewardItemsRV.adapter = rewardItemRVAdapter
@@ -106,6 +109,12 @@ class HomeFragment : Fragment() {
         //보상할 아이템이 있을 때만 reward영역 보여주기
         itemViewModel.rewardAvailable.observe(viewLifecycleOwner) { canReward ->
             rewardContainer.visibility = if (canReward == true) View.VISIBLE else View.GONE
+            itemContainer.visibility = if (canReward == true) View.GONE else View.VISIBLE
+        }
+
+        // rewardItemList가 변경될 때마다 RecyclerView를 업데이트하는 옵저버 추가
+        itemViewModel.rewardItemList.observe(viewLifecycleOwner) { itemList ->
+            rewardItemRVAdapter.setData(itemList)
         }
         
         // 보상처리
@@ -117,6 +126,7 @@ class HomeFragment : Fragment() {
                     itemViewModel.clearRewardAfterClaim()
                     // 보상 UI 숨기고 보상완료 UI 표시
                     rewardContainer.visibility = View.GONE
+                    itemContainer.visibility = View.GONE
                     val rewardCompletionContainer = view.findViewById<LinearLayout>(R.id.reward_completion_container)
                     rewardCompletionContainer.visibility = View.VISIBLE
                     // 2초 후 다시 기본 홈 상태로 되돌리기
@@ -282,8 +292,17 @@ class HomeFragment : Fragment() {
         super.onResume()
         setEmotionBar()
 
-        val pref = requireContext().getSharedPreferences("member", MODE_PRIVATE) // 실제 키/이름 사용
-        val token = pref.getString("accessToken", null) ?: return
+        val pref = requireContext().getSharedPreferences("user", MODE_PRIVATE) // 실제 키/이름 사용
+        val token = pref.getString("accessToken", null)
+
+        Log.d("디버깅_HomeFragment", "현재 토큰: $token") // 토큰 값 로그로 출력
+
+        // 토큰이 null일 경우 로그를 남기고 함수 종료
+        if (token == null) {
+            Log.e("디버깅_HomeFragment", "토큰이 null입니다. API 호출을 진행하지 않습니다.")
+            return
+        }
+
         lifecycleScope.launch {
             itemViewModel.refreshQuestion(token)
         }
