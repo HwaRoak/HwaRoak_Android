@@ -3,6 +3,7 @@ package com.example.hwaroak.ui.notification
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,8 @@ class NoticeFragment : Fragment() {
     private lateinit var pref: SharedPreferences
     private lateinit var accessToken: String
 
+    private var isGoSetting = false
+
     //viewModel 및 repository 정의
     //viewModel 정의
     // 1) Retrofit 서비스로 Repository 인스턴스 생성
@@ -57,6 +60,7 @@ class NoticeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? MainActivity)?.setTopBarNotice()
         //초기 설정
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
         accessToken = pref.getString("accessToken", "").toString()
@@ -78,6 +82,7 @@ class NoticeFragment : Fragment() {
                     selectedNotice ->
                     //불 키우기
                     if (selectedNotice.alarmType == "FIRE") {
+                        parentFragmentManager.popBackStack()
                         val friendId = selectedNotice.userId  // FIRE 알림 보낸 사람 userId
                         if (!friendId.isNullOrBlank()) {
                             (activity as? MainActivity)?.navigateToFriendVisit(friendId)
@@ -88,6 +93,7 @@ class NoticeFragment : Fragment() {
                     }
                     //월간 리포트
                     else if(selectedNotice.alarmType == "DAILY"){
+                        parentFragmentManager.popBackStack()
                         (activity as? MainActivity)?.selectTab(R.id.mypageFragment)
                         requireActivity().supportFragmentManager.beginTransaction()
                             .replace(R.id.main_fragmentContainer, AnalysisFragment())
@@ -96,10 +102,12 @@ class NoticeFragment : Fragment() {
                     }
                     //일기 리마인더
                     else if(selectedNotice.alarmType == "REMINDER"){
+                        parentFragmentManager.popBackStack()
                         (activity as? MainActivity)?.selectTab(R.id.diaryFragment)
                     }
                     //공지 사항
                     else if(selectedNotice.alarmType == "NOTIFICATION"){
+                        parentFragmentManager.popBackStack()
                         (activity as? MainActivity)?.selectTab(R.id.mypageFragment)
                         requireActivity().supportFragmentManager.beginTransaction()
                             .replace(R.id.main_fragmentContainer, AnnouncementFragment())
@@ -108,6 +116,7 @@ class NoticeFragment : Fragment() {
                     }
                     //친구 요청
                     else if(selectedNotice.alarmType == "FRIEND_REQUEST"){
+                        parentFragmentManager.popBackStack()
                         (activity as? MainActivity)?.navigateToFriendRequestPage()
                     }
 
@@ -127,6 +136,7 @@ class NoticeFragment : Fragment() {
         //호출
         noticeViewModel.getAlarmList(accessToken)
 
+        /*
         binding.noticeBackBtn.setOnClickListener {
             // 뒤로가기 버튼 클릭 시 MainActivity의 상단 바를 다시 보이게 함
             (activity as? MainActivity)?.showMainTopBar()
@@ -135,11 +145,14 @@ class NoticeFragment : Fragment() {
             /**뒤로 가기를 누르면 HomeFragment로 이동 -> 해당 fragment 쪽으로 **/
             //(activity as? MainActivity)?.selectTab(R.id.homeFragment)
         }
+        */
+
         // 추후 필요시 여기에 다른 로직 구현
 
         //1. 알림 설정 누를 시 해당 화면으로 이동
         binding.btnNoticeSetting.setOnClickListener {
             // 알림 설정 화면으로 이동
+            isGoSetting = true
             parentFragmentManager.beginTransaction()
                 .replace(R.id.main_fragmentContainer, SettingFragment())
                 .addToBackStack(null)
@@ -149,13 +162,19 @@ class NoticeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as? MainActivity)?.hideMainTopBar()
+        //(activity as? MainActivity)?.hideMainTopBar()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         // 프래그먼트 뷰가 파괴될 때 MainActivity의 상단 바를 다시 보이게 함(프래그먼트가 완전히 제거될 때 호출)
-        (activity as? MainActivity)?.showMainTopBar()
+        //if(isGoSetting){
+        //    (activity as? MainActivity)?.showMainTopBarForSetting()
+        //}
+        //else {
+        //    (activity as? MainActivity)?.showMainTopBar()
+        //}
+        (activity as? MainActivity)?.resetTopBarNotice()
         _binding = null
     }
 }
