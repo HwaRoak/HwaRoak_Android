@@ -102,6 +102,10 @@ class MypageFragment : Fragment() {
             result.onSuccess { data ->
                 updateUi(data.toMypageData())
             }
+            result.onFailure {
+                Log.e("mypage", "불러오기 실패: ${it.message}")
+                Toast.makeText(requireContext(), "불러오기 실패", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

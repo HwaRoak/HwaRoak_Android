@@ -1,14 +1,20 @@
 package com.example.hwaroak.ui.mypage
 
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.hwaroak.R
+import com.example.hwaroak.api.mypage.access.MemberViewModel
+import com.example.hwaroak.data.AnalysisData
+import com.example.hwaroak.data.EmotionSummary
 import com.example.hwaroak.data.MonthViewModel
 import com.example.hwaroak.databinding.FragmentAnalysisBinding
 import com.github.mikephil.charting.data.PieData
@@ -17,12 +23,17 @@ import com.github.mikephil.charting.data.PieEntry
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlin.getValue
 
 class AnalysisFragment : Fragment() {
 
     private var _binding: FragmentAnalysisBinding? = null
     private val binding get() = _binding!!
     private val monthViewModel: MonthViewModel by viewModels()
+    private val memberViewModel: MemberViewModel by activityViewModels()
+
+    private lateinit var pref: SharedPreferences
+    private lateinit var accessToken: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,15 +41,21 @@ class AnalysisFragment : Fragment() {
     ): View {
         _binding = FragmentAnalysisBinding.inflate(inflater, container, false)
 
-        setupClickListeners()
-        observeMonthChanges()
-
-        // 원형 그래프 함수 호출
-        initPieChart()
-
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupClickListeners()
+        observeMonthChanges()
+
+        pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
+        accessToken = pref.getString("accessToken", "").toString()
+
+//        memberViewModel.getAnalysisInfo(accessToken, "${}")
+
+    }
     private fun setupClickListeners() {
         binding.analysisPreviousBtn.setOnClickListener {
             monthViewModel.previousMonth()
@@ -78,33 +95,61 @@ class AnalysisFragment : Fragment() {
         }
     }
 
-    // 원형 그래프 함수
-    private fun initPieChart() {
-        // 그래프 데이터 비율
-        val emotionRatio = listOf(
-            PieEntry(25f),
-            PieEntry(75f),
-            PieEntry(0f),
-            PieEntry(0f)
-        )
+    private fun updateUi(data: AnalysisData) {
+        binding.analysisNumberOfDiaryTv.text = "${data.diaryCount}개"
+        binding.analysisSummaryTv.text = data.message
 
-        // 그래프 데이터별 색상 지정
-        val pieColors = listOf(
-            ContextCompat.getColor(requireContext(), R.color.comfy),
-            ContextCompat.getColor(requireContext(), R.color.happy),
-            ContextCompat.getColor(requireContext(), R.color.depressed),
-            ContextCompat.getColor(requireContext(), R.color.angry)
-        )
+        data.emotionSummary?.let { summary ->
+            binding.analysisComfyPercentTv.text = "${summary.CALM.percent.toInt()}%"
+            binding.analysisHappyPercentTv.text = "${summary.HAPPY.percent.toInt()}%"
+            binding.analysisDepressedPercentTv.text = "${summary.SAD.percent.toInt()}%"
+            binding.analysisAngryPercentTv.text = "${summary.ANGRY.percent.toInt()}%"
+        } ?: run {
+            binding.analysisComfyPercentTv.text = "0%"
+            binding.analysisHappyPercentTv.text = "0%"
+            binding.analysisDepressedPercentTv.text = "0%"
+            binding.analysisAngryPercentTv.text = "0%"
+        }
+
+        initPiechart(data.emotionSummary)
+    }
+
+    // 원형 그래프 함수
+    private fun initPiechart(summary: EmotionSummary?) {
+        val emotionRatio: List<PieEntry>
+        val pieColors: List<Int>
+
+        val totalPercent = summary?.let {
+            it.CALM.percent + it.HAPPY.percent + it.SAD.percent + it.ANGRY.percent
+        } ?: 0.0
+
+        if (summary != null && totalPercent != 0.0) {
+            // 그래프 데이터 비율
+            emotionRatio = listOf(
+                PieEntry(summary.CALM.percent.toFloat()),
+                PieEntry(summary.HAPPY.percent.toFloat()),
+                PieEntry(summary.SAD.percent.toFloat()),
+                PieEntry(summary.ANGRY.percent.toFloat())
+            )
+            // 그래프 데이터별 색상 지정
+            pieColors = listOf(
+                ContextCompat.getColor(requireContext(), R.color.comfy),
+                ContextCompat.getColor(requireContext(), R.color.happy),
+                ContextCompat.getColor(requireContext(), R.color.depressed),
+                ContextCompat.getColor(requireContext(), R.color.angry)
+            )
+        } else {
+            emotionRatio = listOf(PieEntry(100f))
+            pieColors = listOf(ContextCompat.getColor(requireContext(), R.color.none))
+        }
 
         // 데이터별 스타일링을 위해 DataSet 생성(label은 필요 없어서 공백으로 둠)
-        val dataSet = PieDataSet(emotionRatio, "")
+        val dataSet = PieDataSet(emotionRatio, "").apply {
+            colors = pieColors // slice의 색상을 설정해준다.
+            setDrawValues(false) // 지금 서비스에서는 그래프에 퍼센트로 표시하지 않으므로 false
+        }
 
-        // slice의 색상을 설정해준다.
-        dataSet.colors = pieColors
-
-        // 지금 서비스에서는 그래프에 퍼센트로 표시하지 않으므로 false
-        dataSet.setDrawValues(false)
-
+        // 세부 스타일링 관련
         binding.analysisEmotionPiechart.apply {
             data = PieData(dataSet)
 
@@ -121,7 +166,12 @@ class AnalysisFragment : Fragment() {
             setTouchEnabled(false)
             // animateY(1200, Easing.EaseInOutCubic)
 
-            animate()
+            invalidate()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // 메모리 누수 방지
     }
 }
