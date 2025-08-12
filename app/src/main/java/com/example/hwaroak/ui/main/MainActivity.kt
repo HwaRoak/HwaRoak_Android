@@ -233,14 +233,12 @@ class MainActivity : AppCompatActivity() {
 
                 // 1. 백스택에 프래그먼트가 존재하면 pop (예: MyPage → EditProfile → 뒤로 → MyPage)
                 if (supportFragmentManager.backStackEntryCount > 0) {
-                    Log.d("log_back", "여기서 뒤로 가요!1")
                     supportFragmentManager.popBackStack()
                     return
                 }
 
                 if (current !is HomeFragment) {
                     // 홈으로 돌아가기
-                    Log.d("log_back", "여기서 뒤로 가요!2")
                     binding.mainBnv.selectedItemId = R.id.homeFragment
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_fragmentContainer, HomeFragment())

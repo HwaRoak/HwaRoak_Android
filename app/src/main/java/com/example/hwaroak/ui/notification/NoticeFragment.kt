@@ -1,5 +1,6 @@
 package com.example.hwaroak.ui.notification
 
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -10,16 +11,21 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.NoticeItemRVAdaptor
 import com.example.hwaroak.api.HwaRoakClient
+import com.example.hwaroak.api.friend.access.FriendViewModel
+import com.example.hwaroak.api.friend.access.FriendViewModelFactory
+import com.example.hwaroak.api.friend.repository.FriendRepository
 import com.example.hwaroak.api.notice.access.NoticeViewModel
 import com.example.hwaroak.api.notice.access.NoticeViewModelFactory
 import com.example.hwaroak.api.notice.repository.NoticeRepository
 import com.example.hwaroak.data.NoticeItem
 import com.example.hwaroak.databinding.FragmentNoticeBinding
 import com.example.hwaroak.ui.diary.DiaryFragment
+import com.example.hwaroak.ui.friend.FriendData
 import com.example.hwaroak.ui.friend.FriendFragment
 import com.example.hwaroak.ui.main.MainActivity
 import com.example.hwaroak.ui.mypage.AnalysisFragment
@@ -35,6 +41,11 @@ class NoticeFragment : Fragment() {
     //엑세스 토큰 받기
     private lateinit var pref: SharedPreferences
     private lateinit var accessToken: String
+
+
+    //친구 리스트 불러오는 repoistory & 친구 목록
+    private lateinit var viewModel: FriendViewModel
+    var friendList: MutableList<FriendData> = mutableListOf() //친구 목록 데이터
 
     private var isGoSetting = false
 
@@ -64,7 +75,44 @@ class NoticeFragment : Fragment() {
         //초기 설정
         pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
         accessToken = pref.getString("accessToken", "").toString()
-        
+
+        /**viewModel 초기화 & 친구 리스트 불러오기**/
+        val repository = FriendRepository(HwaRoakClient.friendService)
+        val factory = FriendViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, factory)[FriendViewModel::class.java]
+        val prefs = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE)
+        val token = prefs.getString("accessToken", null) ?: return
+        val bearerToken = token
+        viewModel.fetchFriendList(token)
+
+        //친구목록 observe
+        viewModel.friendListResult.observe(viewLifecycleOwner) { result ->
+            //val currentBinding = _binding ?: return@observe
+            result.onSuccess { serverList ->
+                if (!isAdded || view == null) return@onSuccess
+
+                serverList.forEach {
+                    Log.d("log_friend", "이름: ${it.nickname}, 상태메시지: ${it.introduction}, ID: ${it.userId}")
+                }
+
+                friendList.clear()
+                friendList.addAll(serverList.map {
+                    FriendData(
+                        name = it.nickname.orEmpty(),
+                        status = it.introduction.orEmpty(),
+                        id = it.userId.orEmpty(),
+                        profileImage = it.profileImage?.takeUnless { it.isBlank() }
+                    )
+                })
+            }
+            result.onFailure {
+                Log.e("친구목록", "불러오기 실패: ${it.message}")
+                Toast.makeText(requireContext(), "친구 목록 불러오기 실패", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        /****************************************/
+
         /**알람함 observe**/
         noticeViewModel.alarmList.observe(viewLifecycleOwner) { result ->
             result.onSuccess { resp ->
@@ -82,13 +130,25 @@ class NoticeFragment : Fragment() {
                     selectedNotice ->
                     //불 키우기
                     if (selectedNotice.alarmType == "FIRE") {
-                        parentFragmentManager.popBackStack()
                         val friendId = selectedNotice.userId  // FIRE 알림 보낸 사람 userId
+                        //알람에 있는 친구 ID가 유효할 경우
                         if (!friendId.isNullOrBlank()) {
-                            (activity as? MainActivity)?.navigateToFriendVisit(friendId)
+                            var isFriend = false
+                            //현재 내 친구에 얘가 있느냐를 판단
+                            for(friend in friendList){
+                                if(friend.id == friendId){
+                                    isFriend = true
+                                    break
+                                }
+                            }
+                            if(isFriend){
+                                parentFragmentManager.popBackStack()
+                                (activity as? MainActivity)?.navigateToFriendVisit(friendId)
+                            }
+                            else{Toast.makeText(requireContext(), "존재하지 않는 친구입니다", Toast.LENGTH_SHORT).show()}
                         } else {
-                            //userId가 없다면 기존처럼 친구 탭만 열기(혹은 토스트)
-                            (activity as? MainActivity)?.selectTab(R.id.friendFragment)
+                            //토스트 메시지
+                            Toast.makeText(requireContext(), "존재하지 않는 친구입니다", Toast.LENGTH_SHORT).show()
                         }
                     }
                     //월간 리포트
