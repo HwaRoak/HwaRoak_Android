@@ -1,5 +1,6 @@
 package com.example.hwaroak.api.mypage.network
 
+import com.example.hwaroak.api.mypage.model.AnalysisResponse
 import com.example.hwaroak.api.mypage.model.ApiResponse
 import com.example.hwaroak.api.mypage.model.EditProfileRequest
 import com.example.hwaroak.api.mypage.model.EditProfileResponse
@@ -10,6 +11,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
+import retrofit2.http.Path
 
 interface MemberService {
 
@@ -29,4 +31,9 @@ interface MemberService {
         @Header("Authorization") token: String,
     ): Response<ApiResponse<MypageInfoResponse>>
 
+    @GET("api/v1/members/emotions/{summaryMonth}")
+    suspend fun getAnalysis(
+        @Header("Authorization") token: String,
+        @Path("summaryMonth") summaryMonth: String
+    ): Response<ApiResponse<AnalysisResponse>>
 }

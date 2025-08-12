@@ -13,6 +13,7 @@
         android:layout_width="376dp"
         android:layout_height="505dp"
         android:background="@drawable/bg_home_rounded_container"
+        android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,7 +27,7 @@
             android:text="무슨 일이 있어?"
             android:background="@drawable/bg_home_speech_bubble"
             android:gravity="center"
-            style="@style/freesentation6_20sp_title"
+            style="@style/freesentation5_16sp"
             app:layout_constraintBottom_toTopOf="@id/character_container"
             app:layout_constraintStart_toStartOf="@id/character_container"
             app:layout_constraintEnd_toEndOf="@id/character_container"
@@ -205,6 +206,7 @@
                 android:layout_marginEnd="16dp"/>
 
             <TextView
+                android:id="@+id/reward_item_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

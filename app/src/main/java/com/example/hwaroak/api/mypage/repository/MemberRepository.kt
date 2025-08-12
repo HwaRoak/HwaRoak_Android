@@ -1,6 +1,7 @@
 package com.example.hwaroak.api.mypage.repository
 
 import android.util.Log
+import com.example.hwaroak.api.mypage.model.AnalysisResponse
 import com.example.hwaroak.api.mypage.model.EditProfileRequest
 import com.example.hwaroak.api.mypage.model.EditProfileResponse
 import com.example.hwaroak.api.mypage.model.MemberInfoResponse
@@ -58,6 +59,23 @@ class MemberRepository(private val service: MemberService) {
             } else {
                 Log.e("MemberRepository", "마이페이지 정보 조회 실패: status=${body?.status}, message=${body?.message}")
                 Result.failure(Exception("마이페이지 정보 조회 실패: ${body?.message}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getAnalysisInfo(token: String, summaryMonth: String): Result<AnalysisResponse> {
+        return try {
+            val response = service.getAnalysis("Bearer $token", summaryMonth)
+            val body = response.body()
+
+            if (response.isSuccessful && body != null && body.status == "OK") {
+                Log.d("MemberRepository", "감정분석 정보 조회 성공: ${body.data}")
+                Result.success(body.data)
+            } else {
+                Log.e("MemberRepository", "감정분석 정보 조회 실패: status=${body?.status}, message=${body?.message}")
+                Result.failure(Exception("감정분석 정보 조회 실패: ${body?.message}"))
             }
         } catch (e: Exception) {
             Result.failure(e)

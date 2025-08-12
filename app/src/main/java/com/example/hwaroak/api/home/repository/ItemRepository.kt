@@ -4,6 +4,7 @@ package com.example.hwaroak.api.home.repository
 import com.example.hwaroak.api.home.model.ApiResponse
 import com.example.hwaroak.api.home.model.ItemDto
 import com.example.hwaroak.api.home.network.ItemApiService // ItemApiService 임포트 확인
+import com.example.hwaroak.api.question.network.QuestionService
 
 class ItemRepository(private val service: ItemApiService) {
 

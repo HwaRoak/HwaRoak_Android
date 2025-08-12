@@ -22,8 +22,15 @@ class HomeItemRVAdapter : RecyclerView.Adapter<HomeItemRVAdapter.ViewHolder>() {
         return ViewHolder(view)
     }
 
+    var onItemClick: ((LockerItem) -> Unit)? = null
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        items[position]?.let { holder.imageView.setImageResource(it.imageRes) }
+        items[position]?.let { item ->
+            holder.imageView.setImageResource(item.imageRes)
+            holder.itemView.setOnClickListener {
+                onItemClick?.invoke(item)
+            }
+        }
     }
 
     override fun getItemCount(): Int = items.size

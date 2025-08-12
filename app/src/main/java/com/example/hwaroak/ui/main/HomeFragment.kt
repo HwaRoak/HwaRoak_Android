@@ -102,6 +102,7 @@ class HomeFragment : Fragment() {
         val rewardItemsRV = view.findViewById<RecyclerView>(R.id.rv_reward_items)
         val btnClaimReward = view.findViewById<MaterialButton>(R.id.btn_claim_reward)
         val itemContainer = view.findViewById<RecyclerView>(R.id.home_item_rv)
+        val rewardItemTV = view.findViewById<TextView>(R.id.reward_item_tv)
 
         val rewardItemRVAdapter = HomeItemRVAdapter()
         rewardItemsRV.adapter = rewardItemRVAdapter
@@ -115,14 +116,22 @@ class HomeFragment : Fragment() {
         // rewardItemList가 변경될 때마다 RecyclerView를 업데이트하는 옵저버 추가
         itemViewModel.rewardItemList.observe(viewLifecycleOwner) { itemList ->
             rewardItemRVAdapter.setData(itemList)
+
+            // 새롭게 추가한 LiveData를 관찰하여 reward_item_tv 업데이트
+            itemViewModel.rewardItemDetail.observe(viewLifecycleOwner) { rewardItemDto ->
+                Log.d("HomeFragment", "rewardItemDetail LiveData 응답: $rewardItemDto")
+                rewardItemDto?.let {
+                    rewardItemTV.text = "Lv ${it.level}. ${it.name}" // ItemDto의 level과 name 사용
+                } ?: run {
+                    rewardItemTV.text = "획득 가능한 보상 아이템이 없습니다."
+                }
+            }
         }
         
         // 보상처리
         btnClaimReward.setOnClickListener {
             itemViewModel.claimReward { rewardedItem ->
                 if (rewardedItem != null) {
-                    // 캐릭터 말풍선 변경
-//                    speechBubbleTV.text = "보상이야!(추후매핑)"
                     itemViewModel.clearRewardAfterClaim()
                     // 보상 UI 숨기고 보상완료 UI 표시
                     rewardContainer.visibility = View.GONE
@@ -132,6 +141,7 @@ class HomeFragment : Fragment() {
                     // 2초 후 다시 기본 홈 상태로 되돌리기
                     view.postDelayed({
                         rewardCompletionContainer.visibility = View.GONE
+                        itemContainer.visibility = View.VISIBLE
                     }, 2000)
                 } else {
                     // 실패 시 처리
@@ -139,7 +149,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
 
         // 감정 버튼 참조 가져오기
         val btnSad = view.findViewById<MaterialButton>(R.id.btn_sad)
@@ -295,6 +304,16 @@ class HomeFragment : Fragment() {
         val pref = requireContext().getSharedPreferences("user", MODE_PRIVATE) // 실제 키/이름 사용
         val token = pref.getString("accessToken", null)
 
+        homeItemRVAdapter.onItemClick = onItemClick@{
+            val accessToken = pref.getString("accessToken", null)
+            if (accessToken == null) {
+                Toast.makeText(requireContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
+                return@onItemClick
+            }
+            viewLifecycleOwner.lifecycleScope.launch {
+                itemViewModel.onHomeItemClicked(accessToken)
+            }
+        }
         Log.d("디버깅_HomeFragment", "현재 토큰: $token") // 토큰 값 로그로 출력
 
         // 토큰이 null일 경우 로그를 남기고 함수 종료
