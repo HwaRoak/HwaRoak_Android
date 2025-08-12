@@ -10,16 +10,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.OvershootInterpolator
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.hwaroak.R
 import com.example.hwaroak.api.HwaRoakClient.friendService
 import com.example.hwaroak.api.friend.access.FriendViewModel
 import com.example.hwaroak.api.friend.access.FriendViewModelFactory
 import com.example.hwaroak.api.friend.repository.FriendRepository
 import com.example.hwaroak.databinding.FragmentFriendVisitBinding
+import com.example.hwaroak.ui.locker.LockerFragment
 import com.example.hwaroak.ui.main.MainActivity
+import kotlinx.coroutines.launch
 
 class FriendVisitFragment : Fragment() {
 
@@ -30,9 +34,13 @@ class FriendVisitFragment : Fragment() {
 
     private var originalStatusMessage: String? = null //status 저장용(방문하기 버튼 눌러도 status 출력)
 
+    private var lastToast: Toast? = null
+
     //감정 게이지
-    private val POSITIVE = setOf("행복", "기쁨", "신나는", "설렘", "만족", "편안", "감사", "즐거움", "뿌듯", "희망")
-    private val NEGATIVE = setOf("슬픔", "외로움", "분노", "짜증", "불안", "우울", "피곤", "두려움", "걱정", "후회")
+    private val POSITIVE = setOf("차분한", "뿌듯한", "행복한", "기대됨", "설렘", "감사함", "신나는")
+    private val NEGATIVE = setOf("슬픈", "화나는", "무료함", "피곤함", "짜증남", "외로움", "우울함", "스트레스")
+
+    private var lockerBtn: ImageButton? = null //친구 보관함
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,7 +90,13 @@ class FriendVisitFragment : Fragment() {
                 data?.let {
                     Log.d("불씨", "응답 메시지: ${it.message}, ${it.minutesLeft}분 남음")
                     //binding.friendVisitBubbleTv.text = it.message
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                    lastToast?.cancel()
+                    val appCtx = requireContext().applicationContext
+                    lastToast = Toast.makeText(appCtx, it.message, Toast.LENGTH_SHORT)
+                    lastToast?.show()
+
+                    //한 번 표시했으면 바로 비워서 재진입 시 재발행 방지
+                    viewModel.clearFireResponse()
                 }
             }
 
@@ -102,9 +116,10 @@ class FriendVisitFragment : Fragment() {
                 animateCharacterAndGaugeFire()
 
                 //2.5초 뒤 다시 활성화
-                binding.friendFireupBtn.postDelayed({
-                    binding.friendFireupBtn.isEnabled = true
-                }, 2500)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    kotlinx.coroutines.delay(2500)
+                    _binding?.friendFireupBtn?.isEnabled = true
+                }
             }
         }
 
@@ -116,6 +131,28 @@ class FriendVisitFragment : Fragment() {
             viewModel.visitFriendPage("Bearer $token", friendUserId)
         } else {
             Log.e("FriendVisitFragment", "토큰 또는 유저 ID가 null입니다.")
+        }
+
+        //보관함 버튼이 보이는지 안 보이는지 모르겠음 친구 없어서
+        val lockerBtn = requireActivity().findViewById<ImageButton>(R.id.main_locker_btn)
+        lockerBtn.visibility = View.VISIBLE
+
+        //보관함 버튼 클릭 시 friendId 번들로 넘겨 lockerFragment로 전환
+        lockerBtn.setOnClickListener {
+            val friendId = viewModel.friendPage.value?.userId // 방문 중인 친구 ID
+                ?: arguments?.getString("friendUserId") // 인자로 넘어온 경우
+                ?: return@setOnClickListener // 없으면 동작 X
+
+            val locker = LockerFragment().apply {
+                arguments = Bundle().apply { putString("friendId", friendId) }
+            }
+
+            // Fragment 전환 (NavComponent 안 쓰고 Activity 컨테이너 교체)
+            parentFragmentManager
+                .beginTransaction()
+                .replace(R.id.main_fragmentContainer, locker)
+                .addToBackStack(null)
+                .commit()
         }
     }
 
@@ -171,11 +208,10 @@ class FriendVisitFragment : Fragment() {
         binding.friendVisitBubbleTv.text = "${nickname}의 화록이 불타올라요!"
 
         //900ms 후 원래 메시지 복구
-        binding.friendVisitBubbleTv.postDelayed({
-            originalStatusMessage?.let {
-                binding.friendVisitBubbleTv.text = it
-            }
-        }, 900L)
+        viewLifecycleOwner.lifecycleScope.launch {
+            kotlinx.coroutines.delay(900)
+            _binding?.friendVisitBubbleTv?.text = originalStatusMessage
+        }
 
         // 각 불 애니메이션
         val duration = 300L
@@ -209,17 +245,22 @@ class FriendVisitFragment : Fragment() {
                 .start()
         }
         // 일정 시간 뒤에 모두 사라지게 처리 (예: 2.5초 뒤)
-        fires[0].postDelayed({
-            fires.forEach { it.visibility = View.INVISIBLE }
-        }, 900L)
+        viewLifecycleOwner.lifecycleScope.launch {
+            kotlinx.coroutines.delay(900)
+            _binding?.let { bindingNow ->
+                listOf(bindingNow.friendFire1Imv, bindingNow.friendFire2Imv, bindingNow.friendFire3Imv)
+                    .forEach { it.visibility = View.INVISIBLE }
+            }
+        }
     }
 
     private fun animateCharacterAndGaugeFire() {
         // 1. 캐릭터 눈 커짐 이미지 교체 (0.9초 뒤 원래 이미지로)
         binding.ivFriendCharacter.setImageResource(R.drawable.ic_friend_character_surprise)
-        binding.ivFriendCharacter.postDelayed({
-            binding.ivFriendCharacter.setImageResource(R.drawable.img_home_hwaroaki)
-        }, 900)
+        viewLifecycleOwner.lifecycleScope.launch {
+            kotlinx.coroutines.delay(900)
+            _binding?.ivFriendCharacter?.setImageResource(R.drawable.img_home_hwaroaki)
+        }
 
         val fireRec = binding.friendFireRecIn
 
@@ -262,9 +303,17 @@ class FriendVisitFragment : Fragment() {
         return pref.getString("accessToken", null)
     }
 
+    override fun onPause() {
+        super.onPause()
+        lastToast?.cancel()
+        viewModel.clearFireResponse()
+    }
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        lastToast?.cancel()
+        viewModel.clearFireResponse()
+        lastToast = null
         _binding = null
+        super.onDestroyView()
     }
 }

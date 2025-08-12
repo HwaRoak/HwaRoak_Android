@@ -85,6 +85,8 @@ class LockerFragment : Fragment() {
         }
     }
 
+
+
     // 아이템 변경 확인 다이얼로그를 띄우는 함수 추가
     private fun showConfirmDialog(item: LockerItem) {
         val dialog = Dialog(requireContext())
@@ -111,7 +113,6 @@ class LockerFragment : Fragment() {
         // 다이얼로그 표시
         dialog.show()
     }
-    
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hwaroak.api.friend.model.FireResponseData
+import com.example.hwaroak.api.friend.model.FriendItemListResponse
 import com.example.hwaroak.api.friend.model.FriendRequestResponse
 import com.example.hwaroak.api.friend.model.FriendResponse
 import com.example.hwaroak.api.friend.model.ReceivedFriendData
@@ -43,7 +44,14 @@ class FriendViewModel(private val repository: FriendRepository) : ViewModel() {
     private val _fireResponse = MutableLiveData<FireResponseData?>()
     val fireResponse: LiveData<FireResponseData?> = _fireResponse //친구에게 불씨 보내기
 
+    private val _friendItems = MutableLiveData<FriendItemListResponse?>()
+    val friendItems: LiveData<FriendItemListResponse?> = _friendItems //친구 아이템 데이터
 
+    private val _isFriendItemsLoading = MutableLiveData(false)
+    val isFriendItemsLoading: LiveData<Boolean> = _isFriendItemsLoading //로딩 상태 표시
+
+    private val _friendItemsError = MutableLiveData<String?>(null)
+    val friendItemsError: LiveData<String?> = _friendItemsError //오류 메시지 저장
     //친구 목록 조회
     fun fetchFriendList(token: String) {
         // Log.d("FriendViewModel", "fetchFriendList 실행됨")
@@ -153,6 +161,29 @@ class FriendViewModel(private val repository: FriendRepository) : ViewModel() {
                 }
             } catch (e: Exception) {
                 Log.e("불씨", "예외 발생: ${e.message}")
+            }
+        }
+    }
+
+    fun clearFireResponse() {
+        _fireResponse.value = null
+    }
+
+    //친구 아이템 리스트 조회
+    fun loadFriendItems(token: String, userId: String) {
+        viewModelScope.launch {
+            _isFriendItemsLoading.value = true
+            _friendItemsError.value = null
+
+            val result = repository.getFriendItems(token, userId)
+
+            _isFriendItemsLoading.value = false
+            result.onSuccess { data ->
+                _friendItems.value = data
+            }.onFailure { e ->
+                _friendItems.value = null
+                _friendItemsError.value = e.message ?: "알 수 없는 오류"
+                Log.e("FriendViewModel", "친구 아이템 로드 실패", e)
             }
         }
     }
