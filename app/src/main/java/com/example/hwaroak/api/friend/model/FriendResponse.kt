@@ -40,7 +40,7 @@ data class ReceivedFriendData(
     val profileImage: String
 )
 
-//친구 페이지 방문
+//친구 페이지 방문 api 데이터 클래스
 data class VisitFriendPage (
     val userId: String,
     val nickname: String,
@@ -56,6 +56,11 @@ data class FireResponseData(
     val minutesLeft: Int
 )
 
+//친구 아이템 리스트 조회
+data class FriendItemListResponse(
+    val items: List<Long>,
+    val selectedItem: Long?
+)
 
 
 

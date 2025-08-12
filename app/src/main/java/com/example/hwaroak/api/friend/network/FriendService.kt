@@ -2,6 +2,7 @@ package com.example.hwaroak.api.friend.network
 
 import com.example.hwaroak.api.friend.model.ApiResponse
 import com.example.hwaroak.api.friend.model.FireResponseData
+import com.example.hwaroak.api.friend.model.FriendItemListResponse
 import com.example.hwaroak.api.friend.model.FriendRequestResponse
 import com.example.hwaroak.api.friend.model.FriendResponse
 import com.example.hwaroak.api.friend.model.FriendSearchResponse
@@ -78,6 +79,12 @@ interface FriendService {
         @Path("userId") userId: String
     ): Response<ApiResponse<FireResponseData>>
 
+    //친구 아이템 리스트 조회
+    @GET("/api/v1/friends/{userId}/items")
+    suspend fun getFriendItems(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): Response<ApiResponse<FriendItemListResponse>>
 
 }
 
