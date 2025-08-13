@@ -32,6 +32,7 @@
             app:layout_constraintStart_toStartOf="@id/character_container"
             app:layout_constraintEnd_toEndOf="@id/character_container"
             />
+
         <FrameLayout
             android:id="@+id/character_container"
             android:layout_width="250dp"
@@ -40,6 +41,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
+
         <ImageView
             android:id="@+id/iv_character"
             android:layout_width="match_parent"
@@ -266,7 +268,319 @@
                 android:textColor="#BCBCBC"/>
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/itemclicked_anime_star1_imv"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_home_star"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-20dp"
+            android:translationX="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/character_container"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
 
+        <ImageView
+            android:id="@+id/itemclicked_anime_star2_imv"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_home_star"
+            android:backgroundTint="@color/transparent"
+            android:translationY="35dp"
+            android:translationX="-30dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/itemclicked_anime_star3_imv"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/ic_home_star"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-40dp"
+            android:translationX="-20dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toStartOf="@id/itemclicked_anime_star2_imv"
+            app:layout_constraintBottom_toTopOf="@id/itemclicked_anime_star2_imv"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_annoyed1_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_annoyed"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-20dp"
+            android:translationX="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/character_container"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_annoyed2_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_annoyed"
+            android:backgroundTint="@color/transparent"
+            android:translationY="35dp"
+            android:translationX="-30dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_annoyed3_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_annoyed"
+            android:background="@drawable/bg_home_emotion_btn"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-40dp"
+            android:translationX="-20dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toStartOf="@id/itemclicked_anime_star2_imv"
+            app:layout_constraintBottom_toTopOf="@id/itemclicked_anime_star2_imv"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_depress1_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_depress"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-20dp"
+            android:translationX="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/character_container"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_depress2_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_depress"
+            android:backgroundTint="@color/transparent"
+            android:translationY="35dp"
+            android:translationX="-30dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_depress3_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_depress"
+            android:background="@drawable/bg_home_emotion_btn"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-40dp"
+            android:translationX="-20dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toStartOf="@id/itemclicked_anime_star2_imv"
+            app:layout_constraintBottom_toTopOf="@id/itemclicked_anime_star2_imv"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_excited1_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_excited"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-20dp"
+            android:translationX="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/character_container"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_excited2_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_excited"
+            android:backgroundTint="@color/transparent"
+            android:translationY="35dp"
+            android:translationX="-30dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_excited3_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_excited"
+            android:background="@drawable/bg_home_emotion_btn"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-40dp"
+            android:translationX="-20dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toStartOf="@id/itemclicked_anime_star2_imv"
+            app:layout_constraintBottom_toTopOf="@id/itemclicked_anime_star2_imv"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_happy1_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_happy"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-20dp"
+            android:translationX="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/character_container"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_happy2_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_happy"
+            android:backgroundTint="@color/transparent"
+            android:translationY="35dp"
+            android:translationX="-30dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_happy3_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_happy"
+            android:background="@drawable/bg_home_emotion_btn"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-40dp"
+            android:translationX="-20dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toStartOf="@id/itemclicked_anime_star2_imv"
+            app:layout_constraintBottom_toTopOf="@id/itemclicked_anime_star2_imv"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_joy1_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_joy"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-20dp"
+            android:translationX="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/character_container"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_joy2_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_joy"
+            android:backgroundTint="@color/transparent"
+            android:translationY="35dp"
+            android:translationX="-30dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_joy3_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_joy"
+            android:background="@drawable/bg_home_emotion_btn"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-40dp"
+            android:translationX="-20dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toStartOf="@id/itemclicked_anime_star2_imv"
+            app:layout_constraintBottom_toTopOf="@id/itemclicked_anime_star2_imv"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_sad1_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_sad"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-20dp"
+            android:translationX="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/character_container"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_sad2_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_sad"
+            android:backgroundTint="@color/transparent"
+            android:translationY="35dp"
+            android:translationX="-30dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/character_container"
+            app:layout_constraintBottom_toBottomOf="@id/character_container"
+            android:visibility="invisible"
+            />
+
+        <ImageView
+            android:id="@+id/ic_home_sad3_imv"
+            android:layout_width="60dp"
+            android:layout_height="62dp"
+            android:src="@drawable/ic_home_sad"
+            android:background="@drawable/bg_home_emotion_btn"
+            android:backgroundTint="@color/transparent"
+            android:translationY="-40dp"
+            android:translationX="-20dp"
+            app:layout_constraintStart_toEndOf="@id/character_container"
+            app:layout_constraintEnd_toStartOf="@id/itemclicked_anime_star2_imv"
+            app:layout_constraintBottom_toTopOf="@id/itemclicked_anime_star2_imv"
+            android:visibility="invisible"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

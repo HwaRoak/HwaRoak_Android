@@ -159,19 +159,6 @@ class ItemViewModel(
         _rewardItemList.value = emptyList()
     }
 
-    // 홈 아이템 클릭시 서버에 통지하고 응답 content로 말풍선 교체
-    fun onHomeItemClicked(token: String) {
-        viewModelScope.launch {
-            val q = questionRepository.itemClick(token)
-            q?.let {
-                _speech.postValue(it.content)   // 말풍선 갱신
-                _rewardAvailable.postValue(it.tag == "REWARD")
-                if (it.tag != "REWARD") _rewardItemList.postValue(emptyList())
-            }
-        }
-    }
-
-
     // ItemDto의 name(문자열)에 따라 안드로이드 drawable 리소스 ID(정수)를 반환하는 헬퍼 함수
     // 이 함수에 모든 아이템 이름과 해당 이미지 리소스 매핑을 추가
     private fun getImageResForName(itemName: String): Int {
