@@ -31,7 +31,7 @@
             app:layout_constraintRight_toRightOf="parent"
             >
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/edit_profile_image_iv"
                 android:layout_width="123dp"
                 android:layout_height="123dp"
