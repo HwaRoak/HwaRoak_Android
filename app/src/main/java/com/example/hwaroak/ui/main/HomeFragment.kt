@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -97,6 +98,41 @@ class HomeFragment : Fragment() {
             speechBubbleTV.text = text
         }
 
+        // 아이템 이름 -> 멘트 매핑(랜덤 매핑을 위해 리스트로)
+        val itemSpeechMap: Map<String, List<String>> = mapOf(
+            "default" to listOf("무슨 일이 있어?", "오늘 하루도 화이팅!", "심심한데 놀아줄래?"),
+            "cheeze" to listOf("난 모짜렐라가 더 좋아!", "치즈는 사랑이야!", "냠냠, 치즈 맛이 좋아~"),
+            "chicken" to listOf("치킨이 최고야! 한 입 할래?", "오늘 저녁은 치킨이닭!", "바삭바삭 치킨!"),
+            "chopstick" to listOf("젓가락으로 뭘 먹을까?", "젓가락질 잘해야만 밥 잘 먹나요~", "젓가락을 잘 쪼개봐!"),
+            "coal" to listOf("따뜻한 연료가 필요해?", "연탄재 함부로 발로 차지 마라", "캠핑 갈 때 유용하겠지?"),
+            "cup" to listOf("마실게 필요해?", "시원한 물 한 잔 어때?", "컵에 뭘 담을까?"),
+            "egg" to listOf("계란은 역시 삶아야 제맛!", "난 캘시퍼는 아니야", "맛있는 계란 요리 해줄까?"),
+            "mashmellow" to listOf("말랑말랑 마시멜로우~", "쫀득쿠키 만들자!", "달콤한 마시멜로우!"),
+            "meat" to listOf("고기는 언제나 옳지!", "내가 고기를 구워봤어!", "힘이 솟아나는 고기!"),
+            "paper" to listOf("종이에 뭘 그려볼까?", "이건 목재야! 골판지가 아니야", "편지 쓸까?"),
+            "potato" to listOf("포슬포슬 감자! 구워 먹을까?", "난 찐감자가 좋아!", "든든한 감자!"),
+            "ruby" to listOf("드디어 최종 보상이야!"),
+            "soup" to listOf("따뜻한 수프 한 그릇 어때?", "몸이 녹는 것 같아~", "우와 맛있어!!"),
+            "tire" to listOf("타이어 화록보다 싸다!", "슝슝~ 달려볼까?", "튼튼한 타이어!"),
+            "tissue" to listOf("두루마리 휴지야", "어디에 쓸까?", "쓱싹쓱싹!"),
+            "trash" to listOf("내가 좋아하는 쓰레기 봉투야!", "지구를 깨끗하게!", "분리수거 잘 해야 해!")
+        )
+
+        // 아이템rv 클릭시 효과들(말풍선 & 에니메이션)
+        homeItemRVAdapter.onItemClick = { clickedItem ->
+            // itemSpeechMap에서 클릭된 아이템의 이름(clickedItem.name)에 해당하는 멘트 리스트를 가져옵니다.
+            val speechOptions = itemSpeechMap[clickedItem.name]
+
+            // 멘트 리스트가 비어있지 않다면, 그중 하나를 랜덤으로 선택하여 말풍선(speechBubbleTV)의 텍스트로 설정합니다.
+            if (!speechOptions.isNullOrEmpty()) {
+                speechBubbleTV.text = speechOptions.random()
+            }
+
+            // 에니메이션 함수
+            playStarAnimation()
+        }
+
+
         //참조 가져오기
         val rewardContainer = view.findViewById<LinearLayout>(R.id.reward_container)
         val rewardItemsRV = view.findViewById<RecyclerView>(R.id.rv_reward_items)
@@ -178,26 +214,6 @@ class HomeFragment : Fragment() {
             "trash" to view.findViewById<ImageView>(R.id.iv_hwaroak_item_trash)
         )
 
-        // 아이템 이름 -> 멘트 매핑(랜덤 매핑을 위해 리스트로)
-        val itemSpeechMap: Map<String, List<String>> = mapOf(
-            "default" to listOf("무슨 일이 있어?", "오늘 하루도 화이팅!", "심심한데 놀아줄래?"),
-            "cheeze" to listOf("난 모짜렐라가 더 좋아!", "치즈는 사랑이야!", "냠냠, 치즈 맛이 좋아~"),
-            "chicken" to listOf("치킨이 최고야! 한 입 할래?", "오늘 저녁은 치킨이닭!", "바삭바삭 치킨!"),
-            "chopstick" to listOf("젓가락으로 뭘 먹을까?", "젓가락질 잘해야만 밥 잘 먹나요~", "젓가락을 잘 쪼개봐!"),
-            "coal" to listOf("따뜻한 연료가 필요해?", "연탄재 함부로 발로 차지 마라", "캠핑 갈 때 유용하겠지?"),
-            "cup" to listOf("마실게 필요해?", "시원한 물 한 잔 어때?", "컵에 뭘 담을까?"),
-            "egg" to listOf("계란은 역시 삶아야 제맛!", "난 캘시퍼는 아니야", "맛있는 계란 요리 해줄까?"),
-            "mashmellow" to listOf("말랑말랑 마시멜로우~", "쫀득쿠키 만들자!", "달콤한 마시멜로우!"),
-            "meat" to listOf("고기는 언제나 옳지!", "내가 고기를 구워봤어!", "힘이 솟아나는 고기!"),
-            "paper" to listOf("종이에 뭘 그려볼까?", "이건 목재야! 골판지가 아니야", "편지 쓸까?"),
-            "potato" to listOf("포슬포슬 감자! 구워 먹을까?", "난 찐감자가 좋아!", "든든한 감자!"),
-            "ruby" to listOf("드디어 최종 보상이야!"),
-            "soup" to listOf("따뜻한 수프 한 그릇 어때?", "몸이 녹는 것 같아~", "우와 맛있어!!"),
-            "tire" to listOf("타이어 화록보다 싸다!", "슝슝~ 달려볼까?", "튼튼한 타이어!"),
-            "tissue" to listOf("두루마리 휴지야", "어디에 쓸까?", "쓱싹쓱싹!"),
-            "trash" to listOf("내가 좋아하는 쓰레기 봉투야!", "지구를 깨끗하게!", "분리수거 잘 해야 해!")
-        )
-
         // 감정 버튼 멘트 매핑
         val emotionSpeechMap: Map<String, List<String>> = mapOf(
             "sad" to listOf("오늘 무슨 일이 있었던 걸까...?", "나한테 털어놔도 괜찮아.", "오늘은 불을 작게....."),
@@ -237,6 +253,7 @@ class HomeFragment : Fragment() {
             if (!speechOptions.isNullOrEmpty()) {
                 speechBubbleTV.text = speechOptions.random()
             }
+            playSadAnimation()
         }
 
         btnAnnoyed.setOnClickListener {
@@ -244,6 +261,7 @@ class HomeFragment : Fragment() {
             if (!speechOptions.isNullOrEmpty()) {
                 speechBubbleTV.text = speechOptions.random()
             }
+            playAnnoyedAnimation()
         }
 
         btnJoy.setOnClickListener {
@@ -251,6 +269,7 @@ class HomeFragment : Fragment() {
             if (!speechOptions.isNullOrEmpty()) {
                 speechBubbleTV.text = speechOptions.random()
             }
+            playJoyAnimation()
         }
 
         btnDepress.setOnClickListener {
@@ -258,6 +277,7 @@ class HomeFragment : Fragment() {
             if (!speechOptions.isNullOrEmpty()) {
                 speechBubbleTV.text = speechOptions.random()
             }
+            playDepressAnimation()
         }
 
         btnExcited.setOnClickListener {
@@ -265,6 +285,7 @@ class HomeFragment : Fragment() {
             if (!speechOptions.isNullOrEmpty()) {
                 speechBubbleTV.text = speechOptions.random()
             }
+            playExcitedAnimation()
         }
 
         btnHappy.setOnClickListener {
@@ -272,6 +293,7 @@ class HomeFragment : Fragment() {
             if (!speechOptions.isNullOrEmpty()) {
                 speechBubbleTV.text = speechOptions.random()
             }
+            playHappyAnimation()
         }
     }
 
@@ -297,24 +319,301 @@ class HomeFragment : Fragment() {
 
     }
 
+    // 아이템 클릭 에니메이션 효과
+    private fun playStarAnimation() {
+        val star1 = view?.findViewById<ImageView>(R.id.itemclicked_anime_star1_imv)
+        val star2 = view?.findViewById<ImageView>(R.id.itemclicked_anime_star2_imv)
+        val star3 = view?.findViewById<ImageView>(R.id.itemclicked_anime_star3_imv)
+
+        if (star1 == null || star2 == null || star3 == null) return
+
+        val stars = listOf(star1, star2, star3)
+
+        // 1. 애니메이션 시작 전 초기 상태 설정 (투명하고 작은 상태)
+        stars.forEach { star ->
+            star.visibility = View.VISIBLE // 보이도록 설정
+            star.scaleX = 0f              // 크기를 0으로
+            star.scaleY = 0f
+            star.alpha = 0f               // 완전히 투명하게
+        }
+
+        // 2. 각 별에 순차적으로 애니메이션 적용
+        val duration = 400L // 애니메이션 지속 시간
+        val delay = 100L    // 각 별 사이의 지연 시간
+
+        stars.forEachIndexed { index, star ->
+            star.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(1f) // 나타나면서 불투명하게
+                .setInterpolator(OvershootInterpolator(2f)) // '뿅'하고 튀어나오는 효과
+                .setDuration(duration)
+                .setStartDelay(index * delay) // 순차적 시작
+                .withEndAction {
+                    // 마지막 별 애니메이션이 끝나면 0.5초 뒤에 모든 별을 다시 숨김
+                    if (index == stars.lastIndex) {
+                        view?.postDelayed({
+                            stars.forEach { s -> s.visibility = View.GONE }
+                        }, 500)
+                    }
+                }
+                .start()
+        }
+    }
+
+    private fun playAnnoyedAnimation() {
+        val annoyed1 = view?.findViewById<ImageView>(R.id.ic_home_annoyed1_imv)
+        val annoyed2 = view?.findViewById<ImageView>(R.id.ic_home_annoyed2_imv)
+        val annoyed3 = view?.findViewById<ImageView>(R.id.ic_home_annoyed3_imv)
+
+        if (annoyed1 == null || annoyed2 == null || annoyed3 == null) return
+
+        val stars = listOf(annoyed1, annoyed2, annoyed3)
+
+        // 1. 애니메이션 시작 전 초기 상태 설정 (투명하고 작은 상태)
+        stars.forEach { star ->
+            star.visibility = View.VISIBLE // 보이도록 설정
+            star.scaleX = 0f              // 크기를 0으로
+            star.scaleY = 0f
+            star.alpha = 0f               // 완전히 투명하게
+        }
+
+        // 2. 각 별에 순차적으로 애니메이션 적용
+        val duration = 400L // 애니메이션 지속 시간
+        val delay = 100L    // 각 별 사이의 지연 시간
+
+        stars.forEachIndexed { index, star ->
+            star.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(1f) // 나타나면서 불투명하게
+                .setInterpolator(OvershootInterpolator(2f)) // '뿅'하고 튀어나오는 효과
+                .setDuration(duration)
+                .setStartDelay(index * delay) // 순차적 시작
+                .withEndAction {
+                    // 마지막 별 애니메이션이 끝나면 0.5초 뒤에 모든 별을 다시 숨김
+                    if (index == stars.lastIndex) {
+                        view?.postDelayed({
+                            stars.forEach { s -> s.visibility = View.GONE }
+                        }, 500)
+                    }
+                }
+                .start()
+        }
+    }
+
+    private fun playHappyAnimation() {
+        val happy1 = view?.findViewById<ImageView>(R.id.ic_home_happy1_imv)
+        val happy2 = view?.findViewById<ImageView>(R.id.ic_home_happy2_imv)
+        val happy3 = view?.findViewById<ImageView>(R.id.ic_home_happy3_imv)
+
+        if (happy1 == null || happy2 == null || happy3 == null) return
+
+        val stars = listOf(happy1, happy2, happy3)
+
+        // 1. 애니메이션 시작 전 초기 상태 설정 (투명하고 작은 상태)
+        stars.forEach { star ->
+            star.visibility = View.VISIBLE // 보이도록 설정
+            star.scaleX = 0f              // 크기를 0으로
+            star.scaleY = 0f
+            star.alpha = 0f               // 완전히 투명하게
+        }
+
+        // 2. 각 별에 순차적으로 애니메이션 적용
+        val duration = 400L // 애니메이션 지속 시간
+        val delay = 100L    // 각 별 사이의 지연 시간
+
+        stars.forEachIndexed { index, star ->
+            star.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(1f) // 나타나면서 불투명하게
+                .setInterpolator(OvershootInterpolator(2f)) // '뿅'하고 튀어나오는 효과
+                .setDuration(duration)
+                .setStartDelay(index * delay) // 순차적 시작
+                .withEndAction {
+                    // 마지막 별 애니메이션이 끝나면 0.5초 뒤에 모든 별을 다시 숨김
+                    if (index == stars.lastIndex) {
+                        view?.postDelayed({
+                            stars.forEach { s -> s.visibility = View.GONE }
+                        }, 500)
+                    }
+                }
+                .start()
+        }
+    }
+
+    private fun playExcitedAnimation() {
+        val excited1 = view?.findViewById<ImageView>(R.id.ic_home_excited1_imv)
+        val excited2 = view?.findViewById<ImageView>(R.id.ic_home_excited2_imv)
+        val excited3 = view?.findViewById<ImageView>(R.id.ic_home_excited3_imv)
+
+        if (excited1 == null || excited2 == null || excited3 == null) return
+
+        val stars = listOf(excited1, excited2, excited3)
+
+        // 1. 애니메이션 시작 전 초기 상태 설정 (투명하고 작은 상태)
+        stars.forEach { star ->
+            star.visibility = View.VISIBLE // 보이도록 설정
+            star.scaleX = 0f              // 크기를 0으로
+            star.scaleY = 0f
+            star.alpha = 0f               // 완전히 투명하게
+        }
+
+        // 2. 각 별에 순차적으로 애니메이션 적용
+        val duration = 400L // 애니메이션 지속 시간
+        val delay = 100L    // 각 별 사이의 지연 시간
+
+        stars.forEachIndexed { index, star ->
+            star.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(1f) // 나타나면서 불투명하게
+                .setInterpolator(OvershootInterpolator(2f)) // '뿅'하고 튀어나오는 효과
+                .setDuration(duration)
+                .setStartDelay(index * delay) // 순차적 시작
+                .withEndAction {
+                    // 마지막 별 애니메이션이 끝나면 0.5초 뒤에 모든 별을 다시 숨김
+                    if (index == stars.lastIndex) {
+                        view?.postDelayed({
+                            stars.forEach { s -> s.visibility = View.GONE }
+                        }, 500)
+                    }
+                }
+                .start()
+        }
+    }
+
+    private fun playDepressAnimation() {
+        val depress1 = view?.findViewById<ImageView>(R.id.ic_home_depress1_imv)
+        val depress2 = view?.findViewById<ImageView>(R.id.ic_home_depress2_imv)
+        val depress3 = view?.findViewById<ImageView>(R.id.ic_home_depress3_imv)
+
+        if (depress1 == null || depress2 == null || depress3 == null) return
+
+        val stars = listOf(depress1, depress2, depress3)
+
+        // 1. 애니메이션 시작 전 초기 상태 설정 (투명하고 작은 상태)
+        stars.forEach { star ->
+            star.visibility = View.VISIBLE // 보이도록 설정
+            star.scaleX = 0f              // 크기를 0으로
+            star.scaleY = 0f
+            star.alpha = 0f               // 완전히 투명하게
+        }
+
+        // 2. 각 별에 순차적으로 애니메이션 적용
+        val duration = 400L // 애니메이션 지속 시간
+        val delay = 100L    // 각 별 사이의 지연 시간
+
+        stars.forEachIndexed { index, star ->
+            star.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(1f) // 나타나면서 불투명하게
+                .setInterpolator(OvershootInterpolator(2f)) // '뿅'하고 튀어나오는 효과
+                .setDuration(duration)
+                .setStartDelay(index * delay) // 순차적 시작
+                .withEndAction {
+                    // 마지막 별 애니메이션이 끝나면 0.5초 뒤에 모든 별을 다시 숨김
+                    if (index == stars.lastIndex) {
+                        view?.postDelayed({
+                            stars.forEach { s -> s.visibility = View.GONE }
+                        }, 500)
+                    }
+                }
+                .start()
+        }
+    }
+
+    private fun playJoyAnimation() {
+        val joy1 = view?.findViewById<ImageView>(R.id.ic_home_joy1_imv)
+        val joy2 = view?.findViewById<ImageView>(R.id.ic_home_joy2_imv)
+        val joy3 = view?.findViewById<ImageView>(R.id.ic_home_joy3_imv)
+
+        if (joy1 == null || joy2 == null || joy3 == null) return
+
+        val stars = listOf(joy1, joy2, joy3)
+
+        // 1. 애니메이션 시작 전 초기 상태 설정 (투명하고 작은 상태)
+        stars.forEach { star ->
+            star.visibility = View.VISIBLE // 보이도록 설정
+            star.scaleX = 0f              // 크기를 0으로
+            star.scaleY = 0f
+            star.alpha = 0f               // 완전히 투명하게
+        }
+
+        // 2. 각 별에 순차적으로 애니메이션 적용
+        val duration = 400L // 애니메이션 지속 시간
+        val delay = 100L    // 각 별 사이의 지연 시간
+
+        stars.forEachIndexed { index, star ->
+            star.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(1f) // 나타나면서 불투명하게
+                .setInterpolator(OvershootInterpolator(2f)) // '뿅'하고 튀어나오는 효과
+                .setDuration(duration)
+                .setStartDelay(index * delay) // 순차적 시작
+                .withEndAction {
+                    // 마지막 별 애니메이션이 끝나면 0.5초 뒤에 모든 별을 다시 숨김
+                    if (index == stars.lastIndex) {
+                        view?.postDelayed({
+                            stars.forEach { s -> s.visibility = View.GONE }
+                        }, 500)
+                    }
+                }
+                .start()
+        }
+    }
+
+    private fun playSadAnimation() {
+        val sad1 = view?.findViewById<ImageView>(R.id.ic_home_sad1_imv)
+        val sad2 = view?.findViewById<ImageView>(R.id.ic_home_sad2_imv)
+        val sad3 = view?.findViewById<ImageView>(R.id.ic_home_sad3_imv)
+
+        if (sad1 == null || sad2 == null || sad3 == null) return
+
+        val stars = listOf(sad1, sad2, sad3)
+
+        // 1. 애니메이션 시작 전 초기 상태 설정 (투명하고 작은 상태)
+        stars.forEach { star ->
+            star.visibility = View.VISIBLE // 보이도록 설정
+            star.scaleX = 0f              // 크기를 0으로
+            star.scaleY = 0f
+            star.alpha = 0f               // 완전히 투명하게
+        }
+
+        // 2. 각 별에 순차적으로 애니메이션 적용
+        val duration = 400L // 애니메이션 지속 시간
+        val delay = 100L    // 각 별 사이의 지연 시간
+
+        stars.forEachIndexed { index, star ->
+            star.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(1f) // 나타나면서 불투명하게
+                .setInterpolator(OvershootInterpolator(2f)) // '뿅'하고 튀어나오는 효과
+                .setDuration(duration)
+                .setStartDelay(index * delay) // 순차적 시작
+                .withEndAction {
+                    // 마지막 별 애니메이션이 끝나면 0.5초 뒤에 모든 별을 다시 숨김
+                    if (index == stars.lastIndex) {
+                        view?.postDelayed({
+                            stars.forEach { s -> s.visibility = View.GONE }
+                        }, 500)
+                    }
+                }
+                .start()
+        }
+    }
+
+
     override fun onResume() {
         super.onResume()
         setEmotionBar()
 
         val pref = requireContext().getSharedPreferences("user", MODE_PRIVATE) // 실제 키/이름 사용
         val token = pref.getString("accessToken", null)
-
-        homeItemRVAdapter.onItemClick = onItemClick@{
-            val accessToken = pref.getString("accessToken", null)
-            if (accessToken == null) {
-                Toast.makeText(requireContext(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show()
-                return@onItemClick
-            }
-            viewLifecycleOwner.lifecycleScope.launch {
-                itemViewModel.onHomeItemClicked(accessToken)
-            }
-        }
-        Log.d("디버깅_HomeFragment", "현재 토큰: $token") // 토큰 값 로그로 출력
 
         // 토큰이 null일 경우 로그를 남기고 함수 종료
         if (token == null) {
