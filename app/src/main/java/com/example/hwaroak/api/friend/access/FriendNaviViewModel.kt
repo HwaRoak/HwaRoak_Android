@@ -10,9 +10,6 @@ class FriendNavViewModel : ViewModel() {
     private val _openFriendEvent = MutableLiveData<String?>()
     val openFriendEvent: LiveData<String?> = _openFriendEvent
 
-    private val _friendListResult = MutableLiveData<Result<List<FriendResponse>>>()
-    val friendListResult: LiveData<Result<List<FriendResponse>>> = _friendListResult //친구 목록 조회
-
     fun openFriend(friendId: String) { _openFriendEvent.value = friendId }
 
 
