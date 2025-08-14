@@ -56,11 +56,6 @@ data class FireResponseData(
     val minutesLeft: Int
 )
 
-//친구 아이템 리스트 조회
-data class FriendItemListResponse(
-    val items: List<Long>,
-    val selectedItem: Long?
-)
 
 
 

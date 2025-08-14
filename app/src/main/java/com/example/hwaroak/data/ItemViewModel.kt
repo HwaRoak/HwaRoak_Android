@@ -208,4 +208,15 @@ class ItemViewModel(
             else -> R.drawable.img_item_lock
         }
     }
+
+    //친구 보관함 아이템 불러오기
+    fun loadFriendItems(friendUserId: String) = viewModelScope.launch {
+        HwaRoakClient.currentAccessToken?.let { token ->
+            val (itemDtos, _) = itemRepository.getFriendItems(token, friendUserId) //서버에서 친구 아이템 목록 가져옴
+            val lockerItems = itemDtos.map {
+                LockerItem(it.itemId, it.name, getImageResForName(it.name)) // 아이템 이름 -> 이미지로 변환(getImageResForName 재사용)
+            }
+            _rewardItemList.value = lockerItems // 변환된 리스트 반영
+        } ?: run { _rewardItemList.value = emptyList() } //엑세스 토큰 X -> 빈 리스트
+    }
 }

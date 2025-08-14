@@ -36,6 +36,11 @@ class MainActivity : AppCompatActivity() {
 
     private val friendNavViewModel: FriendNavViewModel by viewModels()
 
+
+    // FriendVisitFragment에서 호출할 메서드
+    private var currentFriendId: String? = null
+    private var currentFriendName: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -79,6 +84,7 @@ class MainActivity : AppCompatActivity() {
 
                 //매인 화면
                 R.id.homeFragment -> {
+                    clearFriendLockerContext() //친구 보관함 모드 해제
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_fragmentContainer, HomeFragment())
                         .commit()
@@ -89,6 +95,7 @@ class MainActivity : AppCompatActivity() {
 
                 //일기 작성 화면
                 R.id.diaryFragment -> {
+                    clearFriendLockerContext() //친구 보관함 모드 해제
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_fragmentContainer, DiaryFragment())
                         .commit()
@@ -98,6 +105,7 @@ class MainActivity : AppCompatActivity() {
 
                 //일기 히스토리 화면
                 R.id.calendarFragment -> {
+                    clearFriendLockerContext()  //친구 보관함 모드 해제
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_fragmentContainer, CalendarFragment())
                         .commit()
@@ -116,6 +124,7 @@ class MainActivity : AppCompatActivity() {
 
                 //마이페이지 화면
                 R.id.mypageFragment -> {
+                    clearFriendLockerContext() //친구 보관함 모드 해제
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_fragmentContainer, MypageFragment())
                         .commit()
@@ -129,12 +138,35 @@ class MainActivity : AppCompatActivity() {
         //상단바 연결(보관함, 알림창)
         //보관함
         binding.mainLockerBtn.setOnClickListener {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, LockerFragment())
-                .addToBackStack(null)
-                .commit()
-            // BottomNavigationView는 보이게 설정
-            binding.mainBnv.visibility = View.VISIBLE
+            binding.mainLockerBtn.setOnClickListener {
+                //최상단이 이미 Locker면 무시 (중복 쌓임 방지)
+                val top = supportFragmentManager.findFragmentById(R.id.main_fragmentContainer)
+                if (top is LockerFragment) return@setOnClickListener
+
+                //디바운스
+                binding.mainLockerBtn.isEnabled = false
+
+                val fid = currentFriendId
+                val dest = if (fid.isNullOrBlank()) {
+                    LockerFragment() //내 보관함
+                } else {
+                    LockerFragment().apply {
+                        arguments = Bundle().apply {
+                            putString("friendId", fid)
+                            putString("friendNickname", currentFriendName)
+                        } //친구 보관함
+                    }
+                }
+
+                //화면 전환
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_fragmentContainer, dest)
+                    .addToBackStack(null)   // 뒤로가기(또는 X)로 닫히길 원하면 유지
+                    .commit()
+
+                binding.mainBnv.visibility = View.VISIBLE
+                binding.mainLockerBtn.postDelayed({ binding.mainLockerBtn.isEnabled = true }, 300)
+            }
         }
         //알림창
         binding.mainBellBtn.setOnClickListener {
@@ -309,10 +341,27 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    //
+    //방문할 userId를 통해 친구 페이지로 이동
     fun navigateToFriendVisit(friendId: String) {
         binding.mainBnv.selectedItemId = R.id.friendFragment
         friendNavViewModel.openFriend(friendId)  // FriendListFragment가 observe
     }
 
+    //보관함 버튼이 친구보관함으로 열리도록 설정
+    fun setFriendLockerContext(friendId: String, friendName: String) {
+        currentFriendId = friendId
+        currentFriendName = friendName
+    }
+
+    //보관함 버튼 초기화 = 내 보관함으로 열게 함
+    fun clearFriendLockerContext() {
+        currentFriendId = null
+        currentFriendName = null
+    }
+
+    //친구 아이디가 도착하기 전까지 보관함 버튼 잠금
+    fun setLockerEnabled(enabled: Boolean) {
+        binding.mainLockerBtn.isEnabled = enabled
+        binding.mainLockerBtn.alpha = if (enabled) 1f else 0.5f // 비활성 시 시각적 피드백
+    }
 }
