@@ -2,7 +2,9 @@ package com.example.hwaroak.api.question.model
 
 data class QuestionData(
     val content: String,
-    val tag: String
+    val tag: String,
+    val itemInfo: String?,
+    val name: String?
 )
 
 data class QuestionResponse(
