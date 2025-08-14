@@ -196,13 +196,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="12dp"
+            android:layout_marginBottom="15dp"
             android:gravity="center_vertical">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_reward_items"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/item_locker_item"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                tools:listitem="@layout/item_home_reward_item"
                 android:overScrollMode="never"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"/>
@@ -596,6 +597,20 @@
         app:layout_constraintTop_toBottomOf="@id/rounded_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/bg_home_emotion_guage_text"
+        android:layout_width="118dp"
+        android:layout_height="30dp"
+        android:background="@drawable/bg_home_emotion_guage_text"
+        android:text="오늘의 감정 색이에요"
+        android:fontFamily="@font/freesentation_3light"
+        android:textColor="#BCBCBC"
+        android:gravity="center"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="7dp"
+        app:layout_constraintBottom_toTopOf="@id/emotion_gauge_home"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 
 
