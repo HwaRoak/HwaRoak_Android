@@ -10,12 +10,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.OvershootInterpolator
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.HomeItemRVAdapter
@@ -139,9 +141,12 @@ class HomeFragment : Fragment() {
         val btnClaimReward = view.findViewById<MaterialButton>(R.id.btn_claim_reward)
         val itemContainer = view.findViewById<RecyclerView>(R.id.home_item_rv)
         val rewardItemTV = view.findViewById<TextView>(R.id.reward_item_tv)
+        val characterContainer = view.findViewById<FrameLayout>(R.id.character_container)
 
         val rewardItemRVAdapter = HomeItemRVAdapter()
         rewardItemsRV.adapter = rewardItemRVAdapter
+
+        rewardItemsRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         //보상할 아이템이 있을 때만 reward영역 보여주기
         itemViewModel.rewardAvailable.observe(viewLifecycleOwner) { canReward ->
@@ -153,14 +158,10 @@ class HomeFragment : Fragment() {
         itemViewModel.rewardItemList.observe(viewLifecycleOwner) { itemList ->
             rewardItemRVAdapter.setData(itemList)
 
-            // 새롭게 추가한 LiveData를 관찰하여 reward_item_tv 업데이트
-            itemViewModel.rewardItemDetail.observe(viewLifecycleOwner) { rewardItemDto ->
-                Log.d("HomeFragment", "rewardItemDetail LiveData 응답: $rewardItemDto")
-                rewardItemDto?.let {
-                    rewardItemTV.text = "Lv ${it.level}. ${it.name}" // ItemDto의 level과 name 사용
-                } ?: run {
-                    rewardItemTV.text = "획득 가능한 보상 아이템이 없습니다."
-                }
+            // LiveData를 관찰하여 reward_item_tv 업데이트
+            itemViewModel.rewardItemInfoText.observe(viewLifecycleOwner) { itemInfo ->
+                Log.d("HomeFragment", "rewardItemInfoText LiveData 응답: $itemInfo")
+                rewardItemTV.text = itemInfo ?: "획득 가능한 보상 아이템이 없습니다."
             }
         }
         
@@ -172,12 +173,15 @@ class HomeFragment : Fragment() {
                     // 보상 UI 숨기고 보상완료 UI 표시
                     rewardContainer.visibility = View.GONE
                     itemContainer.visibility = View.GONE
+                    characterContainer.visibility = View.VISIBLE
+
                     val rewardCompletionContainer = view.findViewById<LinearLayout>(R.id.reward_completion_container)
                     rewardCompletionContainer.visibility = View.VISIBLE
                     // 2초 후 다시 기본 홈 상태로 되돌리기
                     view.postDelayed({
                         rewardCompletionContainer.visibility = View.GONE
                         itemContainer.visibility = View.VISIBLE
+                        characterContainer.visibility = View.VISIBLE
                     }, 2000)
                 } else {
                     // 실패 시 처리
