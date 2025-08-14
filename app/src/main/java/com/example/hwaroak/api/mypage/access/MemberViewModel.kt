@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hwaroak.api.mypage.model.AnalysisResponse
+import com.example.hwaroak.api.mypage.model.ConfirmUploadResponse
 import com.example.hwaroak.api.mypage.model.EditProfileResponse
 import com.example.hwaroak.api.mypage.model.MemberInfoResponse
 import com.example.hwaroak.api.mypage.model.MypageInfoResponse
+import com.example.hwaroak.api.mypage.model.PresignedUrlResponse
 import com.example.hwaroak.api.mypage.repository.MemberRepository
 import kotlinx.coroutines.launch
 
@@ -27,6 +29,8 @@ class MemberViewModel(private val repository: MemberRepository): ViewModel() {
     private val _analysisResult = MutableLiveData<Result<AnalysisResponse>>()
     val analysisResult: LiveData<Result<AnalysisResponse>> = _analysisResult
 
+    private val _uploadResult = MutableLiveData<Result<ConfirmUploadResponse>>()
+    val uploadResult: LiveData<Result<ConfirmUploadResponse>> = _uploadResult
     fun getMemberInfo(token: String) {
         viewModelScope.launch {
             val result = repository.getMemberInfo(token)
@@ -61,4 +65,10 @@ class MemberViewModel(private val repository: MemberRepository): ViewModel() {
         }
     }
 
+    fun uploadProfileImage(token: String, contentType: String, fileName: String) {
+        viewModelScope.launch {
+            val result = repository.uploadProfileImage(token, contentType, fileName)
+            _uploadResult.postValue(result)
+        }
+    }
 }
