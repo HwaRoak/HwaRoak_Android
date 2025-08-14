@@ -62,6 +62,26 @@ class ItemViewModel(
         }
     }
 
+    fun loadEquippedItem() {
+        viewModelScope.launch {
+            HwaRoakClient.currentAccessToken?.let { token ->
+                val equippedItemDto = itemRepository.getEquippedItem(token)
+                equippedItemDto?.let {
+                    // Update the LiveData with the new equipped item
+                    val item = LockerItem(
+                        id = it.itemId,
+                        name = it.name,
+                        imageRes = getImageResForName(it.name)
+                    )
+                    _homeItemList.value = listOf(item)
+                    Log.d("ItemViewModel", "Equipped item refreshed: ${item.name}")
+                }
+            } ?: run {
+                Log.e("ItemViewModel", "Access token is null, cannot refresh equipped item.")
+            }
+        }
+    }
+
     // 보상으로 받은 아이템 목록을 설정하는 부분 (이 부분은 API 연결과 직접적인 관련이 적고 기존과 동일)
     private val _rewardItemList = MutableLiveData<List<LockerItem>>(emptyList())
     val rewardItemList: LiveData<List<LockerItem>> = _rewardItemList

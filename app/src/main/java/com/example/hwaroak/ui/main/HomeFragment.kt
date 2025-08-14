@@ -616,6 +616,7 @@ class HomeFragment : Fragment() {
         super.onResume()
         setEmotionBar()
 
+
         val pref = requireContext().getSharedPreferences("user", MODE_PRIVATE) // 실제 키/이름 사용
         val token = pref.getString("accessToken", null)
 
@@ -627,6 +628,7 @@ class HomeFragment : Fragment() {
 
         lifecycleScope.launch {
             itemViewModel.refreshQuestion(token)
+            itemViewModel.loadEquippedItem()
         }
     }
 
