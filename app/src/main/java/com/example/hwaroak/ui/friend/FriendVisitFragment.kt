@@ -53,6 +53,8 @@ class FriendVisitFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? MainActivity)?.setLockerEnabled(false) //친구 페이지 들어오고 id 오기 전까지 보관함 잠금
+
         // 1. viewModel 초기화
         viewModel = ViewModelProvider(
             this,
@@ -87,6 +89,9 @@ class FriendVisitFragment : Fragment() {
 
             //userId, nickname 둘 다 전달
             (activity as? MainActivity)?.setFriendLockerContext(data.userId, data.nickname)
+            //이제 친구 보관함을 열 수 있으니 버튼 잠금 해제
+            (activity as? MainActivity)?.setLockerEnabled(true)
+
             //감정 게이지 적용
             val barType = toBarTypeFromEmotions(data.emotions)
             applyEmotionBarFriend(barType)
@@ -95,10 +100,8 @@ class FriendVisitFragment : Fragment() {
             viewModel.fireResponse.observe(viewLifecycleOwner) { data ->
                 data?.let {
                     Log.d("불씨", "응답 메시지: ${it.message}, ${it.minutesLeft}분 남음")
-                    //binding.friendVisitBubbleTv.text = it.message
                     lastToast?.cancel()
-                    val appCtx = requireContext().applicationContext
-                    lastToast = Toast.makeText(appCtx, it.message, Toast.LENGTH_SHORT)
+                    lastToast = Toast.makeText(requireContext().applicationContext, it.message, Toast.LENGTH_SHORT)
                     lastToast?.show()
 
                     //한 번 표시했으면 바로 비워서 재진입 시 재발행 방지
@@ -112,9 +115,9 @@ class FriendVisitFragment : Fragment() {
                 binding.friendFireupBtn.isEnabled = false
 
                 val token = getAccessTokenFromPreferences()
-                val friendUserId = arguments?.getString("friendUserId")
+                val friendUserId = data.userId
 
-                if (!token.isNullOrBlank() && !friendUserId.isNullOrBlank()) {
+                if (!token.isNullOrBlank()) {
                     viewModel.sendFireToFriend("Bearer $token", friendUserId)
                 }
 
@@ -298,8 +301,9 @@ class FriendVisitFragment : Fragment() {
         lastToast?.cancel()
         viewModel.clearFireResponse()
 
-        //친구 context 해제 이후에 보관함 버튼이 내 보관함으로 복귀
+        //화면 떠날 때 컨텍스트 해제 & (혹시 잠겨있을 수도 있으니) 다시 활성화
         (activity as? MainActivity)?.clearFriendLockerContext()
+        (activity as? MainActivity)?.setLockerEnabled(true)
 
         lastToast = null
         _binding = null

@@ -19,6 +19,7 @@ import com.example.hwaroak.data.ItemViewModel
 import com.example.hwaroak.data.ItemViewModelFactory
 import com.example.hwaroak.data.LockerItem
 import com.example.hwaroak.databinding.FragmentLockerBinding
+import com.example.hwaroak.ui.main.MainActivity
 
 class LockerFragment : Fragment() {
 
@@ -33,6 +34,7 @@ class LockerFragment : Fragment() {
         _binding = FragmentLockerBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     //아이템 변경을 위한 viewmodel선언
     private lateinit var itemViewModel: ItemViewModel
 
@@ -59,13 +61,18 @@ class LockerFragment : Fragment() {
         // 친구 보관함 여부 판별
         val friendId = arguments?.getString("friendId")
         val isFriendLocker = !friendId.isNullOrBlank()
+        val friendNickname = arguments?.getString("friendNickname")
 
         // 친구 보관함이면 "닉네임의 보관함", 아니면 기본 "보관함"
-        val friendNickname = arguments?.getString("friendNickname")
-        binding.lockerTitleTv.text = if (isFriendLocker && !friendNickname.isNullOrBlank()) {
-            "${friendNickname}의 보관함"
-        } else {
-            "보관함"
+        binding.lockerTitleTv.text = when {
+            isFriendLocker && !friendNickname.isNullOrBlank() -> "${friendNickname}의 보관함"
+            else -> "보관함"
+        }
+
+        // 친구 보관함이라면 컨텍스트 재설정(연속 클릭 시 계속 친구 보관함 유지)
+        if (isFriendLocker) {
+            (activity as? MainActivity)
+                ?.setFriendLockerContext(friendId!!, friendNickname ?: "")
         }
 
         val adapter = LockerItemRVAdaptor(emptyList()) { selectedItem ->
@@ -102,8 +109,6 @@ class LockerFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
-
-
 
 
     // 아이템 변경 확인 다이얼로그를 띄우는 함수 추가
