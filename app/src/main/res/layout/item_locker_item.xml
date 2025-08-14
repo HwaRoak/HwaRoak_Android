@@ -6,15 +6,15 @@
 
     <ImageView
         android:id="@+id/iv_slot_background"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_gravity="center"
         android:background="@drawable/bg_locker_item_slot" />
 
     <ImageView
         android:id="@+id/iv_item_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_gravity="center"
         android:scaleType="fitCenter" />
 
