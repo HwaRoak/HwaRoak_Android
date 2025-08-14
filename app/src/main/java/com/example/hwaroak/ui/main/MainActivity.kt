@@ -36,6 +36,11 @@ class MainActivity : AppCompatActivity() {
 
     private val friendNavViewModel: FriendNavViewModel by viewModels()
 
+
+    // FriendVisitFragment에서 호출할 메서드
+    private var currentFriendId: String? = null
+    private var currentFriendName: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -129,11 +134,21 @@ class MainActivity : AppCompatActivity() {
         //상단바 연결(보관함, 알림창)
         //보관함
         binding.mainLockerBtn.setOnClickListener {
+            val fid = currentFriendId
+            val dest = if (fid.isNullOrBlank()) {
+                LockerFragment() // 내 보관함
+            } else {
+                LockerFragment().apply { arguments = Bundle().apply {
+                    putString("friendId", fid)
+                    putString("friendNickname", currentFriendName)
+                    }
+                } // 친구 보관함
+            }
             supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragmentContainer, LockerFragment())
+                .replace(R.id.main_fragmentContainer, dest)
                 .addToBackStack(null)
                 .commit()
-            // BottomNavigationView는 보이게 설정
+
             binding.mainBnv.visibility = View.VISIBLE
         }
         //알림창
@@ -313,6 +328,15 @@ class MainActivity : AppCompatActivity() {
     fun navigateToFriendVisit(friendId: String) {
         binding.mainBnv.selectedItemId = R.id.friendFragment
         friendNavViewModel.openFriend(friendId)  // FriendListFragment가 observe
+    }
+
+    fun setFriendLockerContext(friendId: String, friendName: String) {
+        currentFriendId = friendId
+        currentFriendName = friendName
+    }
+    fun clearFriendLockerContext() {
+        currentFriendId = null
+        currentFriendName = null
     }
 
 }

@@ -85,6 +85,8 @@ class FriendVisitFragment : Fragment() {
                 true
             )
 
+            //userId, nickname 둘 다 전달
+            (activity as? MainActivity)?.setFriendLockerContext(data.userId, data.nickname)
             //감정 게이지 적용
             val barType = toBarTypeFromEmotions(data.emotions)
             applyEmotionBarFriend(barType)
@@ -137,29 +139,6 @@ class FriendVisitFragment : Fragment() {
             Log.e("FriendVisitFragment", "토큰 또는 유저 ID가 null입니다.")
         }
 
-        //보관함 버튼이 보이는지 안 보이는지 모르겠음
-        val lockerBtn = requireActivity().findViewById<ImageButton>(R.id.main_locker_btn)
-        lockerBtn.visibility = View.VISIBLE
-
-        //보관함 버튼 클릭 시 friendId 번들로 넘겨 lockerFragment로 전환
-        lockerBtn.setOnClickListener {
-            if (!isAdded) return@setOnClickListener  // 프래그먼트가 붙어있지 않으면 무시
-
-            val friendId = viewModel.friendPage.value?.userId
-                ?: arguments?.getString("friendUserId")
-                ?: return@setOnClickListener
-
-            val locker = LockerFragment().apply {
-                arguments = android.os.Bundle().apply { putString("friendId", friendId) }
-            }
-
-            // parentFragmentManager 대신 Activity의 FragmentManager 사용
-            requireActivity().supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.main_fragmentContainer, locker)
-                .addToBackStack(null)
-                .commit()
-        }
     }
 
     //감정 게이지 bartype
@@ -318,6 +297,10 @@ class FriendVisitFragment : Fragment() {
     override fun onDestroyView() {
         lastToast?.cancel()
         viewModel.clearFireResponse()
+
+        //친구 context 해제 이후에 보관함 버튼이 내 보관함으로 복귀
+        (activity as? MainActivity)?.clearFriendLockerContext()
+
         lastToast = null
         _binding = null
         super.onDestroyView()

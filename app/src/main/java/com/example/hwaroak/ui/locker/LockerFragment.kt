@@ -56,15 +56,35 @@ class LockerFragment : Fragment() {
         // RecyclerView 불러오기
         val lockerRecyclerView: RecyclerView = binding.lockerItemRv
 
+        // 친구 보관함 여부 판별
+        val friendId = arguments?.getString("friendId")
+        val isFriendLocker = !friendId.isNullOrBlank()
+
+        // 친구 보관함이면 "닉네임의 보관함", 아니면 기본 "보관함"
+        val friendNickname = arguments?.getString("friendNickname")
+        binding.lockerTitleTv.text = if (isFriendLocker && !friendNickname.isNullOrBlank()) {
+            "${friendNickname}의 보관함"
+        } else {
+            "보관함"
+        }
+
         val adapter = LockerItemRVAdaptor(emptyList()) { selectedItem ->
             if (selectedItem != null) {
-                showConfirmDialog(selectedItem)
+                if (!isFriendLocker) {
+                    showConfirmDialog(selectedItem)   // 내 보관함: 변경 가능
+                } else {
+                    // 친구 보관함: 읽기 전용 (변경 막기)
+                }
             }
         }
         lockerRecyclerView.adapter = adapter
 
         // 보유 아이템 리스트 불러오기
-        itemViewModel.loadUserItems() // <- 이 함수가 ViewModel에 구현돼 있어야 함
+        if (isFriendLocker) {
+            itemViewModel.loadFriendItems(friendId!!)
+        } else {
+            itemViewModel.loadUserItems()
+        }
 
         // LiveData observe
         itemViewModel.rewardItemList.observe(viewLifecycleOwner) { items ->
@@ -82,6 +102,7 @@ class LockerFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
+
 
 
 

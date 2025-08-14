@@ -1,6 +1,7 @@
 package com.example.hwaroak.api.home.network
 
 import com.example.hwaroak.api.home.model.ApiResponse
+import com.example.hwaroak.api.home.model.FriendItemListResponse
 import com.example.hwaroak.api.home.model.ItemDto
 import retrofit2.Response
 import retrofit2.http.GET
@@ -34,4 +35,11 @@ interface ItemApiService {
     suspend fun claimReward(
         @Header("Authorization") token: String
     ): Response<ApiResponse<ItemDto>>
+
+    //  5. 친구 아아템 리스트 조회
+    @GET("api/v1/friends/{userId}/items")
+    suspend fun getFriendItems(
+        @Header("Authorization") token: String,
+        @Path("userId") userId: String
+    ): Response<ApiResponse<FriendItemListResponse>>
 }

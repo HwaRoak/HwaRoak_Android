@@ -1,13 +1,8 @@
 package com.example.hwaroak.api.friend.repository
 
 import android.util.Log
-import com.example.hwaroak.api.HwaRoakClient.friendService
-
-import com.example.hwaroak.api.diary.model.DiaryResponseBody
 import com.example.hwaroak.api.friend.model.ApiResponse
 import com.example.hwaroak.api.friend.model.FireResponseData
-import com.example.hwaroak.api.friend.model.FriendItemListResponse
-import com.example.hwaroak.api.friend.model.FriendRequestResponse
 import com.example.hwaroak.api.friend.model.FriendResponse
 import com.example.hwaroak.api.friend.model.ReceivedFriendData
 import com.example.hwaroak.api.friend.model.VisitFriendPage
@@ -159,24 +154,5 @@ class FriendRepository(private val api: FriendService) {
     //9. 친구에게 불씨 보내기
     suspend fun sendFireToFriend(token: String, userId: String): Response<ApiResponse<FireResponseData>> {
         return api.sendFireToFriend(token, userId)
-    }
-
-    // 10. 친구 아이템 리스트 조회
-    suspend fun getFriendItems(token: String, userId: String): Result<FriendItemListResponse> {
-        return try {
-            val response = api.getFriendItems("Bearer $token", userId)
-            if (response.isSuccessful) {
-                val data = response.body()?.data
-                if (data != null) {
-                    Result.success(data)
-                } else {
-                    Result.failure(Exception("데이터 없음"))
-                }
-            } else {
-                Result.failure(Exception("요청 실패: ${response.code()}"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
     }
 }
