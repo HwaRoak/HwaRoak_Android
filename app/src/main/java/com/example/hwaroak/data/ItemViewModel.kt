@@ -123,9 +123,13 @@ class ItemViewModel(
     private val _rewardAvailable = MutableLiveData(false)
     val rewardAvailable: LiveData<Boolean> = _rewardAvailable
 
-    // 보상 아이템의 상세 정보 (level, name)를 위한 LiveData 추가
-    private val _rewardItemDetail = MutableLiveData<ItemDto>()
-    val rewardItemDetail: LiveData<ItemDto> = _rewardItemDetail
+//    // 보상 아이템의 상세 정보 (level, name)를 위한 LiveData 추가
+//    private val _rewardItemDetail = MutableLiveData<ItemDto>()
+//    val rewardItemDetail: LiveData<ItemDto> = _rewardItemDetail
+
+    // REWARD 태그가 있을 때 표시될 아이템 설명을 위한 LiveData 추가
+    private val _rewardItemInfoText = MutableLiveData<String>()
+    val rewardItemInfoText: LiveData<String> = _rewardItemInfoText
 
     suspend fun refreshQuestion(accessToken: String) {
         Log.d("HomeFragment", "onResume called")
@@ -135,17 +139,19 @@ class ItemViewModel(
             val canReward = it.tag == "REWARD"
             _rewardAvailable.postValue(canReward)
             if (canReward) {
-                // 보상 조건 충족 시, 보상 아이템 목록을 불러오는 로직 추가
-                // 현재는 전체 아이템을 불러와서 보상 아이템 목록처럼 사용
-                val items = itemRepository.getItems(accessToken)
-                val lockerItems = items?.map { item ->
-                    LockerItem(item.itemId, item.name, getImageResForName(item.name))
-                } ?: emptyList()
-                _rewardItemList.postValue(lockerItems)
+                // REWARD 태그가 있을 때, 응답에 포함된 아이템 정보 사용
+                _rewardItemInfoText.postValue(it.itemInfo ?: "보상 아이템 정보가 없습니다.")
 
-                // 보상 아이템의 상세 정보를 _rewardItemDetail에 저장
-                items?.firstOrNull()?.let { rewardItemDto ->
-                    _rewardItemDetail.postValue(rewardItemDto)
+                it.name?.let { itemName ->
+                    val rewardItem = LockerItem(
+                        id = 0, // ID는 현재 사용되지 않으므로 0으로 설정
+                        name = itemName,
+                        imageRes = getImageResForName(itemName)
+                    )
+                    _rewardItemList.postValue(listOf(rewardItem))
+                } ?: run {
+                    // 보상 아이템 이름이 없는 경우 리스트 비우기
+                    _rewardItemList.postValue(emptyList())
                 }
             } else {
                 // 보상 조건 미충족 시, 리스트 비우기
@@ -176,7 +182,7 @@ class ItemViewModel(
             "potato" -> R.drawable.img_item_potato
             "ruby" -> R.drawable.img_item_ruby
             "soup" -> R.drawable.img_item_soup
-            "tire" -> R.drawable.img_item_tire
+            "tier" -> R.drawable.img_item_tire
             "tissue" -> R.drawable.img_item_tissue
             "trash" -> R.drawable.img_item_trash
             else -> R.drawable.img_item_lock
