@@ -60,7 +60,7 @@ class FriendVisitFragment : Fragment() {
         )[FriendViewModel::class.java]
 
         //초기 방어
-        (activity as? MainActivity)?.setTopBar("불러오는 중...",isBackVisible = true, true)
+        (activity as? MainActivity)?.setTopBar("불러오는 중...", isBackVisible = true, true)
 
         //UI 초기화 받아오는데 오래 걸릴 경우 표시
         binding.tvFriendTitle.text = "불러오는 중..."
@@ -79,7 +79,11 @@ class FriendVisitFragment : Fragment() {
             binding.friendVisitBubbleTv.text = data.message
 
             //UI topbar 갱신
-            (activity as? MainActivity)?.setTopBar("${data.nickname}의 화록",isBackVisible = true, true)
+            (activity as? MainActivity)?.setTopBar(
+                "${data.nickname}의 화록",
+                isBackVisible = true,
+                true
+            )
 
             //감정 게이지 적용
             val barType = toBarTypeFromEmotions(data.emotions)
@@ -133,22 +137,24 @@ class FriendVisitFragment : Fragment() {
             Log.e("FriendVisitFragment", "토큰 또는 유저 ID가 null입니다.")
         }
 
-        //보관함 버튼이 보이는지 안 보이는지 모르겠음 친구 없어서
+        //보관함 버튼이 보이는지 안 보이는지 모르겠음
         val lockerBtn = requireActivity().findViewById<ImageButton>(R.id.main_locker_btn)
         lockerBtn.visibility = View.VISIBLE
 
         //보관함 버튼 클릭 시 friendId 번들로 넘겨 lockerFragment로 전환
         lockerBtn.setOnClickListener {
-            val friendId = viewModel.friendPage.value?.userId // 방문 중인 친구 ID
-                ?: arguments?.getString("friendUserId") // 인자로 넘어온 경우
-                ?: return@setOnClickListener // 없으면 동작 X
+            if (!isAdded) return@setOnClickListener  // 프래그먼트가 붙어있지 않으면 무시
+
+            val friendId = viewModel.friendPage.value?.userId
+                ?: arguments?.getString("friendUserId")
+                ?: return@setOnClickListener
 
             val locker = LockerFragment().apply {
-                arguments = Bundle().apply { putString("friendId", friendId) }
+                arguments = android.os.Bundle().apply { putString("friendId", friendId) }
             }
 
-            // Fragment 전환 (NavComponent 안 쓰고 Activity 컨테이너 교체)
-            parentFragmentManager
+            // parentFragmentManager 대신 Activity의 FragmentManager 사용
+            requireActivity().supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.main_fragmentContainer, locker)
                 .addToBackStack(null)
