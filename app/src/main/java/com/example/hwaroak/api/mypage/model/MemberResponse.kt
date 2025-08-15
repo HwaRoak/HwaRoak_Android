@@ -49,3 +49,26 @@ data class AnalysisResponse(
     val emotionSummary: EmotionSummary?,
     val message: String?
 )
+
+// 4. 프로필 사진 변경
+// 4-1. 프로필 사진 업로드용 Presigned URL 발급
+data class PresignedUrlRequest(
+    val contentType: String,
+    val fileName: String
+)
+
+data class PresignedUrlResponse(
+    val uploadUrl: String,
+    val objectKey: String,
+    val expiresInSec: Int,
+    val requiredHeaders: Map<String, String> = emptyMap()
+)
+
+// 4-2. 프로필 사진 업로드 확정
+data class ConfirmUploadRequest(
+    val objectKey: String
+)
+
+data class ConfirmUploadResponse(
+    val profileImageUrl: String
+)

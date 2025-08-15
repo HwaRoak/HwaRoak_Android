@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!--푸시 알림 사용 권한 설정-->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!--프로필 사진 변경을 위한 저장소 접근 권한 설정-->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <application
         android:name=".ui.login.GlobalApplication"

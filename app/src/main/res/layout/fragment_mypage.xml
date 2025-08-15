@@ -55,7 +55,7 @@
                     app:layout_rowWeight="1"
                     tools:ignore="TouchTargetSizeCheck" />
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/mypage_profile_image_iv"
                     android:layout_width="110dp"
                     android:layout_height="110dp"

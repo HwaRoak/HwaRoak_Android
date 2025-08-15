@@ -1,10 +1,13 @@
 package com.example.hwaroak.api.mypage.access
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hwaroak.api.mypage.model.AnalysisResponse
+import com.example.hwaroak.api.mypage.model.ConfirmUploadResponse
 import com.example.hwaroak.api.mypage.model.EditProfileResponse
 import com.example.hwaroak.api.mypage.model.MemberInfoResponse
 import com.example.hwaroak.api.mypage.model.MypageInfoResponse
@@ -26,6 +29,12 @@ class MemberViewModel(private val repository: MemberRepository): ViewModel() {
 
     private val _analysisResult = MutableLiveData<Result<AnalysisResponse>>()
     val analysisResult: LiveData<Result<AnalysisResponse>> = _analysisResult
+
+    private val _uploadResult = MutableLiveData<Result<ConfirmUploadResponse>>()
+    val uploadResult: LiveData<Result<ConfirmUploadResponse>> = _uploadResult
+
+    private val _deleteResult = MutableLiveData<Result<Unit>>()
+    val deleteResult: LiveData<Result<Unit>> = _deleteResult
 
     fun getMemberInfo(token: String) {
         viewModelScope.launch {
@@ -61,4 +70,17 @@ class MemberViewModel(private val repository: MemberRepository): ViewModel() {
         }
     }
 
+    fun uploadProfileImage(token: String, contentType: String, fileName: String,  uri: Uri, context: Context) {
+        viewModelScope.launch {
+            val result = repository.uploadProfileImage(token, contentType, fileName, uri, context)
+            _uploadResult.postValue(result)
+        }
+    }
+
+    fun deleteProfileImage(token: String) {
+        viewModelScope.launch {
+            val result = repository.deleteImage(token)
+            _deleteResult.postValue(result)
+        }
+    }
 }

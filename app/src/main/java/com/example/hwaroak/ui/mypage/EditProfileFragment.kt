@@ -7,7 +7,9 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -15,15 +17,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.FrameLayout
 import android.widget.PopupMenu
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.hwaroak.R
 import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.mypage.access.MemberViewModel
@@ -36,6 +43,10 @@ import com.example.hwaroak.databinding.DialogChangeNicknameBinding
 import com.example.hwaroak.databinding.FragmentEditProfileBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.example.hwaroak.ui.main.MainActivity
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class EditProfileFragment : Fragment() {
 
@@ -51,6 +62,12 @@ class EditProfileFragment : Fragment() {
     private var profileImgUrl: String? = null
 
     private val memberViewModel: MemberViewModel by activityViewModels()
+
+    private val getContent = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let { handleSelectedImage(it) }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,6 +105,18 @@ class EditProfileFragment : Fragment() {
             }
         }
 
+        memberViewModel.deleteResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                // 삭제 성공 → 기본 이미지로 변경
+                Glide.with(this)
+                    .load(R.drawable.default_profile_image) // 기본 이미지
+                    .into(binding.editProfileImageIv)
+
+                Toast.makeText(requireContext(), "프로필 이미지가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+            }.onFailure { e ->
+                Toast.makeText(requireContext(), e.message ?: "삭제 실패", Toast.LENGTH_SHORT).show()
+            }
+        }
         // 바텀시트다이얼로그 띄우기 (로직은 밑에 있음)
         binding.editProfileImageBtn.setOnClickListener {
             showChangeImageDialog()
@@ -139,6 +168,23 @@ class EditProfileFragment : Fragment() {
         // 닉네임 변경 연필 버튼 리스너
         binding.editProfileNicknameBtn.setOnClickListener {
             showChangeNicknameDialog() // 다이얼로그 표시 함수 호출
+        }
+
+        memberViewModel.uploadResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { confirm ->
+                // 서버가 내려준 최종 URL
+                val url = confirm.profileImageUrl
+                // 새 이미지 표시
+                Glide.with(this)
+                    .load(url)
+                    .placeholder(R.drawable.default_profile_image) // 프로젝트 리소스로 교체
+                    .error(R.drawable.default_profile_image)
+                    .into(binding.editProfileImageIv)
+
+                Toast.makeText(requireContext(), "프로필 사진이 변경되었어요.", Toast.LENGTH_SHORT).show()
+            }.onFailure { e ->
+                Toast.makeText(requireContext(), e.message ?: "업로드 실패", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -232,12 +278,14 @@ class EditProfileFragment : Fragment() {
 
         sheetBinding.dialogChooseImageTv.setOnClickListener {
             // 앨범에서 사진 선택
+            getContent.launch("image/*")
             dialog.dismiss()
         }
 
         sheetBinding.dialogDefaultImageTv.setOnClickListener {
             // 프로필 이미지 삭제 후 기본 이미지로 변경 로직
-            profileImgUrl = null
+            val token = obtainAuthTokenOrThrow()
+            memberViewModel.deleteProfileImage(token)
             dialog.dismiss()
         }
 
@@ -249,6 +297,54 @@ class EditProfileFragment : Fragment() {
         dialog.show()
     }
 
+    private fun handleSelectedImage(uri: Uri) {
+        val cr = requireContext().contentResolver
+
+        // MIME
+        val mime = cr.getType(uri) ?: "application/octet-stream"
+
+        // 원본 표시명 (없을 수 있음)
+        val originalName: String? = runCatching {
+            cr.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { c ->
+                if (c.moveToFirst()) c.getString(0) else null
+            }
+        }.getOrNull()
+
+        // 확장자 결정
+        val extFromOriginal = originalName
+            ?.substringAfterLast('.', missingDelimiterValue = "")
+            ?.takeIf { it.isNotBlank() }
+
+        val extFromMime = MimeTypeMap.getSingleton().getExtensionFromMimeType(mime)
+
+        val finalExt = extFromOriginal ?: extFromMime ?: "jpg"
+
+        // 베이스 파일명
+        val baseName = when {
+            !originalName.isNullOrBlank() -> originalName.substringBeforeLast('.', originalName)
+            else -> "profile_${System.currentTimeMillis()}"
+        }
+
+        val finalFileName = "$baseName.$finalExt"
+
+        // 토큰 가져오기 (프로젝트 방식에 맞게 교체)
+        val token = obtainAuthTokenOrThrow()
+
+        // ViewModel 호출 (서버: Presign → S3 PUT → Confirm)
+        memberViewModel.uploadProfileImage(
+            token = token,
+            contentType = mime,
+            fileName = finalFileName,
+            uri = uri,
+            context = requireContext()
+        )
+    }
+
+    private fun obtainAuthTokenOrThrow(): String {
+        pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
+        val token = pref.getString("accessToken", "").toString()
+        return token ?: throw IllegalStateException("인증 토큰이 없습니다.")
+    }
     private fun isDefaultProfileImage(): Boolean {
         return profileImgUrl.isNullOrEmpty()
 //        return profileImgUrl.isNullOrEmpty() || profileImgUrl == DEFAULT_PROFILE_IMAGE_URL

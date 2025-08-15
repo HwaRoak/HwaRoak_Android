@@ -121,6 +121,9 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     kapt("com.github.bumptech.glide:compiler:4.16.0")
 
+    //프로필 이미지를 둥글게 만들어 주는 라이브러리
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
     // …기존 의존성들…
 
 }
