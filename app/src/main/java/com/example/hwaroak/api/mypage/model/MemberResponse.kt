@@ -61,11 +61,7 @@ data class PresignedUrlResponse(
     val uploadUrl: String,
     val objectKey: String,
     val expiresInSec: Int,
-    val requiredHeaders: Type
-)
-
-data class Type(
-    val Content_Type: String
+    val requiredHeaders: Map<String, String> = emptyMap()
 )
 
 // 4-2. 프로필 사진 업로드 확정

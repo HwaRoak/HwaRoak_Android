@@ -55,7 +55,8 @@ interface MemberService {
     @PUT
     suspend fun uploadImage(
         @Url uploadUrl: String,
-        @Header("Content-Type") type: String
+        @Header("Content-Type") type: String,
+        @Body fileBody: RequestBody
     ): Response<Unit>
 
     @POST("api/v1/members/profile-image/confirm")
@@ -67,6 +68,6 @@ interface MemberService {
     @DELETE("api/v1/members/profile-image")
     suspend fun deleteImage(
         @Header("Authorization") token: String
-    )
+    ): Response<ApiResponse<Unit>>
 
 }
