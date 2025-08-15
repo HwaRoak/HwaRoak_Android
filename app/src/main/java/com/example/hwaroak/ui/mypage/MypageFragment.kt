@@ -127,7 +127,7 @@ class MypageFragment : Fragment() {
                 "potato" -> R.drawable.img_item_potato
                 "ruby" -> R.drawable.img_item_ruby
                 "soup" -> R.drawable.img_item_soup
-                "tire" -> R.drawable.img_item_tire
+                "tier" -> R.drawable.img_item_tire
                 "tissue" -> R.drawable.img_item_tissue
                 "trash" -> R.drawable.img_item_trash
                 else -> R.drawable.img_item_tissue
