@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hwaroak.R
 import com.example.hwaroak.adaptor.HomeItemRVAdapter
+import com.example.hwaroak.adaptor.RewardItemRVAdapter
 import com.example.hwaroak.data.ItemViewModel
 // 다음 import 문들을 추가하거나 확인하세요.
 import com.example.hwaroak.api.home.repository.ItemRepository // ItemRepository 임포트
@@ -97,7 +98,9 @@ class HomeFragment : Fragment() {
         val speechBubbleTV = view.findViewById<TextView>(R.id.tv_speech_bubble)
         itemViewModel.speech.observe(viewLifecycleOwner) { text ->
             android.util.Log.d("HomeFragment", "speech='$text'")
-            speechBubbleTV.text = text
+            // 온점(".")과 쉼표(",")를 기준으로 줄바꿈 처리 추가
+            val formattedText = text?.replace(".", ".\n")?.replace(",", ",\n")
+            speechBubbleTV.text = formattedText
         }
 
         // 아이템 이름 -> 멘트 매핑(랜덤 매핑을 위해 리스트로)
@@ -115,13 +118,19 @@ class HomeFragment : Fragment() {
             "potato" to listOf("포슬포슬 감자! 구워 먹을까?", "난 찐감자가 좋아!", "든든한 감자!"),
             "ruby" to listOf("드디어 최종 보상이야!"),
             "soup" to listOf("따뜻한 수프 한 그릇 어때?", "몸이 녹는 것 같아~", "우와 맛있어!!"),
-            "tire" to listOf("타이어 화록보다 싸다!", "슝슝~ 달려볼까?", "튼튼한 타이어!"),
+            "tier" to listOf("타이어 화록보다 싸다!", "슝슝~ 달려볼까?", "튼튼한 타이어!"),
             "tissue" to listOf("두루마리 휴지야", "어디에 쓸까?", "쓱싹쓱싹!"),
             "trash" to listOf("내가 좋아하는 쓰레기 봉투야!", "지구를 깨끗하게!", "분리수거 잘 해야 해!")
         )
 
-        // 아이템rv 클릭시 효과들(말풍선 & 에니메이션)
+        val pressItemTV = view.findViewById<TextView>(R.id.press_item_tv)
+        // 아이템rv 클릭시 효과들(말풍선 & 에니메이션 & 설명)
         homeItemRVAdapter.onItemClick = { clickedItem ->
+            // "받은 아이템을 눌러보세요!" 텍스트가 보일 때만 숨김 처리
+            if (pressItemTV.visibility == View.VISIBLE) {
+                pressItemTV.visibility = View.GONE
+            }
+
             // itemSpeechMap에서 클릭된 아이템의 이름(clickedItem.name)에 해당하는 멘트 리스트를 가져옵니다.
             val speechOptions = itemSpeechMap[clickedItem.name]
 
@@ -136,14 +145,14 @@ class HomeFragment : Fragment() {
 
 
         //참조 가져오기
-        val rewardContainer = view.findViewById<LinearLayout>(R.id.reward_container)
+        val rewardContainer = view.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.reward_container)
         val rewardItemsRV = view.findViewById<RecyclerView>(R.id.rv_reward_items)
         val btnClaimReward = view.findViewById<MaterialButton>(R.id.btn_claim_reward)
         val itemContainer = view.findViewById<RecyclerView>(R.id.home_item_rv)
         val rewardItemTV = view.findViewById<TextView>(R.id.reward_item_tv)
         val characterContainer = view.findViewById<FrameLayout>(R.id.character_container)
 
-        val rewardItemRVAdapter = HomeItemRVAdapter()
+        val rewardItemRVAdapter = RewardItemRVAdapter()
         rewardItemsRV.adapter = rewardItemRVAdapter
 
         rewardItemsRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -182,6 +191,18 @@ class HomeFragment : Fragment() {
                         rewardCompletionContainer.visibility = View.GONE
                         itemContainer.visibility = View.VISIBLE
                         characterContainer.visibility = View.VISIBLE
+                        pressItemTV.visibility = View.VISIBLE
+
+                        // 해당 시점에 SharedPreferences에서 토큰을 직접 가져오기
+                        val pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
+                        val token = pref.getString("accessToken", null)
+
+                        if (token != null) {
+                            // ViewModel의 suspend 함수는 코루틴 스코프 내에서 호출하는 것이 안전
+                            lifecycleScope.launch {
+                                itemViewModel.refreshQuestion(token)
+                            }
+                        }
                     }, 2000)
                 } else {
                     // 실패 시 처리
@@ -213,7 +234,7 @@ class HomeFragment : Fragment() {
             "potato" to view.findViewById<ImageView>(R.id.iv_hwaroak_item_potato),
             "ruby" to view.findViewById<ImageView>(R.id.iv_hwaroak_item_ruby),
             "soup" to view.findViewById<ImageView>(R.id.iv_hwaroak_item_soup),
-            "tire" to view.findViewById<ImageView>(R.id.iv_hwaroak_item_tire),
+            "tier" to view.findViewById<ImageView>(R.id.iv_hwaroak_item_tire),
             "tissue" to view.findViewById<ImageView>(R.id.iv_hwaroak_item_tissue),
             "trash" to view.findViewById<ImageView>(R.id.iv_hwaroak_item_trash)
         )
@@ -241,14 +262,6 @@ class HomeFragment : Fragment() {
             // 이미지뷰 가시성 설정
             itemImageMap[currentItemName]?.visibility = View.VISIBLE
 
-            // 텍스트뷰 멘트 설정 (랜덤 선택)
-            val speechOptions = itemSpeechMap[currentItemName] // 해당 아이템의 멘트 리스트 가져오기
-            if (!speechOptions.isNullOrEmpty()) { // 리스트가 비어있지 않다면
-                val randomSpeech = speechOptions.random() // 리스트에서 랜덤으로 하나 선택
-                speechBubbleTV.text = randomSpeech
-            } else {
-                speechBubbleTV.text = "무슨 일이 있어?" // 멘트 리스트가 없거나 비어있으면 기본 멘트
-            }
         }
 
         // 감정 버튼 클릭 리스너
@@ -299,7 +312,69 @@ class HomeFragment : Fragment() {
             }
             playHappyAnimation()
         }
+
+        // 홈 게이지 바 도움말 참조 가져오기
+        val btnTooltip = view.findViewById<ImageView>(R.id.ic_home_tooltip_btn)
+        val overlayView = view.findViewById<View>(R.id.overlay_view)
+        val tooltipDefault = view.findViewById<TextView>(R.id.bg_home_emotion_guage_text_default)
+        val tooltipWhenWrite = view.findViewById<TextView>(R.id.bg_home_emotion_guage_text)
+        val emotionGauge = view.findViewById<ImageView>(R.id.emotion_gauge_home)
+
+        // 1초 후 자동으로 툴팁을 숨기는 작업을 위한 핸들러와 Runnable
+        val handler = android.os.Handler(android.os.Looper.getMainLooper())
+        var hideRunnable: Runnable? = null
+
+        // 툴팁 및 오버레이를 숨기는 함수
+        fun hideTooltip() {
+            overlayView.visibility = View.GONE
+            tooltipDefault.visibility = View.GONE
+            tooltipWhenWrite.visibility = View.GONE
+            // 예약된 숨기기 작업이 있다면 취소
+            hideRunnable?.let { handler.removeCallbacks(it) }
+        }
+
+        // 툴팁 버튼 클릭 리스너 설정
+        btnTooltip.setOnClickListener {
+
+            if (overlayView.visibility == View.VISIBLE) {
+                // 툴팁을 숨기고 아무것도 하지 않음
+                hideTooltip()
+                return@setOnClickListener
+            }
+
+            // 1. 오버레이를 화면에 표시
+            overlayView.visibility = View.VISIBLE
+            overlayView.bringToFront() // 다른 요소들 위로 오도록 설정
+
+            // 2. 툴팁과 관련된 UI 요소들을 오버레이 위로 가져오기
+            emotionGauge.bringToFront()
+            btnTooltip.bringToFront()
+
+            // 3. 일기 작성 여부에 따라 적절한 도움말 텍스트를 표시
+            val isWrite = diaryPref.getBoolean("isWrite", false)
+            if (!isWrite) {
+                // 일기를 안 썼을 때
+                tooltipDefault.visibility = View.VISIBLE
+                tooltipDefault.bringToFront()
+            } else {
+                // 일기를 썼을 때
+                tooltipWhenWrite.visibility = View.VISIBLE
+                tooltipWhenWrite.bringToFront()
+            }
+
+            // 4. 7초 뒤에 자동으로 툴팁 숨기기
+            hideRunnable = Runnable { hideTooltip() }
+            handler.postDelayed(hideRunnable!!, 3000)
+
+            // 5. 어두워진 영역(오버레이)을 클릭하면 즉시 툴팁 숨기기
+            overlayView.setOnClickListener {
+                hideTooltip()
+            }
+        }
     }
+
+
+
 
     //홈 게이지 바 설정
     private fun setEmotionBar(){
@@ -322,6 +397,8 @@ class HomeFragment : Fragment() {
         }
 
     }
+
+
 
     // 아이템 클릭 에니메이션 효과
     private fun playStarAnimation() {

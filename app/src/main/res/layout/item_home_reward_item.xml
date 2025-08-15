@@ -5,16 +5,16 @@
     android:padding="7dp">
 
     <ImageView
-        android:id="@+id/iv_slot_background"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:background="@drawable/bg_locker_item_slot" />
+        android:id="@+id/iv_reward_slot_background"
+        android:layout_width="57dp"
+        android:layout_height="57dp"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/bg_home_reward_item_slot" />
 
     <ImageView
-        android:id="@+id/iv_item_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:id="@+id/iv_reward_item_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
         android:scaleType="fitCenter" />
 

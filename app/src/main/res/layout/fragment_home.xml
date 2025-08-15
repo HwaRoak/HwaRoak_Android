@@ -11,36 +11,52 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rounded_container"
         android:layout_width="376dp"
-        android:layout_height="505dp"
+        android:layout_height="0dp"
         android:background="@drawable/bg_home_rounded_container"
         android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/reward_container"
+        app:layout_constraintVertical_weight="1"
         app:layout_constraintVertical_bias="0.3">
+
+        <ImageView
+            android:id="@+id/iv_speech_bubble_bg"
+            android:layout_width="237dp"
+            android:layout_height="94dp"
+            android:src="@drawable/bg_home_speech_bubble"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/character_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_bias="1.0"/>
 
         <TextView
             android:id="@+id/tv_speech_bubble"
-            android:layout_width="237dp"
-            android:layout_height="94dp"
-            android:paddingBottom="30dp"
-            android:text="무슨 일이 있어?"
-            android:background="@drawable/bg_home_speech_bubble"
+            android:fontFamily="@font/freesentation_6semibold"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="28dp"
+            android:layout_marginTop="5dp"
             android:gravity="center"
-            style="@style/freesentation5_16sp"
-            app:layout_constraintBottom_toTopOf="@id/character_container"
-            app:layout_constraintStart_toStartOf="@id/character_container"
-            app:layout_constraintEnd_toEndOf="@id/character_container"
-            />
+            android:text="무슨 일이 있어?"
+            app:layout_constraintBottom_toBottomOf="@id/iv_speech_bubble_bg"
+            app:layout_constraintEnd_toEndOf="@id/iv_speech_bubble_bg"
+            app:layout_constraintStart_toStartOf="@id/iv_speech_bubble_bg"
+            app:layout_constraintTop_toTopOf="@id/iv_speech_bubble_bg" />
 
         <FrameLayout
             android:id="@+id/character_container"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="260dp"
+            android:layout_height="260dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="30dp">
 
         <ImageView
             android:id="@+id/iv_character"
@@ -175,7 +191,7 @@
             android:id="@+id/home_item_rv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="25dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -184,57 +200,17 @@
             app:spanCount="1"
             tools:listitem="@layout/item_locker_item" />
 
-        <!-- 보상 UI (기본 GONE) -->
-        <LinearLayout
-            android:id="@+id/reward_container"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/press_item_tv"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:fontFamily="@font/freesentation_4regular"
+            android:text="받은 아이템을 눌러보세요!"
+            android:textColor="#BCBCBC"
             android:visibility="gone"
-            android:padding="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/home_item_rv"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="15dp"
-            android:gravity="center_vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_reward_items"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/item_home_reward_item"
-                android:overScrollMode="never"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="16dp"/>
-
-            <TextView
-                android:id="@+id/reward_item_tv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Lv 1. 두루마리 휴지"
-                style="@style/freesentation5_16sp"
-                android:layout_gravity="center_vertical"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_claim_reward"
-                android:layout_width="102dp"
-                android:layout_height="wrap_content"
-                android:text="보상받기"
-                app:backgroundTint="@color/colorPrimary"
-                android:textColor="#FFFFFF"
-                style="@style/freesentation6_16sp_title"
-                app:cornerRadius="24dp"
-                android:insetLeft="0dp"
-                android:insetRight="0dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:layout_gravity="center_vertical"
-                />
-        </LinearLayout>
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <!--보상완료 UI (기본 GONE)-->
         <LinearLayout
@@ -585,6 +561,66 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- 보상 UI (기본 GONE) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/reward_container"
+        android:layout_width="376dp"
+        android:layout_height="71dp"
+        android:background="@drawable/bg_home_rounded_container"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/rounded_container"
+        app:layout_constraintBottom_toTopOf="@id/emotion_gauge_home"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="15dp"
+        android:gravity="center_vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_reward_items"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_home_reward_item"
+            android:overScrollMode="never"
+            android:layout_marginLeft="25dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/reward_item_tv"
+            app:layout_constraintHorizontal_chainStyle="spread_inside" />
+
+        <TextView
+            android:id="@+id/reward_item_tv"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Lv 1. 두루마리 휴지"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:fontFamily="@font/freesentation_5medium"
+
+            app:layout_constraintStart_toEndOf="@+id/rv_reward_items"
+            app:layout_constraintEnd_toStartOf="@+id/btn_claim_reward" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_claim_reward"
+            android:layout_width="102dp"
+            android:layout_height="wrap_content"
+            android:text="보상받기"
+            app:backgroundTint="@color/colorPrimary"
+            android:textColor="#FFFFFF"
+            style="@style/freesentation6_16sp_title"
+            android:layout_marginRight="25dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:cornerRadius="24dp"
+
+            app:layout_constraintStart_toEndOf="@+id/reward_item_tv"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <ImageView
         android:id="@+id/emotion_gauge_home"
@@ -593,10 +629,37 @@
         android:src="@drawable/img_home_emotion_gauge_default"
         android:background="@drawable/bg_emotion_gauge_shadow"
         android:adjustViewBounds="true"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@id/rounded_container"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/reward_container"
+        app:layout_constraintBottom_toTopOf="@id/grid_emotion_buttons"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/ic_home_tooltip_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_home_tooltip_btn"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="3dp"
+        app:layout_constraintEnd_toStartOf="@id/emotion_gauge_home"
+        app:layout_constraintTop_toTopOf="@id/emotion_gauge_home"
+        app:layout_constraintBottom_toBottomOf="@id/emotion_gauge_home" />
+
+    <TextView
+        android:id="@+id/bg_home_emotion_guage_text_default"
+        android:layout_width="145dp"
+        android:layout_height="30dp"
+        android:background="@drawable/bg_home_emotion_guage_text"
+        android:text="오늘의 감정을 기록해 주세요"
+        android:fontFamily="@font/freesentation_3light"
+        android:textColor="#BCBCBC"
+        android:gravity="center"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="7dp"
+        app:layout_constraintBottom_toTopOf="@id/emotion_gauge_home"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/bg_home_emotion_guage_text"
@@ -610,19 +673,17 @@
         android:layout_marginStart="30dp"
         android:layout_marginBottom="7dp"
         app:layout_constraintBottom_toTopOf="@id/emotion_gauge_home"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"/>
 
-
-
-
-    <androidx.gridlayout.widget.GridLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.gridlayout.widget.GridLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/grid_emotion_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:columnCount="3"
         app:rowCount="3"
         app:layout_constraintTop_toBottomOf="@id/emotion_gauge_home"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -741,6 +802,13 @@
             app:layout_gravity="fill"/>
     </androidx.gridlayout.widget.GridLayout>
 
-
+    <View
+        android:id="@+id/overlay_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66BCBCBC"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
