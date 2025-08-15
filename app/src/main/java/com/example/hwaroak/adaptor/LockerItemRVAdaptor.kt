@@ -32,15 +32,27 @@ class LockerItemRVAdaptor(
         val item = itemList[position]
 
         if (item != null) {
-            // 아이템이 있으면, 아이템 이미지 뷰에만 이미지를 설정
+            // 아이템이 있는 경우:
+            // 1. 이미지 설정
             holder.itemImage.setImageResource(item.imageRes)
-            //각 아이템에 홈 화면 아이템변경을 위한 onclicklistener 설정
+            // 2. 패딩을 0으로 초기화 (뷰 재사용 시 자물쇠에 설정된 패딩이 남는 문제 방지)
+            holder.itemImage.setPadding(0, 0, 0, 0)
+            // 3. 클릭 리스너 설정
             holder.itemView.setOnClickListener {
                 onShowConfirmDialog(item)
             }
         } else {
-            // 아이템이 없으면, 아이템 이미지 뷰를 깨끗하게 비우기
+            // 아이템이 없으면 자물쇠 이미지 표시
+            // 1. 자물쇠 이미지 설정
             holder.itemImage.setImageResource(R.drawable.img_item_lock)
+
+            // 2. 자물쇠 이미지가 커보이지 않도록 패딩 추가
+            val paddingInDp = 7 // 원하는 패딩 값(dp)
+            val scale = holder.itemView.context.resources.displayMetrics.density
+            val paddingInPx = (paddingInDp * scale + 0.5f).toInt()
+            holder.itemImage.setPadding(paddingInPx, paddingInPx, paddingInPx, paddingInPx)
+
+            // 3. 클릭 이벤트 제거
             holder.itemView.setOnClickListener(null)
             holder.itemView.isClickable = false
         }
