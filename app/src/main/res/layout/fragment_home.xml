@@ -583,7 +583,7 @@
             android:layout_height="wrap_content"
             tools:listitem="@layout/item_home_reward_item"
             android:overScrollMode="never"
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="20dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
 
