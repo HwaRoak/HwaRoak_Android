@@ -1,6 +1,22 @@
 # 화록 Android README
+<img width="2048" height="1365" alt="image" src="https://github.com/user-attachments/assets/44f63bfa-6546-42fa-a73c-60f9e9138fb3" />
+
+ 
+## 화록 프로젝트 설명
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f16a64fc-37cc-4231-9cb3-c61f14e0382d" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d5be9ada-8145-4c36-8c22-2f77f41fc249" />
+
+<img width="1920" height="2738" alt="image" src="https://github.com/user-attachments/assets/955eb6a8-30a5-43ff-9bce-0770311514a2" />
+  
 
 
+## 안드로이드 팀원 소개
+| **박유수(어헛차)** | **장기준(스탠다드)** | **전유진(딘)** | **조성준(리암)** |
+| :------: |  :------: | :------: | :------: |
+| <img width="150" height="150" alt="image" src="https://github.com/user-attachments/assets/76d1ef5e-326f-4b2f-bc06-e7b10d7ea55f" /> | <img width="150" height="150" alt="image" src="https://github.com/user-attachments/assets/c116973b-49f8-447d-9512-c7e844037af4" /> | <img width="150" height="150" alt="image" src="https://github.com/user-attachments/assets/8b5e2edc-cbc8-476a-a68a-5779975c010a" /> | <img width="150" height="150" alt="image" src="https://github.com/user-attachments/assets/d9bf61f4-2268-4e92-ab26-804b47304346" /> |
+| [@Park-yu-su](https://github.com/Park-yu-su) | [@autojjangs](https://github.com/autojjangs) | [@jyjbn1789](https://github.com/jyjbn1789) | [@cc8s](https://github.com/cc8s) |
+  
 ## 라이브러리 및 기술 스택
 
 ### 1. 공통
