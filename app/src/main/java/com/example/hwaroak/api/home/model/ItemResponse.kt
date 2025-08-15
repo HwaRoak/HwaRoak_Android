@@ -16,3 +16,8 @@ data class ApiResponse<T>(
     val data: T?
 )
 
+//친구 아이템 리스트 조회
+data class FriendItemListResponse(
+    val items: List<Long>, //아이템 리스트
+    val selectedItem: Long? //현재 선택된 아이템
+)

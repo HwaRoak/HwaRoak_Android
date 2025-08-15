@@ -53,6 +53,8 @@ class FriendVisitFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? MainActivity)?.setLockerEnabled(false) //친구 페이지 들어오고 id 오기 전까지 보관함 잠금
+
         // 1. viewModel 초기화
         viewModel = ViewModelProvider(
             this,
@@ -60,7 +62,7 @@ class FriendVisitFragment : Fragment() {
         )[FriendViewModel::class.java]
 
         //초기 방어
-        (activity as? MainActivity)?.setTopBar("불러오는 중...",isBackVisible = true, true)
+        (activity as? MainActivity)?.setTopBar("불러오는 중...", isBackVisible = true, true)
 
         //UI 초기화 받아오는데 오래 걸릴 경우 표시
         binding.tvFriendTitle.text = "불러오는 중..."
@@ -79,7 +81,16 @@ class FriendVisitFragment : Fragment() {
             binding.friendVisitBubbleTv.text = data.message
 
             //UI topbar 갱신
-            (activity as? MainActivity)?.setTopBar("${data.nickname}의 화록",isBackVisible = true, true)
+            (activity as? MainActivity)?.setTopBar(
+                "${data.nickname}의 화록",
+                isBackVisible = true,
+                true
+            )
+
+            //userId, nickname 둘 다 전달
+            (activity as? MainActivity)?.setFriendLockerContext(data.userId, data.nickname)
+            //이제 친구 보관함을 열 수 있으니 버튼 잠금 해제
+            (activity as? MainActivity)?.setLockerEnabled(true)
 
             //감정 게이지 적용
             val barType = toBarTypeFromEmotions(data.emotions)
@@ -89,10 +100,8 @@ class FriendVisitFragment : Fragment() {
             viewModel.fireResponse.observe(viewLifecycleOwner) { data ->
                 data?.let {
                     Log.d("불씨", "응답 메시지: ${it.message}, ${it.minutesLeft}분 남음")
-                    //binding.friendVisitBubbleTv.text = it.message
                     lastToast?.cancel()
-                    val appCtx = requireContext().applicationContext
-                    lastToast = Toast.makeText(appCtx, it.message, Toast.LENGTH_SHORT)
+                    lastToast = Toast.makeText(requireContext().applicationContext, it.message, Toast.LENGTH_SHORT)
                     lastToast?.show()
 
                     //한 번 표시했으면 바로 비워서 재진입 시 재발행 방지
@@ -106,9 +115,9 @@ class FriendVisitFragment : Fragment() {
                 binding.friendFireupBtn.isEnabled = false
 
                 val token = getAccessTokenFromPreferences()
-                val friendUserId = arguments?.getString("friendUserId")
+                val friendUserId = data.userId
 
-                if (!token.isNullOrBlank() && !friendUserId.isNullOrBlank()) {
+                if (!token.isNullOrBlank()) {
                     viewModel.sendFireToFriend("Bearer $token", friendUserId)
                 }
 
@@ -133,27 +142,6 @@ class FriendVisitFragment : Fragment() {
             Log.e("FriendVisitFragment", "토큰 또는 유저 ID가 null입니다.")
         }
 
-        //보관함 버튼이 보이는지 안 보이는지 모르겠음 친구 없어서
-        val lockerBtn = requireActivity().findViewById<ImageButton>(R.id.main_locker_btn)
-        lockerBtn.visibility = View.VISIBLE
-
-        //보관함 버튼 클릭 시 friendId 번들로 넘겨 lockerFragment로 전환
-        lockerBtn.setOnClickListener {
-            val friendId = viewModel.friendPage.value?.userId // 방문 중인 친구 ID
-                ?: arguments?.getString("friendUserId") // 인자로 넘어온 경우
-                ?: return@setOnClickListener // 없으면 동작 X
-
-            val locker = LockerFragment().apply {
-                arguments = Bundle().apply { putString("friendId", friendId) }
-            }
-
-            // Fragment 전환 (NavComponent 안 쓰고 Activity 컨테이너 교체)
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.main_fragmentContainer, locker)
-                .addToBackStack(null)
-                .commit()
-        }
     }
 
     //감정 게이지 bartype
@@ -312,6 +300,11 @@ class FriendVisitFragment : Fragment() {
     override fun onDestroyView() {
         lastToast?.cancel()
         viewModel.clearFireResponse()
+
+        //화면 떠날 때 컨텍스트 해제 & (혹시 잠겨있을 수도 있으니) 다시 활성화
+        (activity as? MainActivity)?.clearFriendLockerContext()
+        (activity as? MainActivity)?.setLockerEnabled(true)
+
         lastToast = null
         _binding = null
         super.onDestroyView()

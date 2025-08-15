@@ -177,7 +177,7 @@ class DiaryFinishFragment : Fragment() {
     private fun settingDiaryResult(reward: Int, recordDate: String,
                                    itemName: String, dirayId: Int, emotionList: List<String>){
 
-        //일단 감정 처리(0-5) [기본, 초긍정, 긍긍부, 부부긍, 초부정]
+        //기준 0=기본, 1=긍정ALL, 2=긍정/부정 반반, 3=부정부정긍정, 4=부정긍정긍정, 5=부정ALL
         var barType : Int = 0
         //1. 감정이 1개
         if(emotionList.size == 1){
@@ -218,7 +218,13 @@ class DiaryFinishFragment : Fragment() {
     //UI 작업을 수행
     private fun applyUi(feedback: String, reward: Int, itemId: String, dirayId: Int) {
         binding.diaryFinishHwatextTv.text    = feedback
-        binding.diaryFinishRewardTv.text     = "리워드까지 ${reward}일!"
+        if(reward == 7){
+            //binding.diaryFinishRewardTv.text     = "리워드까지 ${reward}일!"
+            binding.diaryFinishRewardTv.text     = "아이템 획득!"
+        }
+        else{
+            binding.diaryFinishRewardTv.text     = "리워드까지 ${reward}일!"
+        }
         binding.diaryFinishRew1Imv.setImageResource(
             when (itemId) {
                 "cup" -> R.drawable.img_item_cup
