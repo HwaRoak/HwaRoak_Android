@@ -375,7 +375,6 @@ class HomeFragment : Fragment() {
 
 
 
-
     //홈 게이지 바 설정
     private fun setEmotionBar(){
         val emotionGauge = view?.findViewById<ImageView>(R.id.emotion_gauge_home)
