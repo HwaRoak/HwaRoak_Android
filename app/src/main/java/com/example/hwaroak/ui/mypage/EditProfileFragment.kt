@@ -330,6 +330,8 @@ class EditProfileFragment : Fragment() {
         // 토큰 가져오기 (프로젝트 방식에 맞게 교체)
         val token = obtainAuthTokenOrThrow()
 
+        Log.d("log_my", "$token | $mime | $finalFileName | $uri")
+
         // ViewModel 호출 (서버: Presign → S3 PUT → Confirm)
         memberViewModel.uploadProfileImage(
             token = token,

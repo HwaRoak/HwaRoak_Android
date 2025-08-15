@@ -108,6 +108,8 @@ class MemberRepository(private val service: MemberService) {
                 return Result.failure(Exception("Presigned URL 발급 실패: ${presignedBody?.message ?: presignedResp.message()}"))
             }
             val data = presignedBody.data
+            var tmp: String = data.uploadUrl
+            Log.d("log_put", "중간점검: $tmp")
 
             // 서버가 요구하는 Content-Type 헤더 값
             val headerContentType = data.requiredHeaders["Content-Type"] ?: contentType
@@ -115,12 +117,13 @@ class MemberRepository(private val service: MemberService) {
             // 2) S3 PUT (본문 = Uri 스트리밍)
             val body = uriRequestBody(context, uri, headerContentType)
             val uploadResp = service.uploadImage(
-                data.uploadUrl,
+                tmp,
                 headerContentType,
                 body
             )
             if (!uploadResp.isSuccessful) {
                 val err = uploadResp.errorBody()?.string()
+                Log.d("log_put", "PUT 실패: ${err ?: uploadResp.message()}")
                 return Result.failure(Exception("PUT 실패: ${err ?: uploadResp.message()}"))
                 Log.d("PUT", "PUT 실패: ${err ?: uploadResp.message()}")
             }

@@ -73,7 +73,7 @@ class LoginKakaoActivity : AppCompatActivity() {
         // 로그인 정보 확인
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
             if (error != null) {
-                Toast.makeText(this, "토큰 정보 보기 실패", Toast.LENGTH_SHORT).show()
+            //    Toast.makeText(this, "토큰 정보 보기 실패", Toast.LENGTH_SHORT).show()
             }
             else if (tokenInfo != null) {
                 // 토큰 정보 보기
@@ -132,7 +132,7 @@ class LoginKakaoActivity : AppCompatActivity() {
                 }
             }
             else if (token != null) {
-                Toast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show()
+            //    Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
                 //
                 Log.i("KakaoLogin", "로그인 성공: ${token.accessToken}")
                 //
@@ -189,7 +189,7 @@ class LoginKakaoActivity : AppCompatActivity() {
                 //엑세스 토큰 발급 받은 경우
                 //성공적!
                 if(ok){
-                    Toast.makeText(this@LoginKakaoActivity, "API 받아오기 성공!", Toast.LENGTH_SHORT).show()
+                //    Toast.makeText(this@LoginKakaoActivity, "API 받아오기 성공!", Toast.LENGTH_SHORT).show()
                     Log.d("kakaoLogin", "엑세스 토큰: " + pref.getString("accessToken", "").toString())
                     Log.d("kakaoLogin", "리프레시 토큰: " + pref.getString("refreshToken", "").toString())
                     Log.d("kakaoLogin", "닉네임: " + pref.getString("nickname", "").toString())
@@ -215,7 +215,7 @@ class LoginKakaoActivity : AppCompatActivity() {
                 }
                 //실패적!
                 else{
-                    Toast.makeText(this@LoginKakaoActivity, "API 받아오기 실패!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginKakaoActivity, "서버로부터 정보를 받아오지 못했습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
         } //lifescope 끝
