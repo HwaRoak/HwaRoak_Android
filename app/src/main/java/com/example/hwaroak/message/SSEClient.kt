@@ -30,6 +30,10 @@ data class AlarmEvent(
 
 class SSEClient(private val context: Context) {
 
+
+    //eventSoure를 변수로 뽑아
+    private var eventSource: EventSource? = null
+
     //유저 설정(무한 대기)
     private val client =  OkHttpClient.Builder()
         .readTimeout(0, java.util.concurrent.TimeUnit.MILLISECONDS) // 무한 대기
@@ -103,7 +107,7 @@ class SSEClient(private val context: Context) {
         //이제 EventSource 객체를 만들어서 위에 정의한 client랑 listenr 내용을 넣기
         //request : 연결 주소
         //listener : 연결 중 발생하는 이벤트에 대한 콜백 정의
-        EventSources.createFactory(client)
+        eventSource = EventSources.createFactory(client)
             .newEventSource(request, listener)
     }
 
@@ -131,6 +135,11 @@ class SSEClient(private val context: Context) {
 
         manager.notify(System.currentTimeMillis().toInt(), notification)
         Log.d("log_SSE", "SSE notification check")
+    }
+
+    fun disconnect() {
+        eventSource?.cancel() // EventSource 객체가 null이 아니면 cancel() 호출
+        eventSource = null // 가비지 컬렉션(Garbage Collection)을 위해 null로 설정
     }
 
 
