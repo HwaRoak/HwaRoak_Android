@@ -103,26 +103,6 @@ class HomeFragment : Fragment() {
             speechBubbleTV.text = formattedText
         }
 
-        // 아이템 이름 -> 멘트 매핑(랜덤 매핑을 위해 리스트로)
-        val itemSpeechMap: Map<String, List<String>> = mapOf(
-            "default" to listOf("무슨 일이 있어?", "오늘 하루도 화이팅!", "심심한데 놀아줄래?"),
-            "cheeze" to listOf("난 모짜렐라가 더 좋아!", "치즈는 사랑이야!", "냠냠, 치즈 맛이 좋아~"),
-            "chicken" to listOf("치킨이 최고야! 한 입 할래?", "오늘 저녁은 치킨이닭!", "바삭바삭 치킨!"),
-            "chopstick" to listOf("젓가락으로 뭘 먹을까?", "젓가락질 잘해야만 밥 잘 먹나요~", "젓가락을 잘 쪼개봐!"),
-            "coal" to listOf("따뜻한 연료가 필요해?", "연탄재 함부로 발로 차지 마라", "캠핑 갈 때 유용하겠지?"),
-            "cup" to listOf("마실게 필요해?", "시원한 물 한 잔 어때?", "컵에 뭘 담을까?"),
-            "egg" to listOf("계란은 역시 삶아야 제맛!", "난 캘시퍼는 아니야", "맛있는 계란 요리 해줄까?"),
-            "mashmellow" to listOf("말랑말랑 마시멜로우~", "쫀득쿠키 만들자!", "달콤한 마시멜로우!"),
-            "meat" to listOf("고기는 언제나 옳지!", "내가 고기를 구워봤어!", "힘이 솟아나는 고기!"),
-            "paper" to listOf("종이에 뭘 그려볼까?", "이건 목재야! 골판지가 아니야", "편지 쓸까?"),
-            "potato" to listOf("포슬포슬 감자! 구워 먹을까?", "난 찐감자가 좋아!", "든든한 감자!"),
-            "ruby" to listOf("드디어 최종 보상이야!"),
-            "soup" to listOf("따뜻한 수프 한 그릇 어때?", "몸이 녹는 것 같아~", "우와 맛있어!!"),
-            "tier" to listOf("타이어 화록보다 싸다!", "슝슝~ 달려볼까?", "튼튼한 타이어!"),
-            "tissue" to listOf("두루마리 휴지야", "어디에 쓸까?", "쓱싹쓱싹!"),
-            "trash" to listOf("내가 좋아하는 쓰레기 봉투야!", "지구를 깨끗하게!", "분리수거 잘 해야 해!")
-        )
-
         val pressItemTV = view.findViewById<TextView>(R.id.press_item_tv)
         // 아이템rv 클릭시 효과들(말풍선 & 에니메이션 & 설명)
         homeItemRVAdapter.onItemClick = { clickedItem ->
@@ -131,12 +111,22 @@ class HomeFragment : Fragment() {
                 pressItemTV.visibility = View.GONE
             }
 
-            // itemSpeechMap에서 클릭된 아이템의 이름(clickedItem.name)에 해당하는 멘트 리스트를 가져옵니다.
-            val speechOptions = itemSpeechMap[clickedItem.name]
-
-            // 멘트 리스트가 비어있지 않다면, 그중 하나를 랜덤으로 선택하여 말풍선(speechBubbleTV)의 텍스트로 설정합니다.
-            if (!speechOptions.isNullOrEmpty()) {
-                speechBubbleTV.text = speechOptions.random()
+            val pref = requireContext().getSharedPreferences("user", MODE_PRIVATE)
+            val token = pref.getString("accessToken", null)
+            if (token != null) {
+                // ViewModel의 suspend 함수는 코루틴 스코프 내에서 호출
+                lifecycleScope.launch {
+                    Log.d("HomeFragment_ItemClick", "클릭된 아이템: ${clickedItem.name}")
+                    val newSpeech = questionRepository.fetchItemClickQuestion(token, clickedItem.name)
+                    if (newSpeech != null) {
+                        // ✅ 성공 로그: API로부터 받은 최종 멘트 확인
+                        Log.d("HomeFragment_ItemClick", "적용될 말풍선 멘트: ${newSpeech}")
+                        speechBubbleTV.text = newSpeech
+                    } else {
+                        // ✅ 실패 로그: API 호출에 실패했거나 content가 null일 경우 확인
+                        Log.d("HomeFragment_ItemClick", "API로부터 말풍선 멘트를 가져오지 못했습니다.")
+                    }
+                }
             }
 
             // 에니메이션 함수
