@@ -98,8 +98,11 @@ class HomeFragment : Fragment() {
         val speechBubbleTV = view.findViewById<TextView>(R.id.tv_speech_bubble)
         itemViewModel.speech.observe(viewLifecycleOwner) { text ->
             android.util.Log.d("HomeFragment", "speech='$text'")
-            // 온점(".")과 쉼표(",")를 기준으로 줄바꿈 처리 추가
-            val formattedText = text?.replace(".", ".\n")?.replace(",", ",\n")
+            // 온점(".")과 쉼표(",")를 기준으로 줄바꿈 처리 추가.
+            // 단, ...같이 말 줄임표 처리를 위해 정규식을 사용하여 연속된 온점과 쉼표 묶음 뒤에는 한 번만 줄바꿈 처리
+            val formattedText = text
+                ?.replace(Regex("\\.+"), "$0\n") // 연속된 온점(.) 처리
+                ?.replace(Regex(",+"), "$0\n")   // 연속된 쉼표(,) 처리
             speechBubbleTV.text = formattedText
         }
 
