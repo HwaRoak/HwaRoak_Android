@@ -318,6 +318,7 @@ class EditProfileFragment : Fragment() {
             isDefaultImageSelected = true
 //            memberViewModel.deleteProfileImage(token)
             binding.editProfileImageIv.setImageResource(R.drawable.default_profile_image)
+            memberViewModel.clearStagedImage()
             dialog.dismiss()
         }
 
@@ -382,6 +383,9 @@ class EditProfileFragment : Fragment() {
         return token
     }
     private fun isDefaultProfileImage(): Boolean {
+        if (memberViewModel.previewUri.value != null) {
+            return false
+        }
         val url = memberViewModel.memberInfoResult.value
             ?.getOrNull()
             ?.profileImgUrl
