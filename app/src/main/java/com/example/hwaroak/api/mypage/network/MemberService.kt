@@ -52,12 +52,12 @@ interface MemberService {
         @Body req: PresignedUrlRequest
     ): Response<ApiResponse<PresignedUrlResponse>>
 
-    @PUT
-    suspend fun uploadImage(
-        @Url uploadUrl: String,
-        @Header("Content-Type") type: String,
-        @Body fileBody: RequestBody
-    ): Response<Unit>
+//    @PUT
+//    suspend fun uploadImage(
+//        @Url uploadUrl: String,
+//        @Header("Content-Type") type: String,
+//        @Body fileBody: RequestBody
+//    ): Response<Unit>
 
     @POST("api/v1/members/profile-image/confirm")
     suspend fun confirmUpload(

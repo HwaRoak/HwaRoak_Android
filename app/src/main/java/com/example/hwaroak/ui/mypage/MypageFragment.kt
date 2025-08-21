@@ -18,10 +18,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.ViewCompat.animate
 import androidx.fragment.app.activityViewModels
+import com.bumptech.glide.Glide
 import com.example.hwaroak.R
 import com.example.hwaroak.api.HwaRoakClient
 import com.example.hwaroak.api.mypage.access.MemberViewModel
 import com.example.hwaroak.api.mypage.access.MemberViewModelFactory
+import com.example.hwaroak.api.mypage.model.MemberInfoResponse
 import com.example.hwaroak.api.mypage.model.MypageInfoResponse
 import com.example.hwaroak.api.mypage.model.EmotionSummary as ApiEmotionSummary
 import com.example.hwaroak.api.mypage.model.EmotionData as ApiEmotionData
@@ -29,6 +31,7 @@ import com.example.hwaroak.api.mypage.repository.MemberRepository
 import com.example.hwaroak.data.EmotionSummary
 import com.example.hwaroak.data.MypageData
 import com.example.hwaroak.data.EmotionData
+import com.example.hwaroak.data.MyinfoData
 import com.example.hwaroak.databinding.DialogLogoutCheckBinding
 import com.example.hwaroak.databinding.FragmentMypageBinding
 import com.example.hwaroak.ui.friend.AddFriendFragment
@@ -53,6 +56,9 @@ class MypageFragment : Fragment() {
     //유저 정보를 담을 sharedPreference
     private lateinit var pref: SharedPreferences
     private lateinit var accessToken: String
+
+//    private var latestMyinfo: MyinfoData? = null
+//    private var latestProfileUrl: String? = null
 
 
     override fun onCreateView(
@@ -80,6 +86,13 @@ class MypageFragment : Fragment() {
         val cachedNickname = pref.getString("cachedNickname", null)
         binding.mypageNicknameTv.text = cachedNickname ?: "닉네임 불러오는 중..."
 
+        memberViewModel.profileUpdated.observe(viewLifecycleOwner) { isUpdated ->
+            if (isUpdated) {
+                memberViewModel.getMemberInfo(accessToken)
+                memberViewModel.getMypageInfo(accessToken)
+                memberViewModel.resetProfileUpdated() // 상태 초기화
+            }
+        }
         // 1. 최초에 한 번 사용자 정보를 요청 (또는 화면에 보일 때마다)
         memberViewModel.getMemberInfo(accessToken)
 
@@ -89,6 +102,17 @@ class MypageFragment : Fragment() {
                 binding.mypageNicknameTv.text = data.nickname
                 // 닉네임을 SharedPreferences에 저장
                 pref.edit().putString("cachedNickname", data.nickname).apply()
+                if (data.profileImgUrl != null) {
+                    Glide.with(view)
+                        .load(data.profileImgUrl)
+                        .placeholder(R.drawable.default_profile_image)
+                        .error(R.drawable.default_profile_image)
+                        .into(binding.mypageProfileImageIv)
+                } else {
+                    binding.mypageProfileImageIv.setImageResource(R.drawable.default_profile_image)
+                }
+//                latestMyinfo = data.toMyinfoData(profileUrlFallback = latestProfileUrl)
+//                latestMyinfo?.let { updateMyinfoUi(it) }
             }
             result.onFailure {
                 Log.d("member", "불러오기 실패: ${it.message}")
@@ -108,31 +132,26 @@ class MypageFragment : Fragment() {
             }
         }
     }
-
     private fun updateUi(data: MypageData) {
         // 공통적으로 표시되는 데이터(일기 개수, 다음 아이템 관련 정보)
         binding.mypageCountDiaryTv.text = "${data.totalDiary}개"
-        binding.mypageItemImageIv.setImageResource(
-            when (data.itemId) {
-                "cup" -> R.drawable.img_item_cup
-                // …다른 아이템 매핑
-                "cheeze" -> R.drawable.img_item_cheeze
-                "chicken" -> R.drawable.img_item_chicken
-                "chopstick" -> R.drawable.img_item_chopstick
-                "coal" -> R.drawable.img_item_coal
-                "egg" -> R.drawable.img_item_egg
-                "mashmellow" -> R.drawable.img_item_mashmellow
-                "meat" -> R.drawable.img_item_meat
-                "paper" -> R.drawable.img_item_paper
-                "potato" -> R.drawable.img_item_potato
-                "ruby" -> R.drawable.img_item_ruby
-                "soup" -> R.drawable.img_item_soup
-                "tier" -> R.drawable.img_item_tire
-                "tissue" -> R.drawable.img_item_tissue
-                "trash" -> R.drawable.img_item_trash
-                else -> R.drawable.img_item_tissue
-            }
-        )
+        when (data.itemId) {
+            "cup" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_cup)
+            "cheeze" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_cheeze)
+            "chicken" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_chicken)
+            "chopstick" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_chopstick)
+            "coal" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_coal)
+            "egg" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_egg)
+            "mashmellow" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_mashmellow)
+            "meat" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_meat)
+            "paper" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_paper)
+            "potato" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_potato)
+            "ruby" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_ruby)
+            "soup" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_soup)
+            "tier" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_tire)
+            "tissue" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_tissue)
+            "trash" -> binding.mypageItemImageIv.setImageResource(R.drawable.img_item_trash)
+        }
         binding.mypageDdayTv.text = "D-${data.reward}"
 
         // 감정분석 관련 데이터
@@ -229,6 +248,16 @@ class MypageFragment : Fragment() {
             reward = this.reward
         )
     }
+
+    private fun MemberInfoResponse.toMyinfoData(profileUrlFallback: String?): MyinfoData {
+        return MyinfoData(
+            name = this.nickname,
+            id = this.userId,
+            introduction = this.introduction ?: "",
+            profileImgUrl = this.profileImgUrl?.takeIf { it.isNotBlank() } ?: profileUrlFallback
+        )
+    }
+
     private fun setupNavigation() {
         binding.mypageMyinfoBtn.setOnClickListener {
             replaceFragment(EditProfileFragment())

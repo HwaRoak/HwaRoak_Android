@@ -14,9 +14,17 @@ import com.example.hwaroak.api.mypage.model.PresignedUrlRequest
 import com.example.hwaroak.api.mypage.network.MemberService
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.logging.HttpLoggingInterceptor
 import okio.BufferedSink
+import okio.source
 import java.io.IOException
+import java.util.concurrent.TimeUnit
+import com.example.hwaroak.BuildConfig
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MemberRepository(private val service: MemberService) {
 
@@ -92,55 +100,55 @@ class MemberRepository(private val service: MemberService) {
         }
     }
 
-    suspend fun uploadProfileImage(
+    suspend fun stageProfileImage(
         token: String,
         contentType: String,
         fileName: String,
         uri: Uri,
-        context: android.content.Context
-    ): Result<ConfirmUploadResponse> {
+        context: Context
+    ): Result<String> { // returns objectKey
         return try {
-            // 1) Presigned URL
             val req = PresignedUrlRequest(contentType, fileName)
             val presignedResp = service.getPresignedUrl("Bearer $token", req)
-            val presignedBody = presignedResp.body()
-            if (!presignedResp.isSuccessful || presignedBody == null) {
-                return Result.failure(Exception("Presigned URL 발급 실패: ${presignedBody?.message ?: presignedResp.message()}"))
-            }
-            val data = presignedBody.data
-            var tmp: String = data.uploadUrl
-            Log.d("log_put", "중간점검: $tmp")
+            val body = presignedResp.body() ?: return Result.failure(Exception("Presign 실패: ${presignedResp.message()}"))
+            if (!presignedResp.isSuccessful) return Result.failure(Exception("Presign 실패: ${body.message}"))
 
-            // 서버가 요구하는 Content-Type 헤더 값
+            val data = body.data
             val headerContentType = data.requiredHeaders["Content-Type"] ?: contentType
+            val rb = uriRequestBody(context, uri, headerContentType)
 
-            // 2) S3 PUT (본문 = Uri 스트리밍)
-            val body = uriRequestBody(context, uri, headerContentType)
-            val uploadResp = service.uploadImage(
-                tmp,
-                headerContentType,
-                body
-            )
-            if (!uploadResp.isSuccessful) {
-                val err = uploadResp.errorBody()?.string()
-                Log.d("log_put", "PUT 실패: ${err ?: uploadResp.message()}")
-                return Result.failure(Exception("PUT 실패: ${err ?: uploadResp.message()}"))
-                Log.d("PUT", "PUT 실패: ${err ?: uploadResp.message()}")
+            // S3 PUT (IO에서 실행)
+            val ok = withContext(Dispatchers.IO) {
+                S3Uploader.putToS3(
+                    uploadUrl = data.uploadUrl,
+                    body = rb,
+                    contentType = headerContentType,
+                    extraHeaders = data.requiredHeaders
+                )
             }
+            require(ok) { "S3 업로드 실패" }
 
-            // 3) 업로드 확정
-            val confirmReq = ConfirmUploadRequest(data.objectKey)
-            val confirmResp = service.confirmUpload("Bearer $token", confirmReq)
-            val confirmBody = confirmResp.body()
-            if (!confirmResp.isSuccessful || confirmBody == null) {
-                return Result.failure(Exception("업로드 확정 실패: ${confirmBody?.message ?: confirmResp.message()}"))
-            }
-
-            Result.success(confirmBody.data) // ConfirmUploadResponse 반환
+            // 서버 반영은 하지 않고 objectKey만 반환
+            Result.success(data.objectKey)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
+
+    suspend fun commitProfileImage(
+        token: String,
+        objectKey: String
+    ): Result<ConfirmUploadResponse> {
+        return try {
+            val resp = service.confirmUpload("Bearer $token", ConfirmUploadRequest(objectKey))
+            val body = resp.body() ?: return Result.failure(Exception("업로드 확정 실패: ${resp.message()}"))
+            if (!resp.isSuccessful) return Result.failure(Exception("업로드 확정 실패: ${body.message}"))
+            Result.success(body.data)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 
     fun uriRequestBody(
         context: Context,
@@ -149,16 +157,20 @@ class MemberRepository(private val service: MemberService) {
     ): RequestBody = object : RequestBody() {
         override fun contentType(): MediaType? = mime.toMediaTypeOrNull()
 
+        // 2) 가능하면 Content-Length 제공 (chunked 회피)
+        override fun contentLength(): Long {
+            return try {
+                context.contentResolver.openFileDescriptor(uri, "r")
+                    ?.use { it.statSize }
+                    ?.takeIf { it >= 0 } ?: -1L
+            } catch (_: Exception) { -1L }
+        }
+
         @Throws(IOException::class)
         override fun writeTo(sink: BufferedSink) {
-            val input = context.contentResolver.openInputStream(uri)
-                ?: throw IOException("Cannot open InputStream for $uri")
-
-            input.use { ins ->
-                // okio.source() 안 씀. 표준 스트림으로 안전하게 복사
-                sink.outputStream().use { outs ->
-                    ins.copyTo(outs)
-                }
+            context.contentResolver.openInputStream(uri)?.source().use { src ->
+                requireNotNull(src) { "Cannot open InputStream for $uri" }
+                sink.writeAll(src)
             }
         }
     }
@@ -173,6 +185,55 @@ class MemberRepository(private val service: MemberService) {
             }
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+}
+
+object S3Uploader {
+    private val logger = HttpLoggingInterceptor { msg ->
+        Log.d("S3HTTP", msg)
+    }.apply {
+        // 바디는 커다랠 수 있으니 HEADERS부터 시작, 필요시 BODY
+        level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.HEADERS
+        else HttpLoggingInterceptor.Level.NONE
+    }
+
+    private val okHttp = OkHttpClient.Builder()
+        .addInterceptor(logger) // ✅ 디버그용
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
+        .callTimeout(90, TimeUnit.SECONDS)
+        // 인터셉터 없음(인증 추가 금지) 유지
+        .build()
+
+    fun putToS3(
+        uploadUrl: String,
+        body: RequestBody,
+        contentType: String,
+        extraHeaders: Map<String, String> = emptyMap()
+    ): Boolean {
+        val reqBuilder = Request.Builder()
+            .url(uploadUrl)
+            .put(body)
+
+        if (extraHeaders.isNotEmpty()) {
+            extraHeaders.forEach { (k, v) -> reqBuilder.header(k, v) }
+        } else {
+            reqBuilder.header("Content-Type", contentType)
+        }
+
+        Log.d("S3Uploader", "PUT 시작: url=$uploadUrl, headers=$extraHeaders") // ✅ 호출 전 로그
+
+        okHttp.newCall(reqBuilder.build()).execute().use { res ->
+            val ok = res.isSuccessful
+            if (!ok) {
+                val err = res.body?.string()
+                Log.e("S3Uploader", "PUT 실패: code=${res.code}, msg=${res.message}, body=$err")
+            } else {
+                Log.d("S3Uploader", "PUT 성공: code=${res.code}")
+            }
+            return ok
         }
     }
 }

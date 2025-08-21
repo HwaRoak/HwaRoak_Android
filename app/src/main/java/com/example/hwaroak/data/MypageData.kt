@@ -11,6 +11,7 @@ data class MyinfoData(
     val name: String, // 이름
     val id: String = "", // 유저 아이디
     val introduction: String = "", // 자기소개
+    val profileImgUrl: String? // 프로필 사진
 )
 data class EmotionSummary(
     val CALM: EmotionData,
