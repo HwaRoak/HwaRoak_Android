@@ -12,4 +12,8 @@ interface QuestionService {
     @GET("api/v1/question")
     suspend fun getQuestion(@Header("Authorization") token: String, @Query("tag") tag: String? = null)
             : Response<QuestionResponse>
+
+    @GET("api/v1/question/item-click")
+    suspend fun getQuestionForItemClick(@Header("Authorization") token: String, @Query("tag") tag: String)
+            : Response<QuestionResponse>
 }

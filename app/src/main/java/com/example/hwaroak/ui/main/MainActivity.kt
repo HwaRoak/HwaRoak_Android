@@ -36,10 +36,25 @@ class MainActivity : AppCompatActivity() {
 
     private val friendNavViewModel: FriendNavViewModel by viewModels()
 
+    //호출을 위한 SSEClient
+    private lateinit var sseClient: SSEClient
+
 
     // FriendVisitFragment에서 호출할 메서드
     private var currentFriendId: String? = null
     private var currentFriendName: String? = null
+
+    override fun onStart() {
+        super.onStart()
+        sseClient.connectToSSE()
+        Log.d("log_SSE", "MainActivity onStart() - SSE 연결 시작")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        sseClient.disconnect()
+        Log.d("log_SSE", "MainActivity onStop() - SSE 연결 종료")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,10 +75,8 @@ class MainActivity : AppCompatActivity() {
         binding.mainTitleTv.text = title
 
 
-
-        //SSE 연결테스트
-        val sseClient = SSEClient(this)
-        sseClient.connectToSSE()
+        //sse 연결
+        sseClient = SSEClient(this)
 
 
 
@@ -364,4 +377,6 @@ class MainActivity : AppCompatActivity() {
         binding.mainLockerBtn.isEnabled = enabled
         binding.mainLockerBtn.alpha = if (enabled) 1f else 0.5f // 비활성 시 시각적 피드백
     }
+
+
 }
