@@ -219,8 +219,8 @@ class DiaryFinishFragment : Fragment() {
     private fun applyUi(feedback: String, reward: Int, itemId: String, dirayId: Int) {
         binding.diaryFinishHwatextTv.text    = feedback
         if(reward == 7){
-            //binding.diaryFinishRewardTv.text     = "리워드까지 ${reward}일!"
-            binding.diaryFinishRewardTv.text     = "아이템 획득!"
+            binding.diaryFinishRewardTv.text     = "리워드까지 ${reward}일!"
+            //binding.diaryFinishRewardTv.text     = "아이템 획득!"
         }
         else{
             binding.diaryFinishRewardTv.text     = "리워드까지 ${reward}일!"
