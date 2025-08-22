@@ -1,5 +1,6 @@
 package com.example.hwaroak.api.notice.access
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -61,6 +62,7 @@ class NoticeViewModel(private val repository: NoticeRepository) : ViewModel() {
     //6. 알람 가져오기
     fun getAlarmSetting(token: String){
         viewModelScope.launch {
+            Log.d("log_setting", "getAlarmSetting API 호출")
             val res = repository.getAlarmSetting(token)
             _alarmSetting.postValue(res)
         }
@@ -69,6 +71,7 @@ class NoticeViewModel(private val repository: NoticeRepository) : ViewModel() {
     //7. 알람 세팅하기
     fun setAlarmSetting(token: String, req: AlarmSettingRequest){
         viewModelScope.launch {
+            Log.d("log_setting", "setAlarmSetting API 호출")
             repository.setAlarmSetting(token, req)
         }
 

@@ -116,7 +116,9 @@ class SettingFragment : Fragment() {
 
         /**observer 설정 : API 가져오기**/
         noticeViewModel.alarmSetting.observe(viewLifecycleOwner) { result ->
+            Log.d("log_setting", "알람 설정 가져오기")
             result.onSuccess { resp ->
+                Log.d("log_setting", "알람 설정 가져오기 성공")
                 //각각 리마인더 여부, 불 키우기 여부, 모든 알람 끄기 여부, 시간
                 val isRemind2 = resp.reminderEnabled
                 val isFireAlarm2 = resp.fireAlarmEnabled
@@ -133,6 +135,8 @@ class SettingFragment : Fragment() {
                         .putInt("minute", minute2)
                         .apply()
                 }
+                Log.d("log_setting", "isRemind2 : $isRemind2, isFireAlarm2 : $isFireAlarm2, isOffAlarm2 : $isOffAlarm2, hour2 : $hour2, minute2 : $minute2")
+
 
                 //설정
                 binding.settingGetReminderSwitch.isChecked = isRemind2
@@ -143,6 +147,7 @@ class SettingFragment : Fragment() {
 
             }.onFailure { err ->
                 //일단 shared
+                Log.d("log_setting", "알람 설정 가져오기 실패")
             }
 
         }
@@ -163,6 +168,7 @@ class SettingFragment : Fragment() {
     
     //각 스위치를 눌렀을 때 로직 구성 함수
     private fun updateUISetting(){
+        sendToAPI()
         val disableAll = binding.settingOffAlarmSwitch.isChecked
         val remind = binding.settingGetReminderSwitch.isChecked
         val fire = binding.settingFireAlarmSwitch.isChecked
@@ -189,7 +195,8 @@ class SettingFragment : Fragment() {
     private fun settingListener(){
         //리마인더 받기
         binding.settingGetReminderSwitch.setOnCheckedChangeListener { _, isChecked ->
-            settingPref.edit { putBoolean("isRemind", isChecked).apply() }
+            if(isChecked){binding.settingOffAlarmSwitch.isChecked = false}
+            //settingPref.edit { putBoolean("isRemind", isChecked).apply() }
 
             updateUISetting()
         }
@@ -221,6 +228,7 @@ class SettingFragment : Fragment() {
                         .putInt("minute", m)
                         .apply()
                     }
+                    sendToAPI()
                 },
                 cal.get(Calendar.HOUR_OF_DAY),
                 cal.get(Calendar.MINUTE),
@@ -235,6 +243,12 @@ class SettingFragment : Fragment() {
     override fun onPause() {
         super.onPause()
 
+        sendToAPI()
+
+    }
+
+    private fun sendToAPI() {
+        Log.d("log_setting", "sendToAPI 실행 - 저장할게요")
         isRemind = settingPref.getBoolean("isRemind", true)
         isFireAlarm = settingPref.getBoolean("isFireAlarm", true)
         isOffAlarm = settingPref.getBoolean("isOffAlarm", false)
@@ -248,7 +262,6 @@ class SettingFragment : Fragment() {
             isOffAlarm
         )
         noticeViewModel.setAlarmSetting(accessToken, req)
-
     }
 
 
