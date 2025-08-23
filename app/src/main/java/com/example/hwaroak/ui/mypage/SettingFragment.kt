@@ -153,7 +153,7 @@ class SettingFragment : Fragment() {
         }
         /**1. 일단 shared로 1차 설정**/
         //UI 세팅
-        updateUISetting()
+        //updateUISetting()
         //버튼 setting
         settingListener()
 
@@ -249,11 +249,13 @@ class SettingFragment : Fragment() {
 
     private fun sendToAPI() {
         Log.d("log_setting", "sendToAPI 실행 - 저장할게요")
-        isRemind = settingPref.getBoolean("isRemind", true)
-        isFireAlarm = settingPref.getBoolean("isFireAlarm", true)
-        isOffAlarm = settingPref.getBoolean("isOffAlarm", false)
+        isRemind = binding.settingGetReminderSwitch.isChecked
+        isFireAlarm = binding.settingFireAlarmSwitch.isChecked
+        isOffAlarm = binding.settingOffAlarmSwitch.isChecked
         hour = settingPref.getInt("hour", 0)
         minute = settingPref.getInt("minute", 0)
+
+
         Log.d("log_setting", "isRemind : $isRemind, isFireAlarm : $isFireAlarm, isOffAlarm : $isOffAlarm, hour : $hour, minute : $minute")
         val req  = AlarmSettingRequest(
             isRemind,
