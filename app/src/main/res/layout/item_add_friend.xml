@@ -11,9 +11,10 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/friend_add_btn"
         style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="390dp"
-        android:layout_height="72dp"
-        android:layout_marginStart="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:background="@drawable/bg_friend_add_btn"
         android:insetLeft="0dp"
         android:insetTop="0dp"
